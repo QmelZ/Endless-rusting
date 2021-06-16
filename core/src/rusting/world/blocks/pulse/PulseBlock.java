@@ -25,6 +25,7 @@ import rusting.content.Palr;
 import rusting.content.RustingBullets;
 import rusting.entities.holder.CustomConsumerModule;
 import rusting.entities.holder.CustomStatHolder;
+import rusting.interfaces.PulseBlockc;
 import rusting.world.blocks.pulse.utility.PulseResearchBlock;
 
 import static mindustry.Vars.*;
@@ -164,12 +165,14 @@ public class PulseBlock extends Block{
         return returnBuilding[0];
     }
 
-    public class PulseBlockBuild extends Building {
+    public class PulseBlockBuild extends Building implements PulseBlockc {
+
         public float pulseEnergy = 0;
         public float falloff = resistance;
         public float xOffset = 0, yOffset = 0, alphaDraw = 0;
         public float shake = 0;
 
+        @Override
         public float pulseEfficiency(){
             return Math.max(baseEfficiency, chargef(false) * timeScale());
         }

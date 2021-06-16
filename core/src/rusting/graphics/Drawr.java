@@ -23,7 +23,7 @@ public class Drawr {
 
     @Nullable
     public static boolean initializedMethods = false;
-    public static Method drawingMethod = null;
+    public static Method drawingMethod = null, flipMethod = null;
     public static boolean useNewMethods = false;
 
     public static void setMethods(){
@@ -31,11 +31,12 @@ public class Drawr {
             Log.info("using latest methods");
             try {
                 drawingMethod = Pixmap.class.getDeclaredMethod("draw", Pixmap.class, int.class, int.class, int.class, int.class, int.class, int.class);
+                flipMethod = Pixmap.class.getDeclaredMethod("flipX");
                 useNewMethods = true;
                 initializedMethods = true;
             }
             catch (NoSuchMethodException err){
-                Log.info("New Arc methods in Drawr #30 not suported!");
+                Log.info("New Arc methods in Drawr #33 not suported!");
             }
         }
         if(drawingMethod == null)
@@ -45,13 +46,13 @@ public class Drawr {
                 initializedMethods = true;
             }
             catch (NoSuchMethodException err){
-                Log.info("Old Arc methods in Drawr #42 not suported!");
+                Log.info("Old Arc methods in Drawr #44 not suported!");
             }
     }
 
     //Learned somewhat how to do this from sk's Drawm
     public static Pixmap pigmentae(PixmapRegion map, Color pigment, float percent){
-        Pixmap stencil = new Pixmap(map.width, map.height, map.pixmap.getFormat());
+        Pixmap stencil = new Pixmap(map.width, map.height);
             for (int x = 0; x < map.width; x ++){
                 for (int y = 0; y < map.height; y ++){
                     int point = map.getPixel(x, y);
@@ -154,6 +155,8 @@ public class Drawr {
             boolean regionFound = Core.atlas.isFound(w.region);
             boolean outlineRegionFound = Core.atlas.isFound(w.outlineRegion);
 
+            if(!outlineRegionFound) w.outlineRegion = Core.atlas.find("none");
+
             //finds which region is the largest. the actual weapon, or the outline
             if(regionFound) weaponOffsetx = w.region.width/2;
             if(outlineRegionFound && w.outlineRegion.width/2 > weaponOffsetx) weaponOffsetx = w.outlineRegion.width/2;
@@ -223,6 +226,7 @@ public class Drawr {
         });
 
         addTexture(stencil, unit.name + "-full");
+        addTexture(stencil, unit.name + "-ui");
 
     }
 
@@ -251,18 +255,21 @@ public class Drawr {
     }
 
     public static void drawPixmapUnitMount(Pixmap stencil, Pixmap map, int x, int y, int reverse){
-        if(useNewMethods && drawingMethod != null) {
             try {
                 try {
-                    drawingMethod.invoke(
+                    Log.info("tryingdraw");
+                    if(flipMethod != null) stencil = (Pixmap) flipMethod.invoke(stencil);
+                    Log.info("tryingdraw2");
+                    if(drawingMethod != null) drawingMethod.invoke(
                             stencil,
                             map,
                             stencil.getWidth() / 2 - map.getWidth() / 2 + x * 4 * reverse,
                             stencil.getHeight() / 2 - map.getHeight() / 2 - y * 4,
                             0,
                             0,
-                            map.getWidth() * reverse,
+                            map.getWidth(),
                             map.getHeight());
+                    Log.info("tryingdraw3");
                 }
                 catch (InvocationTargetException err) {
                     Log.info("Invoking Methods in Drawr #275 not suported!");
@@ -271,7 +278,6 @@ public class Drawr {
             catch (IllegalAccessException erro){
                 Log.info("Unable to acces Methods Drawr #29!");
             }
-        }
     }
 
     public static boolean validateRegion(String weapon){

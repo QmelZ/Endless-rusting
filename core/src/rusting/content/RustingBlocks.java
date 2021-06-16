@@ -25,8 +25,7 @@ import rusting.world.blocks.pulse.distribution.*;
 import rusting.world.blocks.pulse.production.PulseGenerator;
 import rusting.world.blocks.pulse.unit.PulseReconstructor;
 import rusting.world.blocks.pulse.unit.PulseUnitFactory;
-import rusting.world.blocks.pulse.utility.PulseChainNode;
-import rusting.world.blocks.pulse.utility.PulseResearchBlock;
+import rusting.world.blocks.pulse.utility.*;
 
 import static mindustry.type.ItemStack.with;
 
@@ -61,7 +60,9 @@ public class RustingBlocks implements ContentList{
         //environment/turrets
         archangel,
         //units
-        pulseFactory, enlightenmentReconstructor, ascendanceReconstructor,
+        pulseFactory, enlightenmentReconstructor, ascendanceReconstructor, pulseDistributor,
+        //controll
+        pulseDirectionalController,
         //healer turrets
         thrum, spikent,
         //pannel turrets
@@ -328,7 +329,10 @@ public class RustingBlocks implements ContentList{
             pulseStorage = 55;
             overloadCapacity = 25;
             size = 3;
-            plans.add(new UnitPlan(RustingUnits.duono, 1920, ItemStack.with(Items.lead, 25, Items.silicon, 35, Items.titanium, 10)));
+            plans.addAll(
+                    new UnitPlan(RustingUnits.duono, 1920, ItemStack.with(Items.lead, 25, Items.silicon, 35, Items.titanium, 10)),
+                    new UnitPlan(RustingUnits.fahrenheit, 1250, ItemStack.with(Items.lead, 35, Items.silicon, 15, RustingItems.melonaleum, 10))
+            );
         }};
 
         enlightenmentReconstructor = new PulseReconstructor("enlightenment-reconstructor") {{
@@ -363,6 +367,16 @@ public class RustingBlocks implements ContentList{
                     new UnitType[]{RustingUnits.duoly, RustingUnits.duanga}
             );
             constructTime = 720;
+        }};
+
+        pulseDistributor = new PulsePoint("pulse-distributor"){{
+            requirements(Category.units, with(Items.lead, 465, Items.metaglass, 245, Items.pyratite, 85, Items.titanium, 85));
+
+        }};
+
+        pulseDirectionalController = new PulseController("pulse-controller"){{
+            requirements(Category.units, with(Items.lead, 465, Items.metaglass, 245, Items.pyratite, 85, Items.titanium, 85));
+
         }};
 
         //endregion pulse

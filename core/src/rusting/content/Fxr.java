@@ -11,11 +11,13 @@ import mindustry.game.Team;
 import mindustry.gen.Bullet;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
+import rusting.entities.units.CraeUnitEntity;
 import rusting.entities.units.CraeUnitType;
 
 import static arc.graphics.g2d.Draw.alpha;
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.lineAngle;
+import static arc.graphics.g2d.Lines.stroke;
 import static arc.math.Angles.angle;
 import static arc.math.Angles.randLenVectors;
 
@@ -126,38 +128,83 @@ public class Fxr{
         }
     }),
 
-    pulseSmoke = new Effect(215f, e -> {
+    pulseExplosion = new Effect(85f, e -> {
         float nonfinalSplosionRadius = 42 + 3 * e.fout();
         int clouds = 5;
-        float alphaPercent = 1;
         if(e.data instanceof CraeUnitType) {
             nonfinalSplosionRadius = ((CraeUnitType) e.data).hitSize * 4 + 16 + ((CraeUnitType) e.data).hitSize * 2 * e.fout();
             clouds = (int) ((CraeUnitType) e.data).hitSize/3 + 3;
         }
+        else if(e.data instanceof float[]){
+            float[] args = (float[]) e.data;
+            if(args.length > 0){
+                nonfinalSplosionRadius = args[0];
+                clouds = (int) args[1];
+            }
+        }
         final float splosionRadius = nonfinalSplosionRadius;
+
+        color(Palr.pulseChargeStart);
+
+        e.scaled(clouds + 2, i -> {
+            stroke(3f * i.fout());
+            Lines.circle(e.x, e.y, 3f + i.fin() * splosionRadius);
+        });
+
+        randLenVectors(e.id, clouds, 2f + 23f * e.finpow(), (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, e.fout() * splosionRadius/2 + 0.5f);
+        });
+
+        color(Palr.pulseChargeEnd);
+        stroke(e.fout());
+
+        randLenVectors(e.id + 1, clouds - 1, 1f + 23f * e.finpow(), (x, y) -> {
+            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 1f + e.fout() * splosionRadius/2.5f);
+        });
+    }),
+
+    pulseSmoke = new Effect(315f, e -> {
+        float nonfinalSplosionRadius = 42 + 3 * e.fout();
+        int clouds = 5;
+        float nonfinalAlphaPercent = 1;
+        if(e.data instanceof CraeUnitType) {
+            nonfinalSplosionRadius = ((CraeUnitType) e.data).hitSize * 4 + 16 + ((CraeUnitType) e.data).hitSize * 2 * e.fout();
+            clouds = (int) ((CraeUnitType) e.data).hitSize/3 + 3;
+        }
+        else if(e.data instanceof float[]){
+            float[] args = (float[]) e.data;
+            if(args.length > 0){
+                nonfinalSplosionRadius = args[0];
+                clouds = (int) args[1];
+                nonfinalAlphaPercent = args[2];
+            }
+        }
+        final float splosionRadius = nonfinalSplosionRadius;
+        final float alphaPercent = Math.min(e.fin() * 315, 60)/60 * nonfinalAlphaPercent;
 
         Draw.color(Pal.plasticSmoke, Pal.darkestGray, e.fslope() * e.fslope());
 
-        randLenVectors(e.id, clouds * 2, splosionRadius/1.5f * e.finpow() + 5, e.rotation,  360, (x, y) -> {
+        randLenVectors(e.id, clouds * 2, splosionRadius * e.finpow() + 5, e.rotation,  360, (x, y) -> {
             float distance = Mathf.dst(x, y);
-            Fill.circle(e.x + x,e.y + y, (1 - distance/(splosionRadius/8.5f + 5)) * e.fout() * e.fout() * 2);
+            Fill.circle(e.x + x,e.y + y, (1 - distance/(splosionRadius/7 + 5)) * e.fout() * e.fout() * 2);
         });
 
-        Draw.color(((CraeUnitType) e.data).chargeColourStart, ((CraeUnitType) e.data).chargeColourEnd, e.fin());
+        if(e.data instanceof CraeUnitEntity) Draw.color(((CraeUnitType) e.data).chargeColourStart, ((CraeUnitType) e.data).chargeColourEnd, e.fin());
+        else Draw.color(Palr.pulseChargeStart, Palr.pulseChargeEnd, e.fin());
         Draw.alpha(alphaPercent * e.fout() * 8/10);
 
-        randLenVectors(e.id, clouds * 3, splosionRadius/1.5f * e.finpow(), e.rotation,  360, (x, y) -> {
+        randLenVectors(e.id, clouds * 3, splosionRadius * e.finpow(), e.rotation,  360, (x, y) -> {
             float distance = Mathf.dst(x, y);
-            Draw.alpha((1 - distance/(splosionRadius/9.5f - 5)) * e.fout() * e.fout() * 0.15f + 0.85f * e.fout());
-            Fill.circle(e.x + x,e.y + y, splosionRadius/5f);
-            Drawf.light(Team.derelict, e.x + x, e.y + y, splosionRadius/15f, Palr.pulseChargeStart, e.fout() * 0.65f);
+            Draw.alpha((1 - distance/(splosionRadius/9.5f - 5)) * e.fout() * e.fout() * 0.15f + 0.85f * e.fout() * alphaPercent);
+            Fill.circle(e.x + x,e.y + y, splosionRadius/3.5f);
+            Drawf.light(Team.derelict, e.x + x, e.y + y, splosionRadius/3.5f, Palr.pulseChargeStart, Draw.getColor().a);
         });
 
-        randLenVectors(e.id, clouds, splosionRadius * e.finpow(), e.rotation,  360, (x, y) -> {
+        randLenVectors(e.id, clouds, splosionRadius/1.5f * e.finpow(), e.rotation,  360, (x, y) -> {
             float distance = Mathf.dst(x, y);
-            Draw.alpha((1 - distance/(splosionRadius/7.5f - 5)) * e.fout() * e.fout() * 0.25f + 0.75f * e.fout() * e.fout());
-            Fill.circle(e.x + x,e.y + y, splosionRadius/9.25f);
-            Drawf.light(Team.derelict, e.x + x, e.y + y, splosionRadius/12.25f, Palr.pulseChargeEnd, e.fout() * 0.65f);
+            Draw.alpha((1 - distance/(splosionRadius/7.5f - 5)) * e.fout() * e.fout() * 0.25f + 0.75f * e.fout() * e.fout() * alphaPercent);
+            Fill.circle(e.x + x,e.y + y, splosionRadius/7.25f);
+            Drawf.light(Team.derelict, e.x + x, e.y + y, splosionRadius/5.25f, Palr.pulseChargeEnd, e.fout() * 0.65f);
         });
     });
 }

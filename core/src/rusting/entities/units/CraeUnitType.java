@@ -14,6 +14,7 @@ import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.ui.Cicon;
 import rusting.content.Palr;
+import rusting.content.RustingStatusEffects;
 
 import static mindustry.Vars.state;
 
@@ -24,6 +25,8 @@ public class CraeUnitType extends AutospriteUnitType {
     public float repairRange = 0;
     public float pulseAmount = 0;
     public float pulseGenRange = 0;
+
+    public int projectileDeathSpawnInterval = 10;
 
     public Color chargeColourStart, chargeColourEnd;
 
@@ -113,10 +116,13 @@ public class CraeUnitType extends AutospriteUnitType {
         super(name);
         chargeColourStart = Palr.pulseChargeStart;
         chargeColourEnd = Palr.pulseChargeStart;
+        immunities.add(RustingStatusEffects.macrosis);
+        immunities.add(RustingStatusEffects.macotagus);
     }
 
     @Override
     public void update(Unit unit) {
         super.update(unit);
     }
+
 }

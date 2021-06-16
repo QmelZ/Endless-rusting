@@ -41,6 +41,14 @@ public class FieldBlockListDialog extends CustomBaseDialog {
         if(tile.build instanceof Building && tile.build.block instanceof PulseResearchBlock) makeList(((PulseResearchBlock) tile.build.block).fieldNames, ((PulseResearchBlock) tile.build.block).threshold);
     }
 
+    public void refresh(Tile tile){
+        makeList(tile);
+        if(isShown()) {
+            hide();
+            show();
+        }
+    }
+
     public void makeList(Seq<String> fieldNames, int threshold) {
         blocks.clear();
         Vars.content.blocks().each(b -> {
@@ -63,8 +71,6 @@ public class FieldBlockListDialog extends CustomBaseDialog {
     }
 
     public void setup(){
-
-        Log.info("setup thing");
 
         cont.reset();
         cont.margin(20);

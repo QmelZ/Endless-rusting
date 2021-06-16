@@ -3,31 +3,30 @@ package rusting.entities.units;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import arc.util.Log;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import mindustry.content.StatusEffects;
 import mindustry.entities.Damage;
-import mindustry.gen.UnitEntity;
+import mindustry.game.Team;
+import mindustry.gen.MechUnit;
 import mindustry.graphics.Layer;
-import rusting.content.Fxr;
-import rusting.content.RustingUnits;
+import mindustry.type.StatusEffect;
+import rusting.content.*;
 
 import static mindustry.Vars.state;
 
-public class CraeUnitEntity extends UnitEntity {
+public class CraeUnitEntity extends MechUnit{
 
     private float shake = 0;
-    private final float timeOffset = 3;
     public float xOffset = 0, yOffset = 0;
     public float alphaDraw = 0;
     public float pulse = 0;
+    private Team lastTeam;
 
     public CraeUnitType unitType(){
         return type instanceof CraeUnitType ? (CraeUnitType) type : null;
-    }
-
-    public CraeUnitEntity craeUnit(){
-        return (CraeUnitEntity) this;
     }
 
     public void addPulse(float pulse){
@@ -36,7 +35,7 @@ public class CraeUnitEntity extends UnitEntity {
     }
 
     public void clampPulse(){
-        Math.max(Math.min(pulse, unitType().pulseAmount), 0);
+        pulse = Math.max(Math.min(pulse, unitType().pulseStorage), 0);
     }
 
     public float chargef(){
@@ -44,8 +43,26 @@ public class CraeUnitEntity extends UnitEntity {
     }
 
     @Override
+    public boolean canShoot() {
+        return !disarmed && (!(isFlying() && type.canBoost) || type.flying && isFlying());
+    }
+
+    @Override
+    public void apply(StatusEffect status, float time){
+        if(status != StatusEffects.none && status != null){
+            if(this.isImmune(status)) status.effect.at(x, y);
+            else if(status.damage * 60 * 4 < unitType().health && speedMultiplier > 0.15f && reloadMultiplier > 0.15 && damageMultiplier > 0.15) super.apply(status, time);
+            else if(status.permanent == true) this.heal(Math.abs(status.damage) * 60);
+        }
+    }
+
+    @Override
     public void update() {
         super.update();
+        //self explanatory, since the units shoudn't be able to change teams
+        if(lastTeam == null) lastTeam = team;
+        if(team != lastTeam) team = lastTeam;
+        float timeOffset = 3;
         if(shake >= timeOffset){
             xOffset = (float) (hitSize/8 * 0.3 * Mathf.range(2));
             yOffset = (float) (hitSize/8 * 0.3 * Mathf.range(2));
@@ -83,8 +100,14 @@ public class CraeUnitEntity extends UnitEntity {
         float explosiveness = 1F;
         if (!spawnedByCore) {
             Damage.dynamicExplosion(x, y, 0, explosiveness, power, bounds() / 2.0F, state.rules.damageExplosions, item().flammability > 1, team);
+            int bulletSpawnInterval = type instanceof CraeUnitType ? unitType().projectileDeathSpawnInterval : 10;
+            for(int i = 0; i < chargef() * bulletSpawnInterval; i++){
+                RustingBullets.craeBolt.create(this, x, y, Mathf.random(360));
+                RustingBullets.craeShard.create(this, team, x, y, Mathf.random(360), 0.25f * Mathf.random(1.1f), hitSize/RustingBullets.craeShard.range() * 32 * Mathf.random(1.1f));
+                RustingBullets.craeShard.create(this, team, x, y, Mathf.random(360), 0.25f * Mathf.random(1.4f), hitSize/RustingBullets.craeShard.range() * 32 * Mathf.random(1.4f));
+            }
         }
-        Fxr.pulseSmoke.at(x, y, rotation, type);
+        if(pulse != 0) Fxr.pulseSmoke.at(x, y, rotation, new float[]{Math.min(chargef() * 3, 1) * hitSize * 5 + 16 + hitSize * 2, chargef() * hitSize / 2 + 3 * chargef(), 1});
         super.destroy();
     }
 
@@ -98,6 +121,7 @@ public class CraeUnitEntity extends UnitEntity {
     public void read(Reads r){
         super.read(r);
         pulse = r.f();
+        clampPulse();
     }
 
     @Override

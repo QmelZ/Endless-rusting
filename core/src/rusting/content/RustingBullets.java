@@ -9,6 +9,7 @@ import mindustry.ctype.ContentList;
 import mindustry.entities.Fires;
 import mindustry.entities.bullet.*;
 import mindustry.gen.Bullet;
+import mindustry.gen.Sounds;
 import mindustry.graphics.Pal;
 import rusting.entities.bullet.BounceBulletType;
 import rusting.entities.bullet.ConsBulletType;
@@ -17,14 +18,16 @@ import rusting.world.blocks.defense.turret.PanelTurret;
 
 public class RustingBullets implements ContentList{
     public static BulletType
-            //basic bullets
-            fossilShard, craeShard, raehShard, mhenShard, fraeShard, paveShard, darkShard,
-            //missile/weaving bullets
-            craeWeaver, paveWeaver,
-            //lightning bullets
-            craeBolt,
-            //laser bolt bullets
-            paveBolt;
+        //basic bullets
+        fossilShard, craeShard, raehShard, mhenShard, fraeShard, paveShard, darkShard,
+        //missile/weaving bullets
+        craeWeaver, paveWeaver,
+        //lightning bullets
+        craeBolt,
+        //laser bolt bullets
+        paveBolt,
+        //essentualy small nukes
+        craeBalistorm;
     
     @Override
     public void load(){
@@ -245,5 +248,54 @@ public class RustingBullets implements ContentList{
             backColor = Pal.heal;
             frontColor = Color.white;
         }};
+
+        craeBalistorm = new ConsBulletType(3, 14, "bullet"){{
+
+            consDespawned = new Cons<Bullet>() {
+                @Override
+                public void get(Bullet b) {
+                    Fxr.pulseSmoke.at(b.x, b.y, b.rotation(), new float[]{
+                            80,
+                            12,
+                            0.85f
+                    });
+                    Fxr.pulseExplosion.at(b.x, b.y, b.rotation(), new Float[]{
+                            80f,
+                            12f
+                    });
+                }
+            };
+
+            consHit = consDespawned;
+
+            splashDamage = 125;
+            splashDamageRadius = 80;
+
+            width = 25;
+            height = 25;
+            lifetime = 460;
+            shrinkX = -0.5f;
+            hitEffect = Fx.none;
+            despawnEffect = Fx.none;
+            status = RustingStatusEffects.macotagus;
+            statusDuration = 1440;
+            frontColor = Palr.pulseChargeStart;
+            backColor = Pal.lancerLaser.lerp(Pal.lightPyraFlame, 0.3f);
+            trailColor = frontColor;
+            trailChance = 1f;
+            weaveMag = 2;
+            weaveScale = 5;
+            homingPower = 0.125f;
+            collidesTiles = false;
+            collides = false;
+            collidesAir = false;
+            scaleVelocity = true;
+            hitShake = 1f;
+            hitSound = Sounds.explosion;
+            knockback = -0.15f;
+        }};
+
+        UnitTypes.alpha.weapons.get(0).bullet = craeBalistorm;
+
     }
 }

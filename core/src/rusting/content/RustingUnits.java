@@ -4,8 +4,8 @@ import arc.func.Prov;
 import arc.struct.ObjectIntMap;
 import arc.struct.ObjectMap.Entry;
 import mindustry.ctype.ContentList;
-import mindustry.gen.*;
-import mindustry.type.UnitType;
+import mindustry.gen.EntityMapping;
+import mindustry.gen.Entityc;
 import mindustry.type.Weapon;
 import rusting.ai.types.MultiSupportAI;
 import rusting.entities.abilities.*;
@@ -63,8 +63,9 @@ public class RustingUnits implements ContentList{
         return idMap.get(type, -1);
     }
 
-    public static UnitType
-            duono, duoly, duanga;
+    public static CraeUnitType
+            duono, duoly, duanga,
+            fahrenheit;
 
     @Override
     public void load() {
@@ -89,6 +90,8 @@ public class RustingUnits implements ContentList{
 
             pulseStorage = 25;
             repairRange = 40;
+
+            projectileDeathSpawnInterval = 3;
 
             constructor = CraeUnitEntity::new;
 
@@ -125,6 +128,9 @@ public class RustingUnits implements ContentList{
 
             pulseStorage = 65;
             repairRange = 50;
+
+
+            projectileDeathSpawnInterval = 5;
 
             constructor = CraeUnitEntity::new;
 
@@ -166,6 +172,8 @@ public class RustingUnits implements ContentList{
             pulseAmount = 3.25f;
             pulseGenRange = 120;
 
+            projectileDeathSpawnInterval = 8;
+
             constructor = CraeUnitEntity::new;
 
             abilities.add(
@@ -190,6 +198,38 @@ public class RustingUnits implements ContentList{
                 }},
                 new UpkeeperFieldAbility(7.5f, 235, 65, 6),
                 new RegenerationAbility(3.5f/60)
+            );
+        }};
+
+
+        EntityMapping.nameMap.put("fahrenheit", CraeUnitEntity::new);
+        fahrenheit = new CraeUnitType("fahrenheit"){{
+
+            flying = false;
+            hitSize = 5;
+            health = 110;
+            speed = 1.2f;
+            accel = 0.045f;
+            drag = 0.025f;
+            isCounted = false;
+
+            pulseStorage = 25;
+
+            projectileDeathSpawnInterval = 6;
+
+            constructor = CraeUnitEntity::new;
+
+            abilities.add(
+                    new UpkeeperFieldAbility(4.35f, 135, 45, 4f)
+            );
+            weapons.add(
+                new Weapon("none") {{
+                    x = 0;
+                    y = 0;
+                    mirror = false;
+                    bullet = RustingBullets.paveBolt;
+                    reload = 120;
+                }}
             );
         }};
 

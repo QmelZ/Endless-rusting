@@ -1,10 +1,10 @@
 package rusting.ui.dialog.research;
 
 import arc.Core;
+import arc.math.Mathf;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Image;
 import arc.scene.ui.layout.Table;
-import arc.util.Log;
 import arc.util.Scaling;
 import mindustry.Vars;
 import mindustry.ctype.UnlockableContent;
@@ -31,8 +31,6 @@ public class UnlockDialog extends CustomBaseDialog {
 
     public void show(UnlockableContent content){
 
-        Log.info("shwoing dialog fro searcing ree");
-
         clear();
         addCloseButton();
         Tile tile = PulseBlock.getCenterTeam(player.team()).tile;
@@ -42,21 +40,27 @@ public class UnlockDialog extends CustomBaseDialog {
         unlockImage = new Image(unlockIcon).setScaling(Scaling.fit);
         ItemStack[] rCost = ((PulseBlock) content).centerResearchRequirements;
         Table itemsCost = new Table();
+
         itemsCost.table(table -> {
+
+            //used for columns.
+            int count = 1;
+            int cols = Mathf.clamp((Core.graphics.getWidth() - 30) / (32 + 10), 1, 8);
+
             for(ItemStack costing: rCost) {
                 Image itemImage = new Image(new TextureRegionDrawable().set(costing.item.icon(Cicon.medium))).setScaling(Scaling.fit);
 
                 table.stack(
                     itemImage,
                     new Table(t -> {
-                        t.add(costing.amount + "/" + Math.min(tile.build.team.core().items.get(costing.item), costing.amount));
+                        t.add(Math.min(tile.build.team.core().items.get(costing.item), costing.amount) + "/" + costing.amount);
                     }).left().margin(1, 3, 2, 0)
                 ).pad(10f);
+                if((count++) % cols == 0) table.row();
             }
         });
-        table(table -> {
+        pane(table -> {
             table.center();
-            table.right();
             table.button("Unlock?", () -> {
                 if(tile.build instanceof PulseResearchBuild && content instanceof PulseBlock){
                     PulseResearchBuild building = (PulseResearchBuild) tile.build;
@@ -70,13 +74,12 @@ public class UnlockDialog extends CustomBaseDialog {
                         Sounds.unlock.at(player.x, player.y);
                     }
                 }
-                Varsr.ui.blocklist.hide();
-                Varsr.ui.blocklist.makeList(tile);
-                Varsr.ui.blocklist.show();
+                Varsr.ui.blocklist.refresh(tile);
                 hide();
-            }).fillX().left().height(75f).width(145).pad(120).padBottom(264);
-            table.add(itemsCost).height(75f).width(145).pad(15).padBottom(230);
-            table.stack(unlockImage).size(8 * 12).fillX().left().pad(90).padBottom(264);
+            }).height(75f).width(145);
+            table.add(unlockImage).size(8 * 12);
+            table.row();
+            table.add(itemsCost);
         });
 
         super.show();
