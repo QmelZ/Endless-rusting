@@ -8,14 +8,18 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.util.*;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
 import mindustry.gen.*;
 import rusting.content.Fxr;
+import rusting.interfaces.PrimitiveControlBlock;
 import rusting.world.blocks.pulse.PulseBlock;
 
+//possessed by an existing entity, non controllable by players
 public class DysfunctionalMonolith extends PulseBlock {
 
     //ticks before the block can shoot again
@@ -51,13 +55,24 @@ public class DysfunctionalMonolith extends PulseBlock {
         return true;
     }
 
-    public class DysfunctionalMonolithBuild extends PulseBlockBuild{
+    public class DysfunctionalMonolithBuild extends PulseBlockBuild implements PrimitiveControlBlock {
+        //time until logic control stops, and time since logic issued command to shoot
+        public float logicControlTime = 0, logicShootingTime = 0;
+        //rotation of the displayed hologram
         public float randRotation = 0;
+        //used for determining when the block can shoot
         public float retargetTime = 0, reload = 0;
+        //used to control visual effects
         public boolean randRotationDirection = false, displayHologram = true;
+        //only used for logic controlling
+        public boolean hasShot = false;
+        //alpha of the corsair
         public float holloPointAlpha = 0;
+        //how long it takes to lock onto a target after first targeting. Should be removed, as it's effect is almost unnoticeable
         public float lockonTime = 0;
+        //position of the block's target position. Set to self if no target found.
         public Vec2 targetPos = new Vec2(x, y);
+        //position of the block's corsair
         public Vec2 holloPos = new Vec2(x, y);
         @Nullable
         public Posc target = null;
@@ -72,30 +87,46 @@ public class DysfunctionalMonolith extends PulseBlock {
             if(Mathf.randomBoolean(0.001f)) randRotationDirection = !randRotationDirection;
 
             triggerShootingMethods();
+
+            if(logicControlled()) logicControlTime -= 1;
+            if(logicShootingTime > 0) logicShootingTime -= 1;
         }
 
         public void triggerShootingMethods(){
-            if((retargetTime >= 1 && (!validateTarget(target)) || lockonTime >= 1)) {
-                findTarget();
-                retargetTime = 0;
+
+            Log.info(reload);
+
+            if(!logicControlled()){
+                if((retargetTime >= 1 && (!validateTarget(target)) || lockonTime >= 1)) {
+                    findTarget();
+                    retargetTime = 0;
+                }
+                else retargetTime += Math.min(pulseEfficiency(), 1);
             }
-            else retargetTime += Math.min(pulseEfficiency(), 1);
 
             if (shooting()){
                 holloPointAlpha = Math.min(holloPointAlpha + 0.01f, 1);
-                targetPos.set(target.x(), target.y());
-                holloPos.sub(x, y).lerp(Tmp.v1.set(targetPos).sub(x, y), Math.min(0.1f * pulseEfficiency(), 1)).clamp(0, Math.max(dst(targetPos.x, targetPos.y) - 3, 0)).add(x, y);
+                if(!logicControlled()) {
+                    targetPos.set(target.x(), target.y());
+                    holloPos.sub(x, y).lerp(Tmp.v1.set(targetPos).sub(x, y), Math.min(0.1f * pulseEfficiency(), 1)).clamp(0, Math.max(dst(targetPos.x, targetPos.y) - 3, 0)).add(x, y);
+                }
+                else holloPos = targetPos;
                 if (allConsValid() && reload >= 1) {
-                    if(lockonTime >= 1 || Math.abs(angleTo(holloPos.x, holloPos.y) - angleTo(targetPos.x, targetPos.y)) < Math.abs(target instanceof Unit ? ((Unit) target).type.hitSize - 2 + projectile.homingPower/3: ((Building) target).block.size * 8 - 1 + projectile.homingPower/3)) shoot();
+                    if(lockonTime >= 1 || logicControlled() || Math.abs(angleTo(holloPos.x, holloPos.y) - angleTo(targetPos.x, targetPos.y)) < Math.abs(target instanceof Unit ? ((Unit) target).type.hitSize - 2 + projectile.homingPower/3: ((Building) target).block.size * 8 - 1 + projectile.homingPower/3)) shoot();
                     else lockonTime = Math.min(lockonTime + 0.005f, 1);
                 }
             }
+            else if(!logicControlled() && !validateTarget(target)) {
+                targetPos.set(x, y);
+            }
             if (reload < 1 && shooting()) reload = Math.min(deltaReload() + reload, 1);
-            else if(dst(holloPos) > 5) holloPos.lerp(Tmp.v1.set(x, y), 0.01f);
-            else {
-                reload = Math.max(reload - deltaReload(), 0);
-                holloPointAlpha = Math.max(holloPointAlpha - 0.01f, 0);
-            };
+            else if(!logicControlled()) {
+                if (dst(holloPos) > 5) holloPos.lerp(Tmp.v1.set(x, y), 0.01f);
+                else {
+                    reload = Math.max(reload - deltaReload(), 0);
+                    holloPointAlpha = Math.max(holloPointAlpha - 0.01f, 0);
+                }
+            }
         }
 
         public float deltaReload(){
@@ -103,15 +134,19 @@ public class DysfunctionalMonolith extends PulseBlock {
         }
 
         public boolean shooting(){
-            return validateTarget(target);
+            return validateTarget(target) && !logicControlled() || logicControlled() && logicShootingTime > 0;
         }
 
         public boolean validateTarget(Posc inputTarget){
-            return inputTarget != null && !Units.invalidateTarget(inputTarget, team == Team.derelict ? Team.sharded : team, x, y) && dst(inputTarget.x(), inputTarget.y()) <= projectileRange();
+            return inputTarget != null && !Units.invalidateTarget(inputTarget, team == Team.derelict ? Team.sharded : team, x, y, projectileRange());
+        }
+
+        public boolean logicControlled(){
+            return logicControlTime > 0;
         }
 
         public void findTarget(){
-            target = Units.closestTarget(team == Team.derelict ? Team.sharded : team, x, y, projectileRange(), unit -> projectile.collidesGround && projectile.collidesAir && !unit.isFlying() && projectile.collidesGround || unit.isFlying() && projectile.collidesAir, tile -> projectile.collidesTiles || projectile.splashDamage > 0 && projectile.collidesGround);
+            target = Units.closestTarget(team == Team.derelict ? Team.sharded : team, targetPos.x, targetPos.y, projectileRange(), unit -> validateTarget(unit) && projectile.collidesGround && projectile.collidesAir && !unit.isFlying() && projectile.collidesGround || unit.isFlying() && projectile.collidesAir, tile -> projectile.collidesTiles || projectile.splashDamage > 0 && projectile.collidesGround);
         }
 
         public void shoot(){
@@ -143,7 +178,7 @@ public class DysfunctionalMonolith extends PulseBlock {
 
         public void bullet(BulletType bullet, float speedScl){
             Vec2 pointerPos = getPointerPos();
-            projectile.create(this, team, pointerPos.x, pointerPos.y, angleTo(holloPos.x, holloPos.y) + Mathf.random(-inaccuracy, inaccuracy), speedScl);
+            bullet.create(this, team, pointerPos.x, pointerPos.y, angleTo(holloPos.x, holloPos.y) + Mathf.random(-inaccuracy, inaccuracy), speedScl);
         }
 
         public void startingEffects(){
@@ -173,6 +208,51 @@ public class DysfunctionalMonolith extends PulseBlock {
                     Draw.alpha(holloPointAlpha * 0.75f);
                     Draw.rect(hologramRegion, holloPos.x + xOffset * reload, holloPos.y + yOffset * reload, (float) (hologramRegion.height * 1.12/4), (float) (hologramRegion.width * 1.12/4), 270);
                 }
+            }
+        }
+
+        @Override
+        public void rawControl(double p1, double p2, double p3, double p4) {
+            targetPos.sub(x, y).add((float) p1, (float) p2).clamp(0, projectileRange()).add(x, y);
+            hasShot = p3 == 1;
+            //countdown before turret realizes it's not shooting anymore, in ticks
+            if(hasShot) logicShootingTime = 5;
+            //stay controlled by logic for a second
+            logicControlTime = 180;
+        }
+
+        @Override
+        public byte version() {
+            return 2;
+        }
+
+        @Override
+        public void write(Writes w) {
+            super.write(w);
+            w.f(logicControlTime);
+            w.f(logicShootingTime);
+            w.f(randRotation);
+            w.f(retargetTime);
+            w.f(reload);
+            w.f(lockonTime);
+            w.f(targetPos.x);
+            w.f(targetPos.y);
+            w.f(holloPos.x);
+            w.f(holloPos.y);
+        }
+
+        @Override
+        public void read(Reads r, byte revision) {
+            super.read(r, revision);
+            if(revision == 2){
+                logicControlTime = r.f();
+                logicShootingTime = r.f();
+                randRotation = r.f();
+                retargetTime = r.f();
+                reload = r.f();
+                lockonTime = r.f();
+                targetPos.set(r.f(), r.f());
+                holloPos.set(r.f(), r.f());
             }
         }
     }

@@ -97,6 +97,7 @@ public class PulseBlock extends Block{
         pStats.canOverload.setValue(canOverload);
         pStats.requiresOverload.setValue(requiresOverload);
         pStats.overloadCapacity.setValue(overloadCapacity);
+        pStats.minRequiredPercent.setValue(minRequiredPulsePercent * 100);
         pStats.projectileChanceModifier.setValue(projectileChanceModifier);
         pStats.projectileRange.setValue(projectileRange()/8);
     }

@@ -62,7 +62,7 @@ public class RustingBlocks implements ContentList{
         //units
         pulseFactory, enlightenmentReconstructor, ascendanceReconstructor, pulseDistributor,
         //controll
-        pulseDirectionalController,
+        pulseDirectionalController, pulseContactSender,
         //healer turrets
         thrum, spikent,
         //pannel turrets
@@ -374,8 +374,15 @@ public class RustingBlocks implements ContentList{
 
         }};
 
+        //region logic
+
         pulseDirectionalController = new PulseController("pulse-controller"){{
-            requirements(Category.units, with(Items.lead, 465, Items.metaglass, 245, Items.pyratite, 85, Items.titanium, 85));
+            requirements(Category.effect, with(Items.lead, 465, Items.metaglass, 245, Items.pyratite, 85, Items.titanium, 85));
+
+        }};
+
+        pulseContactSender = new PulseContactSender("pulse-sender"){{
+            requirements(Category.effect, with(Items.lead, 465, Items.metaglass, 245, Items.pyratite, 85, Items.titanium, 85));
 
         }};
 

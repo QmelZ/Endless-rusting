@@ -294,8 +294,5 @@ public class RustingBullets implements ContentList{
             hitSound = Sounds.explosion;
             knockback = -0.15f;
         }};
-
-        UnitTypes.alpha.weapons.get(0).bullet = craeBalistorm;
-
     }
 }

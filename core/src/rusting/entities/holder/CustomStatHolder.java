@@ -13,6 +13,7 @@ public class CustomStatHolder {
 
     //Overload related stats
     requiresOverload = new StatHolder("requiresoverload"),
+    minRequiredPercent = new StatHolder("overloadpercent", "percent"),
     overloadCapacity = new StatHolder("overloadcapacity"),
     projectileChanceModifier = new StatHolder("projectilechancemodifier"),
     projectileRange = new StatHolder("projectilerange", "blocks"),
@@ -42,6 +43,7 @@ public class CustomStatHolder {
             connectable,
             canOverload,
             requiresOverload,
+            minRequiredPercent,
             overloadCapacity,
             projectileChanceModifier,
             projectileRange,
@@ -66,17 +68,10 @@ public class CustomStatHolder {
             canOverload
     );
 
-    //all overload related stats
-    public Seq<StatHolder> overloadStats = Seq.with(
-            canOverload,
-            overloadCapacity,
-            projectileChanceModifier,
-            projectileRange
-    );
-
     //shown if block can overload
     public Seq<StatHolder> conditionalOverloadStats = Seq.with(
             requiresOverload,
+            minRequiredPercent,
             overloadCapacity,
             projectileChanceModifier,
             projectileRange

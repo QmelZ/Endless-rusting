@@ -91,7 +91,7 @@ public class PulseNode extends PulseBlock {
     }
 
     public static boolean nodeCanConnect(PulseNodeBuild build, Building target){
-        return (!(target instanceof PulseBlockBuild) || ((PulseBlockBuild) target).connectableTo()) && !build.connections.contains(target.pos()) & build.connections.size < ((PulseNode) (build.block)).connectionsPotential && ((PulseNode) build.block).laserRange * 8 >= Mathf.dst(build.x, build.y, target.x, target.y);
+        return (!(target instanceof PulseBlockBuild) || ((PulseBlockBuild) target).connectableTo()) && !build.connections.contains(target.pos()) && build.connections.size < ((PulseNode) (build.block)).connectionsPotential && ((PulseNode) build.block).laserRange * 8 >= Mathf.dst(build.x, build.y, target.x, target.y);
     }
 
     protected void getPotentialLinks(PulseNode.PulseNodeBuild build, Team team, Seq<Building> others){
@@ -115,7 +115,6 @@ public class PulseNode extends PulseBlock {
 
     public class PulseNodeBuild extends PulseBlock.PulseBlockBuild{
         public Seq<Integer> connections = new Seq();
-        public Seq<Integer> loadSeq = new Seq<>();
         public float reload = 0;
 
         public void dropped(){

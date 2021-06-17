@@ -3,7 +3,7 @@ package rusting.world.blocks.pulse.utility;
 import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
-import arc.util.Log;
+import arc.math.Mathf;
 import arc.util.Nullable;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -41,18 +41,12 @@ public class PulseController extends PulseControlModule {
         private final float interval = 360/faces;
 
         @Override
-        public void exportInformationDefault(Building build) {
-            if(build instanceof PrimitiveControlBlock) ((PrimitiveControlBlock) build).rawControl(1F, rotation, enabled ? 1 : 0, 1F);
-        }
-
-        @Override
         public void update() {
             super.update();
             if(unit() != null && isControlled()) {
                 tempRotation = unit().angleTo(unit().aimX(), unit().aimY());
                 if(unit().isShooting()){
                     if(isTapping != true){
-                        Log.info("click!");
                         Sounds.click.at(x, y);
                         isTapping = true;
                     }
@@ -80,7 +74,24 @@ public class PulseController extends PulseControlModule {
         public void primitiveControl(LAccess type, double p1, double p2, double p3, double p4){
             if(type == LAccess.shoot && (unit == null || !unit.isPlayer())){
                 tempRotation = angleTo((float) p1 * 8, (float) p2 * 8);
+                enabled = !Mathf.zero(p3);
             }
+        }
+
+        @Override
+        public void rawControl(double p1, double p2, double p3, double p4) {
+            tempRotation = (float) p2;
+            rotation = (float) p2;
+            enabled = !Mathf.zero(p3);
+        }
+
+        public boolean showPointer(){
+            return !(isControlled() && dst(unit.aimX(), unit.aimY()) < size * 4);
+        }
+
+        @Override
+        public void exportInformationDefault(Building build) {
+            if(build instanceof PrimitiveControlBlock) ((PrimitiveControlBlock) build).rawControl(showPointer() ? 1.5F : 0, rotation, enabled ? 1 : 0, 1F);
         }
 
         @Override
@@ -105,7 +116,6 @@ public class PulseController extends PulseControlModule {
             if(unit == null){
                 unit = (BlockUnitc)UnitTypes.block.create(team);
                 unit.tile(this);
-                Log.info("made a unit");
             }
             return (Unit)unit;
         }
@@ -117,7 +127,7 @@ public class PulseController extends PulseControlModule {
             Draw.z(Layer.effect);
             Draw.color(chargeColourStart, chargeColourEnd, chargef()/5 + 0.8f);
             if(enabled()) Draw.rect(enabledRegion, x, y, 270);
-            Draw.rect(pointerRegion, x, y, rotation - 90);
+            if(showPointer()) Draw.rect(pointerRegion, x, y, rotation - 90);
         }
 
         //if one of you dingusese managed to make a block with the controller without me even knowing I swear I will find you and I will ask you to not mess around with unused content
@@ -132,7 +142,7 @@ public class PulseController extends PulseControlModule {
 
             if(revision == 1){
                 enabled = read.bool();
-                rotation = read.f();
+                tempRotation = read.f();
             }
             unit.remove();
             created();

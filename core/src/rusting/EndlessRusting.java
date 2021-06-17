@@ -1,6 +1,7 @@
 package rusting;
 
 import arc.Events;
+import arc.graphics.Color;
 import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.ctype.ContentList;
@@ -18,7 +19,8 @@ public class EndlessRusting extends Mod{
         new RustingBullets(),
         new RustingUnits(),
         new RustingBlocks(),
-        new RustingWeathers()
+        new RustingWeathers(),
+        new RustingPlanets()
     );
 
     public EndlessRusting(){
@@ -43,5 +45,7 @@ public class EndlessRusting extends Mod{
     public void loadContent(){
         Drawr.setMethods();
         contentLists.each(ContentList::load);
+        Color.cyan.set(Palr.pulseChargeEnd);
+        Color.sky.set(Palr.pulseChargeStart);
     }
 }

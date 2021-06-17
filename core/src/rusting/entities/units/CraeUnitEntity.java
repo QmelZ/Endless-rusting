@@ -11,13 +11,14 @@ import mindustry.content.StatusEffects;
 import mindustry.entities.Damage;
 import mindustry.game.Team;
 import mindustry.gen.MechUnit;
+import mindustry.gen.UnitEntity;
 import mindustry.graphics.Layer;
 import mindustry.type.StatusEffect;
 import rusting.content.*;
 
 import static mindustry.Vars.state;
 
-public class CraeUnitEntity extends MechUnit{
+public class CraeUnitEntity extends UnitEntity {
 
     private float shake = 0;
     public float xOffset = 0, yOffset = 0;

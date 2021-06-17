@@ -4,11 +4,12 @@ import arc.graphics.Color;
 import arc.math.geom.Vec2;
 import arc.util.Time;
 import mindustry.content.StatusEffects;
-import mindustry.ctype.*;
+import mindustry.ctype.ContentList;
 import mindustry.gen.Sounds;
 import mindustry.type.Weather;
+import mindustry.type.weather.ParticleWeather;
 import mindustry.world.meta.Attribute;
-import rusting.type.weather.*;
+import rusting.type.weather.BulletParticleWeather;
 
 public class RustingWeathers implements ContentList{
     public static Weather
@@ -48,17 +49,30 @@ public class RustingWeathers implements ContentList{
             dynamicSpawning = false;
             chanceSpawn = 0;
             attrs.set(Attribute.light, 0.75f);
-            attrs.set(Attribute.light, 0.15f);
             attrs.set(Attribute.water, 0.35f);
         }};
 
-        chemNullificationStorm = new BulletParticleWeather("chem-nullification-storm") {{
-            color = noiseColor = regionColour = Color.coral;
-            dynamicSpawning = false;
-            chanceSpawn = 0;
+        chemNullificationStorm = new ParticleWeather("chem-nullification-storm") {{
+            color = noiseColor = Color.cyan;
+            particleRegion = "particle";
+            useWindVector = true;
+            sizeMax = 8;
+            sizeMin = 4;
+            minAlpha = 0.1f;
+            maxAlpha = 0.8f;
+            density = 1850;
+            baseSpeed = 3.45f;
+            status = RustingStatusEffects.causticBurning;
+            statusDuration = 500f;
+            opacityMultiplier = 0.45f;
+            force = 0.035f;
+            sound = Sounds.rain;
+            soundVol = 0.45f;
+            duration = 4.35f * Time.toMinutes;
             attrs.set(Attribute.light, 0.75f);
-            attrs.set(Attribute.light, 0.15f);
             attrs.set(Attribute.water, 0.35f);
+            attrs.set(Attribute.heat, -0.15f);
+            attrs.set(Attribute.oil, -0.25f);
         }};
     }
 }

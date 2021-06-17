@@ -4,6 +4,7 @@ import arc.assets.Loadable;
 import arc.struct.Seq;
 import arc.util.Log;
 import rusting.ui.RustingUI;
+import rusting.world.format.holder.FormatHolder;
 
 public class Varsr implements Loadable {
 
@@ -11,12 +12,12 @@ public class Varsr implements Loadable {
 
 
     public static RustingUI ui;
+    public static FormatHolder formats;
 
     public static void init(){
 
         ui = new RustingUI();
-
-        //totally random ;)
+        formats = new FormatHolder();
 
         defaultDatabaseQuotes = Seq.with(
             "[cyan] Places of learning",
@@ -25,6 +26,7 @@ public class Varsr implements Loadable {
             "[#d8e2e0] Welcome back."
         );
 
+        //come and join our conversation, randomizer
         defaultRandomQuotes = Seq.with(
             "[cyan] E N L I G H T E N  U S",
             "[lightgrey]Go on, there is much to teach, being of outside",
@@ -40,6 +42,9 @@ public class Varsr implements Loadable {
             "[#f5bf79] Our light burns bright, now lets help reignite what was long forgotten",
             "[red] J O I N  U S,\n T R A P P E D,  A N D  I N  A N G U I S H"
         );
+
+        formats.load();
+
         Log.info("Loaded Varsf");
     }
 }

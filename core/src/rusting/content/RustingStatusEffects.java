@@ -11,11 +11,12 @@ import mindustry.entities.Units;
 import mindustry.gen.Unit;
 import mindustry.type.StatusEffect;
 import rusting.type.CrystalStatusEffect;
+import rusting.type.statusEffect.ConsStatusEffect;
 import rusting.type.statusEffect.SpreadingStatusEffect;
 
 public class RustingStatusEffects implements ContentList {
     public static StatusEffect
-            amberstriken, umbrafliction, macrosis, macotagus;
+            amberstriken, umbrafliction, macrosis, macotagus, causticBurning;
 
     @Override
     public void load() {
@@ -87,5 +88,27 @@ public class RustingStatusEffects implements ContentList {
                 }
             };
         }};
+
+        //does more damage the more damaged the unit is. Strangely heals the unit overtime.
+        causticBurning = new ConsStatusEffect("caustic-burning"){{
+            speedMultiplier = 0.85f;
+            buildSpeedMultiplier = 0.85f;
+            dragMultiplier = 0.425f;
+            damageMultiplier = 0.92f;
+            effect = Fx.plasticburn;
+            effectChance = 0.025f;
+
+            updateCons = new Cons<Unit>() {
+                @Override
+                public void get(Unit unit) {
+                    if(Time.time % 2 > 1) {
+                        if(unit.damaged() && unit.healthf() > 0.15f && unit.healthf() < 0.85f)unit.damagePierce(Math.min((unit.type.health - unit.health) * 0.01f, Math.min(0.14f, unit.health / 2500)) * Time.delta);
+                        else unit.heal(0.125f);
+                    }
+                }
+            };
+
+        }};
+
     }
 }
