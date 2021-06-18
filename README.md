@@ -53,6 +53,11 @@ As it turns out, having untis which can do various tasks isn't to powerfull. The
 ### Damaging Weather
 Weather which can rain bullets from the sky has been added! I'm working to make the impact of the weather on gameplay noticible enough that it becomes something that the player should think about, but not be the entire focus of their time spent in the storm.
 
+###Pirmitive Logic Systems
+Ever wanted to make a dnace pad without much logic? Well now you... kind of can.
+Basic logic transfers 4 pieces of information like normal logic systems, onyl blocks read the information in a certain way!
+You will have to reformat the information into a readable form for the blocks to do what you expect them to, or mess around with unintentional interactions between sender and reciever.
+
 ## New Status Effects
 
 ### Spreading Status Effects
@@ -60,3 +65,9 @@ The more the merrier, untill theres a ton of infected units with no way to heal 
 
 ### Crystal status effects
 Slows the unit down drasticaly, and draws a spiky crystal around it. That's about it.
+
+###Custom status effects
+Status effects that have special efefcts like no other! Find out mroe about them in their descriptions, these special snowflakes will soon get their own title.
+
+##Wheres Pixelcraft's regular update scedule gone?
+https://github.com/Sh1penfire/pixelcraft/commit/cc091a76ba10fc6732157c3c245ce4fb13752975
