@@ -55,7 +55,7 @@ Weather which can rain bullets from the sky has been added! I'm working to make 
 
 ### Pirmitive Logic Systems
 Ever wanted to make a dnace pad without much logic? Well now you... kind of can.
-Basic logic transfers 4 pieces of information like normal logic systems, onyl blocks read the information in a certain way!
+Basic logic transfers 4 pieces of information like normal logic systems, only blocks read the information in a certain way!
 You will have to reformat the information into a readable form for the blocks to do what you expect them to, or mess around with unintentional interactions between sender and reciever.
 
 ## New Status Effects
