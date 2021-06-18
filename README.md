@@ -14,16 +14,20 @@ I've got plans for full v7 compatability, though I'm not sure whats to come. Uni
 
 ### Windows
 
-Plain Jar: gradlew buil\n
-Dexify Plain Jar: gradlew dexify\n
+Plain Jar: gradlew build
+
+Dexify Plain Jar: gradlew dexify
+
 Build Plain & Dexify Jar: gradlew buildDex
 
 Note: Preferably use the plain jar for windows. If you're compiling for an android user, build the dexed jar instead. Dexed jars tend to be much larger, and are unescecary if you can compile a plain jar.
 
 ### Desktop/Mac
 
-Plain Jar: ./gradlew build\n
-Dexify Plain Jar: ./gradlew dexify\n
+Plain Jar: ./gradlew build
+
+Dexify Plain Jar: ./gradlew dexify
+
 Build Plain & Dexify Jar: ./gradlew buildDex
 
 Note: Preferably use the plain jar for windows. If you're compiling for an android user, build the dexed jar instead. Dexed jars tend to be much larger, and are unescecary if you can compile a plain jar.
