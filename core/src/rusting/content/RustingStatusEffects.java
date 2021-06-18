@@ -102,7 +102,7 @@ public class RustingStatusEffects implements ContentList {
                 @Override
                 public void get(Unit unit) {
                     if(Time.time % 2 > 1) {
-                        if(unit.damaged() && unit.healthf() > 0.15f && unit.healthf() < 0.85f)unit.damagePierce(Math.min((unit.type.health - unit.health) * 0.01f, Math.min(0.14f, unit.health / 2500)) * Time.delta);
+                        if(unit.damaged() && unit.healthf() > 0.15f && unit.healthf() < 0.85f) unit.damagePierce(Math.min((unit.type.health - unit.health)/60, Math.min(10/60f, unit.health / 2500)) * Time.delta);
                         else unit.heal(0.125f);
                     }
                 }

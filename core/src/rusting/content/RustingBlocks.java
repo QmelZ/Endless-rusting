@@ -21,6 +21,7 @@ import rusting.world.blocks.defense.turret.PanelTurret;
 import rusting.world.blocks.environment.FixedOreBlock;
 import rusting.world.blocks.pulse.PulseBlock;
 import rusting.world.blocks.pulse.defense.DysfunctionalMonolith;
+import rusting.world.blocks.pulse.defense.PulseLandmine;
 import rusting.world.blocks.pulse.distribution.*;
 import rusting.world.blocks.pulse.production.PulseGenerator;
 import rusting.world.blocks.pulse.unit.PulseReconstructor;
@@ -36,8 +37,10 @@ public class RustingBlocks implements ContentList{
         melainLiquae,
         //floor
         //pailean
-        paileanStolnen, paileanPathen, paileanWallen,
-        //navy
+        paileanStolnen, paileanPathen, paileanWallen, paileanBarreren,
+        //ebrin, drier pailean blocks
+        ebrinDrylon,
+        //classem
         classemStolnene, classemPathen, classemPulsen, classemWallen, classemBarrreren,
         //ore blocks
         melonaleum,
@@ -50,7 +53,7 @@ public class RustingBlocks implements ContentList{
         pulseResonator,
         //Siphon
         pulseSiphon,
-        //Defense
+        //Walls
         pulseBarrier, pulseBarrierLarge,
         //Research
         pulseResearchCenter,
@@ -59,6 +62,8 @@ public class RustingBlocks implements ContentList{
         //turrets
         //environment/turrets
         archangel,
+        //landmines
+        pulseLandmine,
         //units
         pulseFactory, enlightenmentReconstructor, ascendanceReconstructor, pulseDistributor,
         //controll
@@ -100,6 +105,15 @@ public class RustingBlocks implements ContentList{
             blendGroup = paileanStolnen;
         }};
 
+        ebrinDrylon = new Floor("ebrin-drylon"){{
+            itemDrop = Items.sand;
+            speedMultiplier = 0.75f;
+            variants = 6;
+            attributes.set(Attribute.water, -1f);
+            attributes.set(Attribute.spores, -0.15f);
+            attributes.set(Attribute.heat, 0.025f);
+        }};
+
         classemStolnene = new Floor("classem-stolnene"){{
             speedMultiplier = 0.85f;
             variants = 3;
@@ -133,6 +147,10 @@ public class RustingBlocks implements ContentList{
         }};
 
         paileanWallen = new StaticWall("pailean-wallen"){{
+            variants = 2;
+        }};
+
+        paileanBarreren = new StaticWall("pailean-barreren"){{
             variants = 2;
         }};
 
@@ -308,7 +326,7 @@ public class RustingBlocks implements ContentList{
             bursts = 3;
             burstSpacing = 3;
             inaccuracy = 5;
-            customConsumes.pulse = 10;
+            customConsumes.pulse = 15;
             cruxInfiniteConsume = true;
             pulseStorage = 70;
             overloadCapacity = 30;
@@ -316,6 +334,21 @@ public class RustingBlocks implements ContentList{
             minRequiredPulsePercent = 0;
             canOverload = true;
         }};
+
+        //region landmines
+        pulseLandmine = new PulseLandmine("pulse-landmine") {{
+            requirements(Category.effect, with(Items.lead, 15, Items.silicon, 10, RustingItems.melonaleum, 5));
+            centerResearchRequirements = with(Items.copper, 45,  Items.coal, 245, Items.graphite, 95, Items.silicon, 55, RustingItems.melonaleum, 15);
+            health = 135 * size * size;
+            reloadTime = 85;
+            shots = 3;
+            customConsumes.pulse = 10;
+            pulseStorage = 75;
+            cruxInfiniteConsume = true;
+            canOverload = false;
+            powerLoss = 0;
+        }};
+
 
         //region units
 

@@ -279,8 +279,8 @@ public class PulseBlock extends Block{
             Draw.color(laserCol, laserCol2, lerpPercent);
             Lines.stroke(1.35f);
             Lines.line(sourcx, sourcy, edgex, edgey);
-            Fill.circle(edgex, edgey, 1.35f);
-            Fill.circle(sourcx, sourcy, 0.85f);
+            Fill.circle(edgex, edgey, 0.85f);
+            Fill.circle(sourcx, sourcy, 1.35f);
             Draw.reset();
         }
 
