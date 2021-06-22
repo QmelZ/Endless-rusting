@@ -16,6 +16,7 @@ import mindustry.world.meta.Attribute;
 import mindustry.world.meta.BlockFlag;
 import rusting.entities.holder.PanelHolder;
 import rusting.entities.holder.ShootingPanelHolder;
+import rusting.world.blocks.BadExporterBlock;
 import rusting.world.blocks.defense.turret.HealerBeamTurret;
 import rusting.world.blocks.defense.turret.PanelTurret;
 import rusting.world.blocks.environment.FixedOreBlock;
@@ -32,6 +33,7 @@ import static mindustry.type.ItemStack.with;
 
 public class RustingBlocks implements ContentList{
     public static Block
+        expre,
         //environment
         //liquids
         melainLiquae,
@@ -75,6 +77,10 @@ public class RustingBlocks implements ContentList{
         
     public void load(){
         //region environment
+
+        expre = new BadExporterBlock("don't use me"){{
+            requirements(Category.effect, ItemStack.with());
+        }};
 
         melainLiquae = new Floor("melain-liquae"){{
             speedMultiplier = 0.5f;
@@ -212,7 +218,6 @@ public class RustingBlocks implements ContentList{
             requirements(Category.power, with(Items.copper, 5, Items.lead, 4, Items.titanium, 3));
             centerResearchRequirements = with(Items.copper, 120, Items.lead, 95, Items.titanium, 65);
             size = 1;
-            alwaysUnlocked = true;
             powerLoss = 0.0025f;
             pulseReloadTime = 15;
             energyTransmission = 3f;
@@ -289,7 +294,6 @@ public class RustingBlocks implements ContentList{
             requirements(Category.effect, with(Items.copper, 65, Items.lead, 50, Items.coal, 25));
             centerResearchRequirements = with(Items.copper, 40,  Items.coal, 15);
             size = 2;
-            alwaysUnlocked = true;
             fieldNames.add("pulseStorage");
             fieldNames.add("canOverload");
         }};
@@ -339,7 +343,7 @@ public class RustingBlocks implements ContentList{
         pulseLandmine = new PulseLandmine("pulse-landmine") {{
             requirements(Category.effect, with(Items.lead, 15, Items.silicon, 10, RustingItems.melonaleum, 5));
             centerResearchRequirements = with(Items.copper, 45,  Items.coal, 245, Items.graphite, 95, Items.silicon, 55, RustingItems.melonaleum, 15);
-            health = 135 * size * size;
+            health = 135;
             reloadTime = 85;
             shots = 3;
             customConsumes.pulse = 10;

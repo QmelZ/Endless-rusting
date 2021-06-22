@@ -3,7 +3,6 @@ package rusting.content;
 import arc.graphics.Color;
 import arc.math.geom.Vec2;
 import arc.util.Time;
-import mindustry.content.StatusEffects;
 import mindustry.ctype.ContentList;
 import mindustry.gen.Sounds;
 import mindustry.type.Weather;
@@ -33,8 +32,6 @@ public class RustingWeathers implements ContentList{
             maxAlpha = 0.8f;
             density = 1850;
             baseSpeed = 3.45f;
-            status = StatusEffects.wet;
-            statusDuration = 500f;
             opacityMultiplier = 0.45f;
             force = 0.15f;
             sound = Sounds.wind;

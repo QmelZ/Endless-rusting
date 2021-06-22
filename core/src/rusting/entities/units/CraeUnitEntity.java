@@ -3,14 +3,12 @@ package rusting.entities.units;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
-import arc.util.Log;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Damage;
 import mindustry.game.Team;
-import mindustry.gen.MechUnit;
 import mindustry.gen.UnitEntity;
 import mindustry.graphics.Layer;
 import mindustry.type.StatusEffect;
@@ -52,8 +50,8 @@ public class CraeUnitEntity extends UnitEntity {
     public void apply(StatusEffect status, float time){
         if(status != StatusEffects.none && status != null){
             if(this.isImmune(status)) status.effect.at(x, y);
-            else if(status.damage * 60 * 4 < unitType().health && speedMultiplier > 0.15f && reloadMultiplier > 0.15 && damageMultiplier > 0.15) super.apply(status, time);
-            else if(status.permanent == true) this.heal(Math.abs(status.damage) * 60);
+            else if(status.damage * 60 * 4 < unitType().health && status.speedMultiplier > 0.15f && status.reloadMultiplier > 0.15 && status.damageMultiplier > 0.15 && status.healthMultiplier > 0.55) super.apply(status, time);
+            else if(status.permanent == true && status.damage > 0) this.heal(Math.abs(status.damage) * 60);
         }
     }
 

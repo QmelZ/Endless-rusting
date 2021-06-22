@@ -43,6 +43,16 @@ public class PulseResearchBlock extends PulseBlock {
     }
 
     @Override
+    public boolean canBreak(Tile tile) {
+        return super.canBreak(tile) && tile.block() instanceof PulseResearchBlock && ((PulseResearchBuild) Vars.world.buildWorld(tile.worldx(), tile.worldy())).researchedBlocks.size == 0;
+    }
+
+    @Override
+    public boolean canBeBuilt() {
+        return PulseBlock.validCenter(player.team()) && super.canBeBuilt();
+    }
+
+    @Override
     public void drawPlace(int x, int y, int rotation, boolean valid){
         super.drawPlace(x, y, rotation, valid);
         if(getCenterTeam(player.team()) != null){
@@ -58,7 +68,7 @@ public class PulseResearchBlock extends PulseBlock {
     }
 
     public static boolean researched(UnlockableContent content, Team team){
-            return getCenterTeam(team) != null && getCenterTeam(team).researchedBlocks.contains(content.localizedName) || state.rules.infiniteResources;
+            return getCenterTeam(team) != null && getCenterTeam(team).researchedBlocks.contains(content.localizedName) || content instanceof PulseBlock && !((PulseBlock) content).needsResearching || state.rules.infiniteResources;
     }
 
     public static boolean researched(UnlockableContent content, PulseResearchBuild building){

@@ -22,6 +22,7 @@ public class PulseLandmine extends PulseBlock {
     TextureRegion indicatorRegion;
 
     public float reloadTime = 50;
+    public float damageAmount = 10;
     public int shots = 3;
     public Sound shootSound = Sounds.spark;
     public float soundMinPitch = 0.5f, soundMaxPitch = 0.9f;
@@ -56,7 +57,7 @@ public class PulseLandmine extends PulseBlock {
         3: cons valid, full on pulse
          */
         int state = 0;
-        protected Color[] stateColours = {Color.blue, Color.red, Color.yellow, Color.green};
+        protected Color[] stateColours = {Color.blue, Team.crux.color, Team.sharded.color, Team.green.color};
 
         @Override
         public void update() {
@@ -74,12 +75,15 @@ public class PulseLandmine extends PulseBlock {
 
         @Override
         public void unitOn(Unit unit) {
-            if(timer.get(0, reloadTime)){
+            if(allConsValid() && timer.get(0, reloadTime)){
+                consume();
+                customConsume();
                 for(int i = 0; i < shots; i++){
                     projectile.create(this, team, x, y, Mathf.range(360));
                 }
                 shootSound.at(x, y, Mathf.range(soundMinPitch, soundMaxPitch));
                 drawAlpha = 1;
+                damage(damageAmount);
             }
         }
 

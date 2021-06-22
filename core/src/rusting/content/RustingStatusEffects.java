@@ -16,10 +16,16 @@ import rusting.type.statusEffect.SpreadingStatusEffect;
 
 public class RustingStatusEffects implements ContentList {
     public static StatusEffect
-            amberstriken, umbrafliction, macrosis, macotagus, causticBurning;
+            weather, amberstriken, umbrafliction, macrosis, macotagus, causticBurning;
 
     @Override
     public void load() {
+
+        //sued by weather and to see if unit was alive during a weather effect
+        weather = new StatusEffect("weather"){
+
+        };
+
         amberstriken = new CrystalStatusEffect("amberstriken"){{
             speedMultiplier = 0.35F;
             transitionDamage = 10f;
