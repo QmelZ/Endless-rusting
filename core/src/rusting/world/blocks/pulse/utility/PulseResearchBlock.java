@@ -48,8 +48,8 @@ public class PulseResearchBlock extends PulseBlock {
     }
 
     @Override
-    public boolean canBeBuilt() {
-        return PulseBlock.validCenter(player.team()) && super.canBeBuilt();
+    public boolean isHidden(){
+        return PulseBlock.validCenter(player.team()) || super.isHidden();
     }
 
     @Override

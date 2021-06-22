@@ -42,11 +42,11 @@ public class FieldBlockListDialog extends CustomBaseDialog {
     }
 
     public void refresh(Tile tile){
-        makeList(tile);
         if(isShown()) {
             hide();
-            show();
+            show(tile);
         }
+        else makeList(tile);
     }
 
     public void makeList(Seq<String> fieldNames, int threshold) {

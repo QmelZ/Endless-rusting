@@ -120,6 +120,12 @@ public class PulseBlock extends Block{
         ));
     }
 
+
+    @Override
+    public boolean isHidden(){
+        return (!PulseResearchBlock.researched(this, player.team()) && needsResearching) || super.isHidden();
+    }
+
     @Override
     public boolean canPlaceOn(Tile tile, Team team){
         //must have been researched, but for now checks if research center exists
