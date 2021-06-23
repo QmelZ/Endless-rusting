@@ -38,4 +38,8 @@ public class ItemScoreModule {
     public ItemScoreModule(){
 
     }
+
+    public String toString(){
+        return "scoremodule(" + item.name + "):" + score;
+    }
 }

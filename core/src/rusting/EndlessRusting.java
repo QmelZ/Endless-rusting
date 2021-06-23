@@ -12,7 +12,11 @@ import rusting.entities.holder.ItemScoreHolder;
 import rusting.graphics.Drawr;
 
 public class EndlessRusting extends Mod{
+
     public static String modname = "endless-rusting";
+
+    public static ItemScoreHolder itemScorer;
+
     private static final Seq<ContentList> contentLists = Seq.with(
         new RustingStatusEffects(),
         new RustingItems(),
@@ -26,13 +30,10 @@ public class EndlessRusting extends Mod{
     public EndlessRusting(){
         Events.on(EventType.ClientLoadEvent.class,
             e -> {
-                itemScorer = new ItemScoreHolder();
-                itemScorer.setupItems();
+                setup();
             }
         );
     }
-
-    public ItemScoreHolder itemScorer;
 
     @Override
     public void init(){
@@ -40,7 +41,14 @@ public class EndlessRusting extends Mod{
         Varsr.init();
         Varsr.ui.init();
     }
-    
+
+    //called after all content is loaded. can be called again, for debugging.
+    public void setup(){
+
+        Varsr.setup();
+
+    }
+
     @Override
     public void loadContent(){
         Drawr.setMethods();

@@ -1,6 +1,8 @@
 package rusting.entities.holder;
 
+import arc.math.Mathf;
 import arc.struct.*;
+import arc.util.Log;
 import mindustry.Vars;
 import mindustry.content.Items;
 import mindustry.entities.bullet.BulletType;
@@ -35,7 +37,7 @@ public class ItemScoreHolder {
     itemAmmoMultiplier = 1.25f
     ;
 
-    public ItemScoreModule getItemScore(Item item){
+    public ItemScoreModule getItemScoreModule(Item item){
         //return a new module in case none are found
         if(!mappedItems.contains(item)) setupItem(item);
         final ItemScoreModule[] returnModule = {new ItemScoreModule(item)};
@@ -63,24 +65,30 @@ public class ItemScoreHolder {
             }
             if(content instanceof GenericCrafter && ((GenericCrafter) content).outputItem != null){
                 placeholderItem = ((GenericCrafter) content).outputItem.item;
-                getItemScore(placeholderItem).score *= itemCrafterMultiplier/((GenericCrafter) content).outputItem.amount * 3;
+                getItemScoreModule(placeholderItem).score *= itemCrafterMultiplier/((GenericCrafter) content).outputItem.amount * 3;
                 ((GenericCrafter) content).consumes.each(c -> {
                     if(c.isOptional()) return;
                     if(c instanceof ConsumeItems){
                         for(ItemStack stack : ((ConsumeItems) c).items){
-                            getItemScore(stack.item).score += stack.amount/10 * itemRecipeMultiplier;
+
+                            ItemScoreModule module = getItemScoreModule(stack.item);
+
+                            getItemScoreModule(stack.item).score += Mathf.clamp(itemRecipeMultiplier * stack.amount/10, getItemScoreModule(((GenericCrafter) content).outputItem.item).score, 0);
                         }
                     }
                 });
             }
             else if(content instanceof Floor && ((Floor) content).itemDrop != null){
                 placeholderItem = ((Floor) content).itemDrop;
-                getItemScore(placeholderItem).score *= itemOreMultiplier * (content instanceof OreBlock ? ((OreBlock) content).oreThreshold + ((OreBlock) content).oreScale/15 + 1 : 0.85);
+                getItemScoreModule(placeholderItem).score *= itemOreMultiplier * (content instanceof OreBlock ? ((OreBlock) content).oreThreshold + ((OreBlock) content).oreScale/15 + 1 : 0.85);
             }
             else if(content instanceof Separator){
                 ItemStack[] resultItems = ((Separator) content).results;
                 for (ItemStack resultItem : resultItems) {
-                    getItemScore(resultItem.item).score += 1/resultItem.amount * itemCrafterMultiplier;
+
+                    ItemScoreModule module = getItemScoreModule(resultItem.item);
+
+                    module.score += itemCrafterMultiplier/resultItem.amount;
                 }
             }
             else if(content instanceof ItemTurret){
@@ -88,6 +96,7 @@ public class ItemScoreHolder {
                 OrderedMap.of();
             }
         });
+        itemScores.each(s -> Log.info(s));
     }
 
 }

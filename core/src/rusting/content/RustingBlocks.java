@@ -9,6 +9,7 @@ import mindustry.graphics.CacheLayer;
 import mindustry.graphics.Pal;
 import mindustry.type.*;
 import mindustry.world.Block;
+import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.StaticWall;
@@ -73,7 +74,9 @@ public class RustingBlocks implements ContentList{
         //healer turrets
         thrum, spikent,
         //pannel turrets
-        prikend, prsimdeome, prefraecon, pafleaver;
+        prikend, prsimdeome, prefraecon, pafleaver,
+        //bomerang related turrets
+        refract;
         
     public void load(){
         //region environment
@@ -567,6 +570,26 @@ public class RustingBlocks implements ContentList{
                 }}
             );
         }};
+        //endregion
+
+        //region boomerang
+
+        refract = new ItemTurret("refract"){{
+                requirements(Category.turret, with(Items.copper, 40, Items.graphite, 17));
+                ammo(
+                        Items.graphite, RustingBullets.craeLightRoundaboutLeft
+                );
+                shots = 5;
+                burstSpacing = 5;
+                reloadTime = 60f;
+                recoilAmount = 1.5f;
+                range = 235f;
+                inaccuracy = 15f;
+                shootCone = 15f;
+                health = 340;
+                shootSound = Sounds.bang;
+            }};
+
         //endregion
     }
 }

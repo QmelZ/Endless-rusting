@@ -128,6 +128,11 @@ public class Fxr{
         }
     }),
 
+    whoosh = new Effect(60, e -> {
+        float length = Mathf.randomSeed(e.id) * 8 * 3 + 5;
+        Lines.lineAngle(e.x, e.y, e.rotation, length);
+    }),
+
     pulseExplosion = new Effect(85f, e -> {
         float nonfinalSplosionRadius = 42 + 3 * e.fout();
         int clouds = 5;

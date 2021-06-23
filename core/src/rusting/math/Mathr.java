@@ -5,6 +5,11 @@ import arc.math.geom.Vec2;
 import arc.struct.Seq;
 
 public class Mathr {
+
+    public static float loopSin(double input, double mag, double scaling){
+        return (float) ((Math.sin(input) < 0 ? 1 + Math.sin(input * scaling) : Math.sin(input * scaling)) * mag);
+    }
+
     public static float helix(double helixes, float magnitude, float scaling, float base){
         scaling = Math.abs(scaling);
         return Mathf.sin((float) (base * helixes * 3.142)) * scaling * magnitude;

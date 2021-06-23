@@ -11,8 +11,7 @@ import mindustry.entities.bullet.*;
 import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Pal;
-import rusting.entities.bullet.BounceBulletType;
-import rusting.entities.bullet.ConsBulletType;
+import rusting.entities.bullet.*;
 import rusting.math.Mathr;
 import rusting.world.blocks.defense.turret.PanelTurret;
 
@@ -27,7 +26,9 @@ public class RustingBullets implements ContentList{
         //laser bolt bullets
         paveBolt,
         //essentualy small nukes
-        craeBalistorm;
+        craeBalistorm,
+        //boomerangs
+        craeLightRoundaboutRight, craeLightRoundaboutLeft;
     
     @Override
     public void load(){
@@ -55,7 +56,7 @@ public class RustingBullets implements ContentList{
             bounceEffect = Fx.hitLancer;
             status = RustingStatusEffects.macrosis;
             frontColor = Palr.pulseChargeStart;
-            backColor = Pal.lancerLaser.lerp(Pal.lightPyraFlame, 0.3f);
+            backColor = Palr.pulseBullet;
             trailColor = frontColor;
             trailEffect = Fx.lightningShoot;
             knockback = 1;
@@ -81,6 +82,8 @@ public class RustingBullets implements ContentList{
             drag = 0.005f;
             bounciness = 0.85;
         }};
+
+
 
         mhenShard = new BounceBulletType(6, 25, "bullet"){{
             consUpdate = new Cons<Bullet>() {
@@ -169,7 +172,7 @@ public class RustingBullets implements ContentList{
             hitEffect = Fx.casing3Double;
             bounceEffect = Fx.none;
             frontColor = Color.darkGray;
-            backColor = Color.purple.lerp(Color.black, 0.75f);
+            backColor = Palr.voidBullet;
             status = RustingStatusEffects.umbrafliction;
             statusDuration = 3600;
             width = 10;
@@ -194,7 +197,7 @@ public class RustingBullets implements ContentList{
             status = RustingStatusEffects.macotagus;
             statusDuration = 1440;
             frontColor = Palr.pulseChargeStart;
-            backColor = Pal.lancerLaser.lerp(Pal.lightPyraFlame, 0.3f);
+            backColor = Palr.pulseBullet;
             trailColor = frontColor;
             trailEffect = Fxr.craeWeaversResidue;
             trailChance = 0.15f;
@@ -280,7 +283,7 @@ public class RustingBullets implements ContentList{
             status = RustingStatusEffects.macotagus;
             statusDuration = 1440;
             frontColor = Palr.pulseChargeStart;
-            backColor = Pal.lancerLaser.lerp(Pal.lightPyraFlame, 0.3f);
+            backColor = Palr.pulseBullet;
             trailColor = frontColor;
             trailChance = 1f;
             weaveMag = 2;
@@ -293,6 +296,44 @@ public class RustingBullets implements ContentList{
             hitShake = 1f;
             hitSound = Sounds.explosion;
             knockback = -0.15f;
+        }};
+
+        craeLightRoundaboutRight = new BoomerangBulletType(2, 15, "endless-rusting-boomerang"){{
+            other = craeLightRoundaboutLeft;
+            width = 12;
+            height = 14;
+            lifetime = 300;
+            homingPower = 0.05f;
+            rotateMag = 3;
+            rotScaleMin = 0.3f;
+            homingPower = 0.01f;
+            rotateRight = true;
+            hitEffect = Fx.hitFuse;
+            despawnEffect = Fx.plasticburn;
+            status = RustingStatusEffects.macrosis;
+            frontColor = Palr.pulseChargeStart;
+            backColor = Palr.pulseChargeStart;
+            trailEffect = Fxr.whoosh;
+            drag = -0.001f;
+        }};
+
+        craeLightRoundaboutLeft = new BoomerangBulletType(2, 15, "endless-rusting-boomerang"){{
+            other = craeLightRoundaboutRight;
+            width = 12;
+            height = 14;
+            lifetime = 300;
+            homingPower = 0.05f;
+            rotateMag = 3;
+            rotScaleMin = 0.3f;
+            homingPower = 0.01f;
+            rotateRight = false;
+            hitEffect = Fx.hitFuse;
+            despawnEffect = Fx.plasticburn;
+            status = RustingStatusEffects.macrosis;
+            frontColor = Palr.pulseChargeStart;
+            backColor = Palr.pulseChargeEnd;
+            trailEffect = Fxr.whoosh;
+            drag = -0.001f;
         }};
     }
 }

@@ -94,8 +94,6 @@ public class DysfunctionalMonolith extends PulseBlock {
 
         public void triggerShootingMethods(){
 
-            Log.info(reload);
-
             if(!logicControlled()){
                 if((retargetTime >= 1 && (!validateTarget(target)) || lockonTime >= 1)) {
                     findTarget();

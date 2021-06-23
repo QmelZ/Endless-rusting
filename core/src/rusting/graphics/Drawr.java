@@ -28,7 +28,7 @@ public class Drawr {
 
     public static void setMethods(){
         if(Version.isAtLeast("126.3")){
-            Log.info("using latest methods");
+            Log.debug("using latest methods");
             try {
                 drawingMethod = Pixmap.class.getDeclaredMethod("draw", Pixmap.class, int.class, int.class, int.class, int.class, int.class, int.class);
                 flipMethod = Pixmap.class.getDeclaredMethod("flipX");
@@ -36,7 +36,7 @@ public class Drawr {
                 initializedMethods = true;
             }
             catch (NoSuchMethodException err){
-                Log.info("New Arc methods in Drawr #33 not suported!");
+                Log.err("New Arc methods in Drawr #33 not suported!");
             }
         }
         if(drawingMethod == null)
@@ -46,7 +46,7 @@ public class Drawr {
                 initializedMethods = true;
             }
             catch (NoSuchMethodException err){
-                Log.info("Old Arc methods in Drawr #44 not suported!");
+                Log.err("Old Arc methods in Drawr #44 not suported!");
             }
     }
 
@@ -117,7 +117,7 @@ public class Drawr {
 
         if(!initializedMethods) setMethods();
 
-        Log.info("making the region for " + unit.name);
+        Log.debug("making the region for " + unit.name);
 
         //create stencil which we can draw on
         Pixmap stencil;
@@ -257,9 +257,7 @@ public class Drawr {
     public static void drawPixmapUnitMount(Pixmap stencil, Pixmap map, int x, int y, int reverse){
             try {
                 try {
-                    Log.info("tryingdraw");
                     if(flipMethod != null) stencil = (Pixmap) flipMethod.invoke(stencil);
-                    Log.info("tryingdraw2");
                     if(drawingMethod != null) drawingMethod.invoke(
                             stencil,
                             map,
@@ -269,14 +267,13 @@ public class Drawr {
                             0,
                             map.getWidth(),
                             map.getHeight());
-                    Log.info("tryingdraw3");
                 }
                 catch (InvocationTargetException err) {
-                    Log.info("Invoking Methods in Drawr #275 not suported!");
+                    Log.err("Invoking Methods in Drawr #275 not suported!");
                 }
             }
             catch (IllegalAccessException erro){
-                Log.info("Unable to acces Methods Drawr #29!");
+                Log.err("Unable to acces Methods Drawr #29!");
             }
     }
 

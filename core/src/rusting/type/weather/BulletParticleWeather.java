@@ -74,19 +74,24 @@ public class BulletParticleWeather extends ParticleWeather {
                 unit.impulse(windx, windy);
             }
         }
-        int rnx = Mathf.random(1, Vars.world.tiles.width - 1);
-        int rny = Mathf.random(1, Vars.world.tiles.height - 1);
 
         double d = state.life < infinity ? 10 * Math.sin(state.life/(100 * 60)) : 10 * Mathf.sin(state.effectTimer/(200 * 60));
         double s = Mathf.clamp(Mathf.sin(state.effectTimer /(510 * 60)) * Mathf.clamp(state.intensity * 10, 0, 1) * 2, 0, 3);
         double chance = state.intensity >= 1.11 ? 1 : Mathf.clamp(s / 10 + Math.abs(Math.sin(d) * s / 10 + Math.sin(d * d * 0.1) * 0.5 - Math.sin(s) * 0.5), s / 4, s * 2 <= 0.5 ? 1 : 0.55);
-        if(!Vars.headless && Vars.world.buildWorld(rnx * 8, rny * 8) == null && Vars.world.tile(rnx, rny) != null && Mathf.chance(chance)){
-            rnx = rnx * 8;
-            rny = rny * 8;
-            if(Vars.world.tile(rnx/8, rny/8).block() == Blocks.air) {
-                if (Mathf.chance(dynamicSpawning ? chance * chanceSpawn: chanceSpawn)) {
-                    Call.createBullet(particleBullet, Team.derelict, (float) rnx + Mathf.random(randRange.x), (float) rny + Mathf.random(randRange.y), state.windVector.angle(), particleBullet.damage, (float) (chance * chance * 4), (float) 1);
-                    particleBullet.hitEffect.at(rnx, rny);
+        chance *= chanceSpawn;
+
+        int rnx = Mathf.random(1, Vars.world.tiles.width - 1);
+        int rny = Mathf.random(1, Vars.world.tiles.height - 1);
+
+        for(int i = 0; i < chance; i++){
+            if(!Vars.headless && Vars.world.buildWorld(rnx * 8, rny * 8) == null && Vars.world.tile(rnx, rny) != null && Mathf.chance(chance)){
+                rnx = rnx * 8;
+                rny = rny * 8;
+                if(Vars.world.tile(rnx/8, rny/8).block() == Blocks.air) {
+                    if (Mathf.chance(dynamicSpawning ? chance: chanceSpawn)) {
+                        Call.createBullet(particleBullet, Team.derelict, (float) rnx + Mathf.random(randRange.x), (float) rny + Mathf.random(randRange.y), state.windVector.angle(), particleBullet.damage, (float) (chance * chance * 4), (float) 1);
+                        particleBullet.hitEffect.at(rnx, rny);
+                    }
                 }
             }
         }

@@ -70,6 +70,7 @@ public class RustingWeathers implements ContentList{
             attrs.set(Attribute.water, 0.35f);
             attrs.set(Attribute.heat, -0.15f);
             attrs.set(Attribute.oil, -0.25f);
+            attrs.set(Attribute.spores, -0.45f);
         }};
     }
 }
