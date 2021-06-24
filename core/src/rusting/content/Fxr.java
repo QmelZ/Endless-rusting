@@ -128,9 +128,12 @@ public class Fxr{
         }
     }),
 
-    whoosh = new Effect(60, e -> {
-        float length = Mathf.randomSeed(e.id) * 8 * 3 + 5;
-        Lines.lineAngle(e.x, e.y, e.rotation, length);
+    whoosh = new Effect(15, e -> {
+        Draw.color(e.color, e.color, 1);
+        Draw.alpha(e.fout());
+        randLenVectors(e.id, 2, e.fin() * 6 + 5, e.rotation - 90, 2, (x, y) -> {
+            Lines.lineAngle(e.x, e.y, angle(x, y) - 90, e.fout() * e.fout() * 5);
+        });
     }),
 
     pulseExplosion = new Effect(85f, e -> {

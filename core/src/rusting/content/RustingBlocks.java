@@ -18,8 +18,7 @@ import mindustry.world.meta.BlockFlag;
 import rusting.entities.holder.PanelHolder;
 import rusting.entities.holder.ShootingPanelHolder;
 import rusting.world.blocks.BadExporterBlock;
-import rusting.world.blocks.defense.turret.HealerBeamTurret;
-import rusting.world.blocks.defense.turret.PanelTurret;
+import rusting.world.blocks.defense.turret.*;
 import rusting.world.blocks.environment.FixedOreBlock;
 import rusting.world.blocks.pulse.PulseBlock;
 import rusting.world.blocks.pulse.defense.DysfunctionalMonolith;
@@ -76,7 +75,7 @@ public class RustingBlocks implements ContentList{
         //pannel turrets
         prikend, prsimdeome, prefraecon, pafleaver,
         //bomerang related turrets
-        refract;
+        refract, diffract, reflect;
         
     public void load(){
         //region environment
@@ -575,20 +574,58 @@ public class RustingBlocks implements ContentList{
         //region boomerang
 
         refract = new ItemTurret("refract"){{
-                requirements(Category.turret, with(Items.copper, 40, Items.graphite, 17));
-                ammo(
-                        Items.graphite, RustingBullets.craeLightRoundaboutLeft
-                );
-                shots = 5;
-                burstSpacing = 5;
-                reloadTime = 60f;
-                recoilAmount = 1.5f;
-                range = 235f;
-                inaccuracy = 15f;
-                shootCone = 15f;
-                health = 340;
-                shootSound = Sounds.bang;
-            }};
+            requirements(Category.turret, with(Items.copper, 40, Items.graphite, 17));
+            ammo(
+                    Items.graphite, RustingBullets.craeLightRoundaboutLeft
+            );
+            shots = 5;
+            burstSpacing = 5;
+            reloadTime = 75f;
+            recoilAmount = 1.5f;
+            range = 135f;
+            inaccuracy = 15f;
+            shootCone = 15f;
+            health = 340;
+            shootSound = Sounds.bang;
+        }};
+
+        diffract = new ItemTurret("diffract"){{
+            requirements(Category.turret, with(Items.copper, 40, Items.graphite, 17));
+            ammo(
+                Items.graphite, RustingBullets.craeLightGlaive
+            );
+            size = 2;
+            shots = 1;
+
+            reloadTime = 120f;
+            recoilAmount = 1.5f;
+            range = 165f;
+            inaccuracy = 0;
+            shootCone = 15f;
+            health = 340;
+            shootSound = Sounds.bang;
+        }};
+
+        reflect = new BoomerangTurret("reflect"){{
+            requirements(Category.turret, with(Items.copper, 40, Items.graphite, 17));
+            ammo(
+                Items.graphite, RustingBullets.craeLightGlaiveLeft
+            );
+            size = 3;
+            shots = 8;
+            spread = 45;
+
+            burstSpacing = 7.5f;
+            shootLength = 11;
+            reloadTime = 60f;
+            recoilAmount = 0f;
+            range = 165f;
+            inaccuracy = 0;
+            shootCone = 360f;
+            rotateSpeed = 1;
+            health = 340;
+            shootSound = Sounds.bang;
+        }};
 
         //endregion
     }

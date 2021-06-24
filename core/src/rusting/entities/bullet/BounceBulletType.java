@@ -1,5 +1,6 @@
 package rusting.entities.bullet;
 
+import arc.Core;
 import arc.struct.Seq;
 import arc.util.Nullable;
 import mindustry.content.Fx;
@@ -43,12 +44,12 @@ public class BounceBulletType extends ConsBulletType {
     @Override
     public void update(Bullet b){
         super.update(b);
-        ((Seq<Trail>)b.data).each(t -> t.update(b.x, b.y));
+        if(Core.settings.getBool("drawtrails")) ((Seq<Trail>)b.data).each(t -> t.update(b.x, b.y));
     }
 
     @Override
     public void draw(Bullet b){
-        ((Seq<Trail>)b.data).each(t -> t.draw(trailColor, trailWidth * b.fout()));
+        if(Core.settings.getBool("drawtrails")) ((Seq<Trail>)b.data).each(t -> t.draw(trailColor, trailWidth * b.fout()));
         super.draw(b);
     }
 
@@ -69,7 +70,7 @@ public class BounceBulletType extends ConsBulletType {
             flipX = true;
             flipY = false;
         }
-        if (bounceCap == -1|| b.collided.size <= bounceCap){
+        if (bounceCap == -1 && b.collided.size <= bounceCap){
             if(flipX) b.vel.x *= -1 * bounciness;
             if (flipY) b.vel.y *= -1 * bounciness;
             bounceEffect.at(x, y, b.angleTo(x + b.vel.x, y + b.vel.y));
@@ -92,8 +93,10 @@ public class BounceBulletType extends ConsBulletType {
             flipX = true;
             flipY = false;
         }
-        if(flipX) b.vel.x *= -1 * bounciness;
-        if (flipY) b.vel.y *= -1 * bounciness;
-        bounceEffect.at(x, y, b.angleTo(build));
+        if (bounceCap == -1 && b.collided.size <= bounceCap) {
+            if (flipX) b.vel.x *= -1 * bounciness;
+            if (flipY) b.vel.y *= -1 * bounciness;
+            bounceEffect.at(x, y, b.angleTo(build));
+        }
     }
 }

@@ -1,22 +1,31 @@
 package rusting.content;
 
+import arc.Events;
 import arc.func.Cons;
+import arc.math.Angles;
 import arc.math.Mathf;
-import arc.util.Time;
-import arc.util.Tmp;
+import arc.struct.Seq;
+import arc.util.*;
+import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
 import mindustry.ctype.ContentList;
 import mindustry.entities.Units;
-import mindustry.gen.Unit;
+import mindustry.game.EventType.Trigger;
+import mindustry.gen.*;
 import mindustry.type.StatusEffect;
 import rusting.type.CrystalStatusEffect;
 import rusting.type.statusEffect.ConsStatusEffect;
 import rusting.type.statusEffect.SpreadingStatusEffect;
 
+//first time I'm doing this
+@SuppressWarnings("unchecked")
+
 public class RustingStatusEffects implements ContentList {
     public static StatusEffect
-            weather, amberstriken, umbrafliction, macrosis, macotagus, causticBurning;
+            weather, amberstriken, umbrafliction, macrosis, macotagus, causticBurning, shieldShatter, corruptShield;
+    public static Cons
+            corruptShieldCons;
 
     @Override
     public void load() {
@@ -115,6 +124,47 @@ public class RustingStatusEffects implements ContentList {
             };
 
         }};
+
+        shieldShatter = new ConsStatusEffect("shield-shatter"){{
+            speedMultiplier = 0.85f;
+            effect = Fx.generatespark;
+
+            updateCons = new Cons<Unit>() {
+
+                @Override
+                public void get(Unit unit) {
+                    if(unit.shield() > 0) unit.damage(Mathf.clamp(unit.shield(), 25/60, unit.shield()));
+                }
+            };
+        }};
+
+        corruptShield = new ConsStatusEffect("corrupt-shield"){{
+            speedMultiplier = 0.85f;
+            effect = Fxr.blackened;
+        }};
+
+        corruptShieldCons = new Cons() {
+            @Override
+            public void get(Object o) {
+
+                //iterate through all bullets
+                Groups.bullet.each(b -> {
+
+                    if(Vars.state.isPaused()) return;
+
+                    float range = 64;
+
+                    Seq<Unit> intUnits = Groups.unit.intersect(b.x - range, b.y - range, range * 2, range * 2);
+                    intUnits.each(u -> {
+                        if(!u.hasEffect(corruptShield)) return;
+                        b.vel.setAngle(Angles.moveToward(b.rotation(), u.angleTo(b), Mathf.floor(range - u.dst(b)) * Time.delta/30/intUnits.size));
+                    });
+                });
+
+            }
+        };
+
+        Events.on(Trigger.update.getClass(), corruptShieldCons);
 
     }
 }

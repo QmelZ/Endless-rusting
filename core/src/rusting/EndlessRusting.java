@@ -1,5 +1,6 @@
 package rusting;
 
+import arc.Core;
 import arc.Events;
 import arc.graphics.Color;
 import arc.struct.Seq;
@@ -16,6 +17,7 @@ public class EndlessRusting extends Mod{
     public static String modname = "endless-rusting";
 
     public static ItemScoreHolder itemScorer;
+    public static RustedSettingAdder settingAdder = new RustedSettingAdder();
 
     private static final Seq<ContentList> contentLists = Seq.with(
         new RustingStatusEffects(),
@@ -28,6 +30,9 @@ public class EndlessRusting extends Mod{
     );
 
     public EndlessRusting(){
+
+        Core.settings.defaults("drawtrails", true);
+
         Events.on(EventType.ClientLoadEvent.class,
             e -> {
                 setup();
@@ -44,9 +49,8 @@ public class EndlessRusting extends Mod{
 
     //called after all content is loaded. can be called again, for debugging.
     public void setup(){
-
         Varsr.setup();
-
+        settingAdder.init();
     }
 
     @Override
