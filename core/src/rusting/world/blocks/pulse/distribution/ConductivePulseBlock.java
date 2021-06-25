@@ -1,5 +1,6 @@
 package rusting.world.blocks.pulse.distribution;
 
+import arc.util.Time;
 import mindustry.world.meta.Stat;
 import rusting.world.blocks.pulse.PulseBlock;
 
@@ -34,7 +35,7 @@ public class ConductivePulseBlock extends PulseBlock {
                 reload = 0;
                 addPulseAdjacent();
             }
-            else reload += pulseEfficiency();
+            else reload += pulseEfficiency() * Time.delta;
         }
 
         public void addPulseAdjacent(){

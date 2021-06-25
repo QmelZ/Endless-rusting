@@ -1,9 +1,16 @@
 package rusting.type.weapons;
 
+import arc.math.Angles;
+import arc.math.Mathf;
+import arc.util.Time;
+import arc.util.Tmp;
+import mindustry.entities.Effect;
+import mindustry.entities.bullet.BulletType;
+import mindustry.entities.units.WeaponMount;
+import mindustry.gen.*;
 import mindustry.type.Weapon;
 
 public class MeleeWeapon extends Weapon {
-    /*
     //damage it does
     public float damage;
     //knockback the weapon has
@@ -22,14 +29,14 @@ public class MeleeWeapon extends Weapon {
         BulletType ammo = bullet;
         float lifeScl = ammo.scaleVelocity ? Mathf.clamp(Mathf.dst(shootX, shootY, aimX, aimY) / ammo.range()) : 1f;
 
-        sequenceNum = 0;
+        float[] sequenceNum = {0};
         if(delay){
             Angles.shotgun(shots, spacing, rotation, f -> {
-                Time.run(sequenceNum * shotDelay + firstShotDelay, () -> {
+                Time.run(sequenceNum[0] * shotDelay + firstShotDelay, () -> {
                     if(!unit.isAdded()) return;
                     mount.bullet = bullet(unit, shootX + unit.x - baseX, shootY + unit.y - baseY, f + Mathf.range(inaccuracy), lifeScl);
                 });
-                sequenceNum++;
+                sequenceNum[0]++;
             });
         }else{
             Angles.shotgun(shots, spacing, rotation, f -> mount.bullet = bullet(unit, shootX, shootY, f + Mathf.range(inaccuracy), lifeScl));
@@ -60,6 +67,13 @@ public class MeleeWeapon extends Weapon {
         unit.apply(shootStatus, shootStatusDuration);
     }
 
+    protected Bullet bullet(Unit unit, float shootX, float shootY, float angle, float lifescl){
+        float xr = Mathf.range(xRand);
 
-     */
+        return bullet.create(unit, unit.team,
+                shootX + Angles.trnsx(angle, 0, xr),
+                shootY + Angles.trnsy(angle, 0, xr),
+                angle, (1f - velocityRnd) + Mathf.random(velocityRnd), lifescl);
+    }
+
 }

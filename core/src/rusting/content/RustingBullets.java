@@ -2,7 +2,9 @@ package rusting.content;
 
 import arc.func.Cons;
 import arc.graphics.Color;
+import arc.math.Angles;
 import arc.math.Mathf;
+import arc.util.Time;
 import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.ctype.ContentList;
@@ -11,9 +13,12 @@ import mindustry.entities.bullet.*;
 import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Pal;
+import mindustry.world.blocks.defense.turrets.Turret.TurretBuild;
 import rusting.entities.bullet.*;
 import rusting.math.Mathr;
 import rusting.world.blocks.defense.turret.PanelTurret;
+
+import static rusting.content.RustingStatusEffects.*;
 
 public class RustingBullets implements ContentList{
     public static BulletType
@@ -28,8 +33,11 @@ public class RustingBullets implements ContentList{
         //essentualy small nukes
         craeBalistorm,
         //boomerangs
-        craeLightRoundaboutRight, craeLightRoundaboutLeft;
-    
+        craeLightRoundaboutRight, craeLightRoundaboutLeft,
+        craeLightGlaive, craeLightGlaiveRight,
+        craeLightGlaiveLeft,
+        denseLightRoundaboutLeft, denseLightRoundaboutRight;
+
     @Override
     public void load(){
 
@@ -217,6 +225,7 @@ public class RustingBullets implements ContentList{
             lifetime = 35;
             healPercent = 1f;
             shrinkX = 1;
+            trailLength = 8;
             collidesTeam = true;
             shootEffect = Fx.heal;
             hitEffect = Fx.plasticburn;
@@ -298,42 +307,199 @@ public class RustingBullets implements ContentList{
             knockback = -0.15f;
         }};
 
-        craeLightRoundaboutRight = new BoomerangBulletType(2, 15, "endless-rusting-boomerang"){{
-            other = craeLightRoundaboutLeft;
-            width = 12;
-            height = 14;
-            lifetime = 300;
+        denseLightRoundaboutRight =  new BoomerangBulletType(1, 8, "endless-rusting-boomerang"){{
+
+            other = denseLightRoundaboutLeft;
+            width = 16;
+            height = 19;
+            lifetime = 120;
             homingPower = 0.05f;
-            rotateMag = 3;
-            rotScaleMin = 0.3f;
-            homingPower = 0.01f;
+            homingRange = 45f;
+            trailWidth = 0;
+            trailLength = 0;
+            rotateMag = 1;
+            rotateVisualMag = 0.6f;
+            rotScaleMin = 0f;
+            rotScaleMax = 0.7f;
             rotateRight = true;
+            reverseBoomerangRotScale = true;
             hitEffect = Fx.hitFuse;
-            despawnEffect = Fx.plasticburn;
-            status = RustingStatusEffects.macrosis;
+            despawnEffect = Fx.smeltsmoke;
             frontColor = Palr.pulseChargeStart;
-            backColor = Palr.pulseChargeStart;
-            trailEffect = Fxr.whoosh;
+            backColor = Palr.pulseChargeEnd;
+            trailEffect = Fx.plasticburn;
+            status = shieldShatter;
+            trailChance = 0.35f;
             drag = -0.001f;
         }};
 
-        craeLightRoundaboutLeft = new BoomerangBulletType(2, 15, "endless-rusting-boomerang"){{
-            other = craeLightRoundaboutRight;
+        denseLightRoundaboutLeft = new BoomerangBulletType(1, 11, "endless-rusting-boomerang"){{
+
+            other = denseLightRoundaboutRight;
+
+            width = 16;
+            height = 19;
+            lifetime = 120;
+            homingPower = 0.05f;
+            homingRange = 45f;
+            trailWidth = 0;
+            trailLength = 0;
+            rotateMag = 1;
+            rotateVisualMag = 0.6f;
+            rotScaleMin = 0f;
+            rotScaleMax = 0.7f;
+            rotateRight = false;
+            reverseBoomerangRotScale = true;
+            hitEffect = Fx.hitFuse;
+            despawnEffect = Fx.smeltsmoke;
+            frontColor = Palr.pulseChargeStart;
+            backColor = Palr.pulseChargeEnd;
+            trailEffect = Fx.plasticburn;
+            status = shieldShatter;
+            trailChance = 0.35f;
+            drag = -0.001f;
+        }};
+
+        craeLightRoundaboutRight = new BoomerangBulletType(2, 11, "endless-rusting-boomerang"){{
+
+            other = craeLightRoundaboutLeft;
+
+            reloadMultiplier = 1.35f;
+
             width = 12;
             height = 14;
-            lifetime = 300;
+            lifetime = 150;
             homingPower = 0.05f;
+            homingRange = 45f;
             rotateMag = 3;
-            rotScaleMin = 0.3f;
-            homingPower = 0.01f;
-            rotateRight = false;
+            rotScaleMin = 0f;
+            rotScaleMax = 0.7f;
+            rotateRight = true;
+            reverseBoomerangRotScale = true;
             hitEffect = Fx.hitFuse;
             despawnEffect = Fx.plasticburn;
-            status = RustingStatusEffects.macrosis;
+            frontColor = Palr.pulseChargeStart;
+            backColor = Palr.pulseChargeStart;
+            trailEffect = Fxr.whoosh;
+            status = shieldShatter;
+            trailChance = 0.35f;
+            drag = -0.001f;
+        }};
+
+        craeLightRoundaboutLeft = new BoomerangBulletType(2, 8, "endless-rusting-boomerang"){{
+
+            other = craeLightRoundaboutRight;
+
+            reloadMultiplier = 1.35f;
+
+            width = 12;
+            height = 14;
+            lifetime = 150;
+            homingPower = 0.05f;
+            homingRange = 45f;
+            rotateMag = 3;
+            rotScaleMin = 0f;
+            rotScaleMax = 0.7f;
+            rotateRight = false;
+            reverseBoomerangRotScale = true;
+            hitEffect = Fx.hitFuse;
+            despawnEffect = Fx.plasticburn;
             frontColor = Palr.pulseChargeStart;
             backColor = Palr.pulseChargeEnd;
             trailEffect = Fxr.whoosh;
+            status = shieldShatter;
+            trailChance = 0.35f;
             drag = -0.001f;
         }};
+
+        craeLightGlaive = new BoomerangBulletType(1, 25, "endless-rusting-glave"){{
+
+            homingPower = 0.025f;
+
+            consUpdate = new Cons<Bullet>() {
+                @Override
+                public void get(Bullet bullet) {
+                    if(bullet.owner instanceof TurretBuild) bullet.vel.setAngle(Angles.moveToward(bullet.rotation(), bullet.angleTo(((TurretBuild) bullet.owner).targetPos.x, ((TurretBuild) bullet.owner).targetPos.y), homingPower * Time.delta * 100f));
+                }
+            };
+
+            consHit = new Cons<Bullet>() {
+                @Override
+                public void get(Bullet bullet) {
+                    for(int i = 0; i <  5; i++){
+                        ((BoomerangBulletType) craeLightRoundaboutLeft).createBoomerang(bullet.owner, bullet.team, bullet.x, bullet.y, i * 72 + bullet.rotation(), craeLightRoundaboutLeft.damage/2, 0.85f, 1, 0);
+                        ((BoomerangBulletType) craeLightRoundaboutRight).createBoomerang(bullet.owner, bullet.team, bullet.x, bullet.y, i * 72 + bullet.rotation(), craeLightRoundaboutRight.damage/2, 0.45f, 1, 0);
+                    }
+                }
+            };
+
+            consDespawned = consHit;
+
+            shrinkX = 1.5f;
+            shrinkY = 1.5f;
+            width = 20;
+            height = 20;
+            lifetime = 150;
+            pierceCap = 1;
+            rotateMag = 3;
+            rotScaleMin = 0f;
+            rotScaleMax = 0f;
+            spin = 1;
+            hitEffect = Fx.hitFuse;
+            despawnEffect = Fx.plasticburn;
+            frontColor = Palr.pulseChargeStart;
+            backColor = Palr.pulseChargeEnd;
+            status = shieldShatter;
+            drag = -0.001f;
+
+        }};
+
+        craeLightGlaiveRight = new BoomerangBulletType(2, 15, "endless-rusting-glave"){{
+            other = craeLightGlaiveLeft;
+
+            width = 9;
+            height = 9;
+            lifetime = 165;
+            homingPower = 0.025f;
+            shrinkX = 0;
+            shrinkY = 0;
+            bounceCap = 0;
+            rotateMag = 5;
+            rotScaleMin = 0.2f;
+            rotScaleMax = 0.2f;
+            stayInRange = true;
+            hitEffect = Fx.hitFuse;
+            despawnEffect = Fx.plasticburn;
+            frontColor = Palr.pulseChargeStart;
+            backColor = Palr.pulseChargeEnd;
+            status = shieldShatter;
+            drag = -0.001f;
+        }};
+
+        craeLightGlaiveLeft = new BoomerangBulletType(2, 15, "endless-rusting-glave"){{
+            other = craeLightGlaiveRight;
+
+            width = 9;
+            height = 9;
+            lifetime = 165;
+            homingPower = 0.025f;
+            shrinkX = 0;
+            shrinkY = 0;
+            bounceCap = 0;
+            rotateMag = 5;
+            rotScaleMin = 0.2f;
+            rotScaleMax = 0.2f;
+            stayInRange = true;
+            hitEffect = Fx.hitFuse;
+            despawnEffect = Fx.plasticburn;
+            frontColor = Palr.pulseChargeStart;
+            backColor = Palr.pulseChargeEnd;
+            status = shieldShatter;
+            statusDuration = 60;
+            drag = -0.001f;
+        }};
+
+        UnitTypes.gamma.weapons.get(0).bullet = craeLightRoundaboutLeft;
+
     }
 }

@@ -1,22 +1,32 @@
 package rusting.content;
 
+import arc.Events;
 import arc.func.Cons;
+import arc.math.Angles;
 import arc.math.Mathf;
-import arc.util.Time;
-import arc.util.Tmp;
+import arc.struct.FloatSeq;
+import arc.struct.Seq;
+import arc.util.*;
+import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
 import mindustry.ctype.ContentList;
 import mindustry.entities.Units;
-import mindustry.gen.Unit;
+import mindustry.game.EventType.Trigger;
+import mindustry.gen.*;
 import mindustry.type.StatusEffect;
 import rusting.type.CrystalStatusEffect;
 import rusting.type.statusEffect.ConsStatusEffect;
 import rusting.type.statusEffect.SpreadingStatusEffect;
 
+//first time I'm doing this
+@SuppressWarnings("unchecked")
+
 public class RustingStatusEffects implements ContentList {
     public static StatusEffect
-            weather, amberstriken, umbrafliction, macrosis, macotagus, causticBurning;
+            weather, amberstriken, umbrafliction, macrosis, macotagus, causticBurning, shieldShatter, corruptShield;
+    public static Cons
+            corruptShieldCons;
 
     @Override
     public void load() {
@@ -115,6 +125,74 @@ public class RustingStatusEffects implements ContentList {
             };
 
         }};
+
+        shieldShatter = new ConsStatusEffect("shield-shatter"){{
+            speedMultiplier = 0.85f;
+            effect = Fx.generatespark;
+
+            updateCons = new Cons<Unit>() {
+
+                @Override
+                public void get(Unit unit) {
+                    if(unit.shield() > 0) unit.damage(Mathf.clamp(unit.shield(), 25/60, unit.shield()));
+                }
+            };
+        }};
+
+        corruptShield = new ConsStatusEffect("corrupt-shield"){{
+            speedMultiplier = 0.85f;
+            effect = Fxr.blackened;
+        }};
+
+        corruptShieldCons = new Cons() {
+            @Override
+            public void get(Object o) {
+
+                //iterate through all bullets
+                Groups.bullet.each(b -> {
+
+                    if(Vars.state.isPaused()) return;
+                    if(!b.type.reflectable) return;
+                    float range = 64;
+
+                    Seq<Unit> intUnits = Groups.unit.intersect(b.x - range, b.y - range, range * 2, range * 2);
+                    FloatSeq forces = new FloatSeq();
+                    float[] greatestDistance = {0};
+
+                    intUnits.each(u -> {
+
+                        if(!u.hasEffect(corruptShield) || u.team != b.team) return;
+
+                        float distance = u.dst(b);
+                        if(distance > greatestDistance[0]) greatestDistance[0] = distance;
+                    });
+
+                    intUnits.each(u -> {
+
+                        if(!u.hasEffect(corruptShield) || u.team != b.team) return;
+
+                        float distance = u.dst(b);
+                        float force = Mathf.floor(range - u.dst(b)) * distance/greatestDistance[0];
+                        forces.add(force);
+                    });
+
+                    int[] index = {0};
+
+                    intUnits.each(u -> {
+
+                        if(!u.hasEffect(corruptShield) || u.team != b.team) return;
+
+                        b.vel.setAngle(Angles.moveToward(b.rotation(), u.angleTo(b), forces.get(index[0]) * Time.delta/30));
+                        index[0]++;
+                        Log.info(u);
+                        Log.info(u.hasEffect(corruptShield));
+                    });
+                });
+
+            }
+        };
+
+        Events.on(Trigger.update.getClass(), corruptShieldCons);
 
     }
 }

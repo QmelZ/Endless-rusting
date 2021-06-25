@@ -154,7 +154,7 @@ public class PulseNode extends PulseBlock {
                 interactConnected();
                 reload = 0;
             }
-            else reload += pulseEfficiency();
+            else reload += pulseEfficiency() * Time.delta;
         }
 
         public void interactConnected(){

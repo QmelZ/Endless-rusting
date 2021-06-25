@@ -18,12 +18,9 @@ import mindustry.world.meta.BlockFlag;
 import rusting.entities.holder.PanelHolder;
 import rusting.entities.holder.ShootingPanelHolder;
 import rusting.world.blocks.BadExporterBlock;
-import rusting.world.blocks.defense.turret.HealerBeamTurret;
-import rusting.world.blocks.defense.turret.PanelTurret;
+import rusting.world.blocks.defense.turret.*;
 import rusting.world.blocks.environment.FixedOreBlock;
-import rusting.world.blocks.pulse.PulseBlock;
-import rusting.world.blocks.pulse.defense.DysfunctionalMonolith;
-import rusting.world.blocks.pulse.defense.PulseLandmine;
+import rusting.world.blocks.pulse.defense.*;
 import rusting.world.blocks.pulse.distribution.*;
 import rusting.world.blocks.pulse.production.PulseGenerator;
 import rusting.world.blocks.pulse.unit.PulseReconstructor;
@@ -76,7 +73,7 @@ public class RustingBlocks implements ContentList{
         //pannel turrets
         prikend, prsimdeome, prefraecon, pafleaver,
         //bomerang related turrets
-        refract;
+        refract, diffract, reflect;
         
     public void load(){
         //region environment
@@ -273,23 +270,23 @@ public class RustingBlocks implements ContentList{
             canOverload = false;
         }};
 
-        pulseBarrier = new PulseBlock("pulse-barrier"){{
+        pulseBarrier = new PulseBarrier("pulse-barrier"){{
             requirements(Category.defense, with(Items.copper, 8, Items.graphite, 6, Items.titanium, 5));
             centerResearchRequirements = with(Items.copper, 115, Items.coal, 65, Items.titanium, 30);
             size = 1;
             health = 410 * size * size;
             powerLoss = 0.000035f;
-            pulseStorage = 35;
+            pulseStorage = 45;
             canOverload = false;
         }};
 
-        pulseBarrierLarge = new PulseBlock("pulse-barrier-large"){{
+        pulseBarrierLarge = new PulseBarrier("pulse-barrier-large"){{
             requirements(Category.defense, with(Items.copper, 32, Items.graphite, 24, Items.titanium, 20));
             centerResearchRequirements = with(Items.copper, 450, Items.graphite, 75, Items.titanium, 120);
             size = 2;
             health = 410 * size * size;
             powerLoss = 0.000035f;
-            pulseStorage = 35;
+            pulseStorage = 135;
             canOverload = false;
         }};
 
@@ -575,20 +572,67 @@ public class RustingBlocks implements ContentList{
         //region boomerang
 
         refract = new ItemTurret("refract"){{
-                requirements(Category.turret, with(Items.copper, 40, Items.graphite, 17));
-                ammo(
-                        Items.graphite, RustingBullets.craeLightRoundaboutLeft
-                );
-                shots = 5;
-                burstSpacing = 5;
-                reloadTime = 60f;
-                recoilAmount = 1.5f;
-                range = 235f;
-                inaccuracy = 15f;
-                shootCone = 15f;
-                health = 340;
-                shootSound = Sounds.bang;
-            }};
+            requirements(Category.turret, with(Items.copper, 40, Items.graphite, 17));
+            ammo(
+                    Items.graphite, RustingBullets.denseLightRoundaboutLeft,
+                    RustingItems.melonaleum, RustingBullets.craeLightRoundaboutLeft
+
+            );
+
+            health = 340;
+
+            shots = 5;
+            burstSpacing = 5;
+            reloadTime = 105f;
+            recoilAmount = 1.5f;
+            range = 135f;
+            inaccuracy = 15f;
+            shootCone = 15f;
+            shootSound = Sounds.bang;
+        }};
+
+        diffract = new ItemTurret("diffract"){{
+            requirements(Category.turret, with(Items.copper, 40, Items.graphite, 17));
+            ammo(
+                Items.graphite, RustingBullets.craeLightGlaive
+            );
+
+            health = 960;
+
+            size = 2;
+            shots = 1;
+
+            reloadTime = 120f;
+            recoilAmount = 1.5f;
+            range = 165f;
+            inaccuracy = 0;
+            shootCone = 15f;
+            shootSound = Sounds.bang;
+        }};
+
+        reflect = new BoomerangTurret("reflect"){{
+            requirements(Category.turret, with(Items.copper, 40, Items.graphite, 17));
+            ammo(
+                Items.graphite, RustingBullets.craeLightGlaiveLeft,
+                RustingItems.melonaleum, RustingBullets.craeLightGlaive
+            );
+
+            health = 1460;
+
+            size = 3;
+            shots = 8;
+            spread = 45;
+
+            burstSpacing = 7.5f;
+            shootLength = 11;
+            reloadTime = 60f;
+            recoilAmount = 0f;
+            range = 165f;
+            inaccuracy = 0;
+            shootCone = 360f;
+            rotateSpeed = 1;
+            shootSound = Sounds.bang;
+        }};
 
         //endregion
     }

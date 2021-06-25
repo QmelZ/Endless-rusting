@@ -77,8 +77,7 @@ public class BulletParticleWeather extends ParticleWeather {
 
         double d = state.life < infinity ? 10 * Math.sin(state.life/(100 * 60)) : 10 * Mathf.sin(state.effectTimer/(200 * 60));
         double s = Mathf.clamp(Mathf.sin(state.effectTimer /(510 * 60)) * Mathf.clamp(state.intensity * 10, 0, 1) * 2, 0, 3);
-        double chance = state.intensity >= 1.11 ? 1 : Mathf.clamp(s / 10 + Math.abs(Math.sin(d) * s / 10 + Math.sin(d * d * 0.1) * 0.5 - Math.sin(s) * 0.5), s / 4, s * 2 <= 0.5 ? 1 : 0.55);
-        chance *= chanceSpawn;
+        double chance = state.intensity >= 1.11 ? 1 : Mathf.clamp((s / 10 + Math.abs(Math.sin(d) * s / 10 + Math.sin(d * d * 0.1) * 0.5 - Math.sin(s) * 0.5)) * chanceSpawn, s / 4, s * 2 <= 0.5 ? 1 : 0.55);
 
         int rnx = Mathf.random(1, Vars.world.tiles.width - 1);
         int rny = Mathf.random(1, Vars.world.tiles.height - 1);
