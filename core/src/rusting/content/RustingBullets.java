@@ -461,6 +461,7 @@ public class RustingBullets implements ContentList{
             height = 9;
             lifetime = 165;
             homingPower = 0.025f;
+            pierceCap = -1;
             shrinkX = 0;
             shrinkY = 0;
             bounceCap = 0;
@@ -483,6 +484,7 @@ public class RustingBullets implements ContentList{
             height = 9;
             lifetime = 165;
             homingPower = 0.025f;
+            pierceCap = -1;
             shrinkX = 0;
             shrinkY = 0;
             bounceCap = 0;
@@ -499,7 +501,7 @@ public class RustingBullets implements ContentList{
             drag = -0.001f;
         }};
 
-        UnitTypes.gamma.weapons.get(0).bullet = craeLightRoundaboutLeft;
+        UnitTypes.gamma.weapons.get(0).bullet = craeLightGlaiveLeft;
 
     }
 }

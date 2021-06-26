@@ -4,7 +4,6 @@ import arc.func.Prov;
 import arc.struct.ObjectIntMap;
 import arc.struct.ObjectMap.Entry;
 import mindustry.ctype.ContentList;
-import mindustry.entities.abilities.StatusFieldAbility;
 import mindustry.gen.EntityMapping;
 import mindustry.gen.Entityc;
 import mindustry.type.Weapon;
@@ -136,8 +135,7 @@ public class RustingUnits implements ContentList{
             constructor = CraeUnitEntity::new;
 
             abilities.add(
-                    new UpkeeperFieldAbility(5.5f, 175, 55, 7f),
-                    new StatusFieldAbility(RustingStatusEffects.corruptShield, 3600, 360, 50)
+                    new UpkeeperFieldAbility(5.5f, 175, 55, 7f)
             );
             weapons.add(
                 new Weapon("none") {{
