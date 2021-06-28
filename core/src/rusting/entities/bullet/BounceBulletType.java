@@ -59,8 +59,10 @@ public class BounceBulletType extends ConsBulletType {
         float difX = Math.abs(b.vel.x - x), difY = Math.abs(b.vel.y - y);
         unit = (Unit)teamc;
         if (bounceCap == -1 || b.collided.size <= bounceCap){
+            float rotation = b.vel.angle();
+            b.vel.setAngle(360 + rotation - (rotation - b.angleTo(unit)) * 2);
             b.vel.rotate(180);
-            b.vel.setAngle((b.rotation() + b.rotation() - b.angleTo(unit)) * 2);
+            b.vel.add(unit.vel);
             bounceEffect.at(x, y, b.angleTo(x + b.vel.x, y + b.vel.y));
         }
     }
@@ -82,8 +84,6 @@ public class BounceBulletType extends ConsBulletType {
             flipY = false;
         }
         if (bounceCap == -1 || b.collided.size <= bounceCap) {
-            Log.info(b.x);
-            Log.info(b.y);
             if (flipX) {
                 b.vel.x *= -1 * bounciness;
                 //check if bullet is inside block
@@ -98,9 +98,6 @@ public class BounceBulletType extends ConsBulletType {
                     b.y += b.y - build.y > 0 ? build.block.size * 4 - difY + b.hitSize + 1 : (build.block.size * 4 - difY + b.hitSize + 1) * -1;
                 }
             }
-
-            Log.info(b.x);
-            Log.info(b.y);
 
             bounceEffect.at(x, y, b.angleTo(build));
         }

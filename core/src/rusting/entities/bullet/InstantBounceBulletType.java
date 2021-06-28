@@ -63,13 +63,13 @@ public class InstantBounceBulletType extends BounceBulletType implements instant
         if(targ != null) {
 
             b.fdata -= b.dst(targ);
-            
+
             if(targ instanceof Unit) {
-                b.rotation(b.rotation() + 180);
                 b.vel.setAngle((b.rotation() + b.rotation() - b.angleTo(targ)) * 2);
+                b.vel.rotate(180);
                 Unit target = (Unit) targ;
-                x = target.x + Angles.trnsx(b.angleTo(targ), target.hitSize);
-                y = target.y + Angles.trnsy(b.angleTo(targ), target.hitSize);
+                x = target.x + Angles.trnsx(b.angleTo(targ), target.hitSize + 1);
+                y = target.y + Angles.trnsy(b.angleTo(targ), target.hitSize + 1);
                 b.fdata *= bounciness;
 
             }

@@ -6,7 +6,6 @@ import arc.graphics.Pixmap;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
-import arc.util.Log;
 import arc.util.Time;
 import mindustry.Vars;
 import mindustry.content.Blocks;
@@ -94,11 +93,6 @@ public class BulletParticleWeather extends ParticleWeather {
                 }
             }
         }
-
-        Log.info("d: " + d);
-        Log.info("s: " + s);
-        Log.info("chance: " + chance);
-        Log.info("effect timer: " + state.effectTimer);
 
         if(state.life < fadeTime) state.opacity = (float) Math.min((state.life / fadeTime) * 25 * chance * chance, state.opacity);
         else state.opacity = Mathf.lerpDelta(state.opacity, (float) (25 * chance * chance), (float) 0.004);

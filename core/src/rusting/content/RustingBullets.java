@@ -41,11 +41,10 @@ public class RustingBullets implements ContentList{
     @Override
     public void load(){
 
-        fossilShard = new InstantBounceBulletType(4, 9, "bullet"){{
+        fossilShard = new BounceBulletType(4, 9, "bullet"){{
             width = 7;
             height = 8;
             lifetime = 54;
-            length = 216;
             hitEffect = Fx.hitFuse;
             despawnEffect = Fx.plasticburn;
             bounceEffect = Fx.blockExplosionSmoke;
