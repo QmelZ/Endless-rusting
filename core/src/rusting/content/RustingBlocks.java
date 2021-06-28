@@ -478,7 +478,7 @@ public class RustingBlocks implements ContentList{
             shootType = RustingBullets.fossilShard;
             shots = 2;
             burstSpacing = 15f;
-            inaccuracy = 2;
+            //inaccuracy = 2;
         }};
 
         prsimdeome = new PanelTurret("prsimdeome"){{

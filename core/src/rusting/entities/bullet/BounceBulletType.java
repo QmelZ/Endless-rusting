@@ -2,6 +2,7 @@ package rusting.entities.bullet;
 
 import arc.Core;
 import arc.struct.Seq;
+import arc.util.Log;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
@@ -81,8 +82,26 @@ public class BounceBulletType extends ConsBulletType {
             flipY = false;
         }
         if (bounceCap == -1 || b.collided.size <= bounceCap) {
-            if (flipX) b.vel.x *= -1 * bounciness;
-            if (flipY) b.vel.y *= -1 * bounciness;
+            Log.info(b.x);
+            Log.info(b.y);
+            if (flipX) {
+                b.vel.x *= -1 * bounciness;
+                //check if bullet is inside block
+                if(difX < build.block.size * 4){
+                    //translate to edge of block that bullet is closest to + an ofset
+                    b.x += b.x - build.x > 0 ? build.block.size * 4 - difX + b.hitSize + 1: (build.block.size * 4 - difX + b.hitSize + 1) * -1;
+                }
+            }
+            if (flipY) {
+                b.vel.y *= -1 * bounciness;
+                if(difY < build.block.size * 4){
+                    b.y += b.y - build.y > 0 ? build.block.size * 4 - difY + b.hitSize + 1 : (build.block.size * 4 - difY + b.hitSize + 1) * -1;
+                }
+            }
+
+            Log.info(b.x);
+            Log.info(b.y);
+
             bounceEffect.at(x, y, b.angleTo(build));
         }
     }

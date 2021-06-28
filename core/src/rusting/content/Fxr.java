@@ -214,5 +214,28 @@ public class Fxr{
             Fill.circle(e.x + x,e.y + y, splosionRadius/7.25f);
             Drawf.light(Team.derelict, e.x + x, e.y + y, splosionRadius/5.25f, Palr.pulseChargeEnd, e.fout() * 0.65f);
         });
+    }),
+
+    lineCircles = new Effect(335f, e -> {
+        Draw.color(e.color);
+        float[][][] arrays = ((float[][][]) e.data);
+        float[][] params = arrays[0];
+        //first array contains params, second array contains points
+        float width = params[0][0];
+        float circleRadius = params[0][1];
+        float tickThreshold = params[1][0];
+        float alpha = params[1][1];
+        float[][] points = arrays[1];
+
+        for (int i = 0; i < points[0].length - 1; i++) {
+            int ic = i + 1;
+            float alphaDraw = Mathf.clamp(e.fin() * 335f/tickThreshold * ic, 0, 1);
+            float alphaDrawOut = Mathf.clamp(tickThreshold * (points[0].length - ic)/(e.fin() * 335f), 0, 1);
+            Draw.alpha(Math.min(alphaDraw, alphaDrawOut) * alpha);
+            Lines.stroke(width);
+            Lines.line(points[0][i], points[1][i], points[0][i+ 1], points[1][i + 1]);
+            Fill.circle(points[0][i + 1], points[1][i + 1], circleRadius);
+        }
     });
+
 }

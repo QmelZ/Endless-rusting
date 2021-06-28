@@ -13,11 +13,10 @@ import mindustry.content.StatusEffects;
 import mindustry.ctype.ContentList;
 import mindustry.entities.Units;
 import mindustry.game.EventType.Trigger;
-import mindustry.gen.*;
+import mindustry.gen.Groups;
+import mindustry.gen.Unit;
 import mindustry.type.StatusEffect;
-import rusting.type.CrystalStatusEffect;
-import rusting.type.statusEffect.ConsStatusEffect;
-import rusting.type.statusEffect.SpreadingStatusEffect;
+import rusting.type.statusEffect.*;
 
 //first time I'm doing this
 @SuppressWarnings("unchecked")

@@ -18,7 +18,7 @@ import rusting.entities.bullet.*;
 import rusting.math.Mathr;
 import rusting.world.blocks.defense.turret.PanelTurret;
 
-import static rusting.content.RustingStatusEffects.*;
+import static rusting.content.RustingStatusEffects.shieldShatter;
 
 public class RustingBullets implements ContentList{
     public static BulletType
@@ -41,10 +41,11 @@ public class RustingBullets implements ContentList{
     @Override
     public void load(){
 
-        fossilShard = new BounceBulletType(4, 9, "bullet"){{
+        fossilShard = new InstantBounceBulletType(4, 9, "bullet"){{
             width = 7;
             height = 8;
             lifetime = 54;
+            length = 216;
             hitEffect = Fx.hitFuse;
             despawnEffect = Fx.plasticburn;
             bounceEffect = Fx.blockExplosionSmoke;
@@ -426,10 +427,16 @@ public class RustingBullets implements ContentList{
             consHit = new Cons<Bullet>() {
                 @Override
                 public void get(Bullet bullet) {
+                    float[][] points = {{0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}};
+                    float[][] params = {{2.5f, 3}, {25, 1}};
                     for(int i = 0; i <  5; i++){
                         ((BoomerangBulletType) craeLightRoundaboutLeft).createBoomerang(bullet.owner, bullet.team, bullet.x, bullet.y, i * 72 + bullet.rotation(), craeLightRoundaboutLeft.damage/2, 0.85f, 1, 0);
                         ((BoomerangBulletType) craeLightRoundaboutRight).createBoomerang(bullet.owner, bullet.team, bullet.x, bullet.y, i * 72 + bullet.rotation(), craeLightRoundaboutRight.damage/2, 0.45f, 1, 0);
+                        points[0][i] = bullet.x + Angles.trnsx(i * 72 + bullet.rotation(), 0, 12);
+                        points[1][i] = bullet.y + Angles.trnsy(i * 72 + bullet.rotation(), 0, 12);
                     }
+                    float[][][] data = {params, points};
+                    Fxr.lineCircles.at(bullet.x, bullet.y, 0, Palr.pulseBullet, data);
                 }
             };
 

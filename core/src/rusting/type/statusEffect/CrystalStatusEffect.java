@@ -1,4 +1,4 @@
-package rusting.type;
+package rusting.type.statusEffect;
 
 import arc.Core;
 import arc.graphics.Blending;
@@ -13,7 +13,6 @@ import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.type.Weapon;
-import rusting.type.statusEffect.ConsStatusEffect;
 
 public class CrystalStatusEffect extends ConsStatusEffect {
     public TextureRegion crystalRegion;
@@ -41,11 +40,14 @@ public class CrystalStatusEffect extends ConsStatusEffect {
     @Override
     public void draw(Unit unit) {
         super.draw(unit);
+
         Draw.reset();
         Draw.color(drawColor, Color.white, (float) (Mathf.absin(Time.time, 1) * 0.45 + 0.35));
         Draw.z(Mathf.lerpDelta(Layer.groundUnit, Layer.flyingUnit, unit.elevation) + 0.1f);
         Draw.alpha((float) (Mathf.absin(Time.time, 1) * 0.45 + 0.35));
         Draw.rect(crystalRegion, unit.x, unit.y, unit.type.hitSize * 128/crystalRegion.width, unit.type.hitSize * 128/crystalRegion.height, unit.rotation);
+
+        Draw.alpha(1);
 
         Draw.color(crystalDrawColor, crystalDrawColor, 1);
         Draw.rect(unit.type.region, unit.x, unit.y, unit.rotation - 90);
