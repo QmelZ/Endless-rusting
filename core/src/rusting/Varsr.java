@@ -3,6 +3,7 @@ package rusting;
 import arc.assets.Loadable;
 import arc.struct.Seq;
 import arc.util.Log;
+import mindustry.content.Blocks;
 import rusting.entities.holder.ItemScoreHolder;
 import rusting.ui.RustingUI;
 import rusting.world.format.holder.FormatHolder;
@@ -15,6 +16,7 @@ public class Varsr implements Loadable {
     public static RustingUI ui;
     public static FormatHolder formats;
     public static ItemScoreHolder itemScorer;
+    public static Blocks rusted;
 
     public static void setup(){
 
@@ -27,6 +29,7 @@ public class Varsr implements Loadable {
         ui = new RustingUI();
         formats = new FormatHolder();
         itemScorer = new ItemScoreHolder();
+        rusted = null;
 
         defaultDatabaseQuotes = Seq.with(
             "[cyan] Places of learning",

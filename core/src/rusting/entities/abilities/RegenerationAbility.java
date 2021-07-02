@@ -14,7 +14,8 @@ public class RegenerationAbility extends Ability {
 
     @Override
     public void update(Unit unit) {
-        unit.heal(health);
+        unit.health += health;
+        unit.clampHealth();
     }
 
     @Override

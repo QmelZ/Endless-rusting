@@ -89,17 +89,15 @@ public class RustingStatusEffects implements ContentList {
             updateCons = new Cons<Unit>() {
                 @Override
                 public void get(Unit unit) {
-                    float gotox = unit.x, gotoy = unit.y + 1;
+                    float rotation = unit.rotation;
                     Unit nearestAlly = null;
                     if(Time.time % 5 < 1){
                         nearestAlly = Units.closest(unit.team, unit.x, unit.y, spreadRadius * 3, u -> true);
                         if(nearestAlly != null) {
-                            Mathf.lerp(unit.angleTo(nearestAlly), unit.rotation, 0.15f  * Time.delta);
-                            gotox = nearestAlly.x;
-                            gotoy = nearestAlly.y;
+                            rotation = Mathf.lerp(unit.angleTo(nearestAlly), unit.rotation, 0.15f  * Time.delta);
                         }
                     }
-                    unit.impulse(Tmp.v1.trns(nearestAlly != null ? unit.angleTo(gotox, gotoy) - 90 : unit.rotation, nearestAlly != null ? unit.type.accel * 32 * (2 - speedMultiplier) : unit.type.accel * 8 * (2 - speedMultiplier)));
+                    unit.impulse(Tmp.v1.trns(rotation, nearestAlly != null ? unit.type.accel * 32 * (2 - speedMultiplier) : unit.type.accel * 8 * (2 - speedMultiplier)));
                 }
             };
         }};
@@ -160,7 +158,7 @@ public class RustingStatusEffects implements ContentList {
 
                     intUnits.each(u -> {
 
-                        if(!u.hasEffect(corruptShield) || u.team != b.team) return;
+                        if(!u.hasEffect(corruptShield) || u.team == b.team) return;
 
                         float distance = u.dst(b);
                         if(distance > greatestDistance[0]) greatestDistance[0] = distance;
@@ -168,7 +166,7 @@ public class RustingStatusEffects implements ContentList {
 
                     intUnits.each(u -> {
 
-                        if(!u.hasEffect(corruptShield) || u.team != b.team) return;
+                        if(!u.hasEffect(corruptShield) || u.team == b.team) return;
 
                         float distance = u.dst(b);
                         float force = Mathf.floor(range - u.dst(b)) * distance/greatestDistance[0];
@@ -179,12 +177,10 @@ public class RustingStatusEffects implements ContentList {
 
                     intUnits.each(u -> {
 
-                        if(!u.hasEffect(corruptShield) || u.team != b.team) return;
+                        if(!u.hasEffect(corruptShield) || u.team == b.team) return;
 
                         b.vel.setAngle(Angles.moveToward(b.rotation(), u.angleTo(b), forces.get(index[0]) * Time.delta/30));
                         index[0]++;
-                        Log.info(u);
-                        Log.info(u.hasEffect(corruptShield));
                     });
                 });
 

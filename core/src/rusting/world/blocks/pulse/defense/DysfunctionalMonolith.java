@@ -221,7 +221,7 @@ public class DysfunctionalMonolith extends PulseBlock {
 
         @Override
         public byte version() {
-            return 2;
+            return 3;
         }
 
         @Override
@@ -237,12 +237,20 @@ public class DysfunctionalMonolith extends PulseBlock {
             w.f(targetPos.y);
             w.f(holloPos.x);
             w.f(holloPos.y);
+            if(target != null){
+                w.bool(true);
+                if(target instanceof Unit) w.i(0);
+                else if(target instanceof Building) w.i(1);
+                else w.i(2);
+                w.i(target.id());
+            }
+            else w.bool(false);
         }
 
         @Override
         public void read(Reads r, byte revision) {
             super.read(r, revision);
-            if(revision == 2){
+            if(revision >= 2){
                 logicControlTime = r.f();
                 logicShootingTime = r.f();
                 randRotation = r.f();
@@ -251,6 +259,19 @@ public class DysfunctionalMonolith extends PulseBlock {
                 lockonTime = r.f();
                 targetPos.set(r.f(), r.f());
                 holloPos.set(r.f(), r.f());
+                if(revision >= 3){
+                    if(r.bool()) switch(r.i()){
+                        case 0:
+                            target = Groups.unit.find(u -> u.id == r.i());
+                            break;
+                        case 1:
+                            target = Groups.build.find(b -> b.id == r.i());
+                            break;
+                        default:
+                            r.i();
+                            break;
+                    }
+                }
             }
         }
     }

@@ -76,7 +76,7 @@ public class BoomerangBulletType extends BounceBulletType {
 
     @Override
     public Bullet create(@Nullable Entityc owner, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, Object data) {
-        if (other != null && Mathf.randomSeed((int) Time.time, 0, 1) == 1 && other instanceof BoomerangBulletType) {
+        if (other != null && Mathf.randomSeed((int) Time.time * 2, 0, 1) > 0.5 && other instanceof BoomerangBulletType) {
             return ((BoomerangBulletType) other).createBoomerang(owner, team, x, y, angle, damage, velocityScl, lifetimeScl, data);
         } else return super.create(owner, team, x, y, angle, damage, velocityScl, lifetimeScl, data);
     }

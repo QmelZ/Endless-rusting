@@ -367,8 +367,9 @@ public class RustingBlocks implements ContentList{
             overloadCapacity = 25;
             size = 3;
             plans.addAll(
-                    new UnitPlan(RustingUnits.duono, 1920, ItemStack.with(Items.lead, 25, Items.silicon, 35, Items.titanium, 10)),
-                    new UnitPlan(RustingUnits.fahrenheit, 1250, ItemStack.with(Items.lead, 35, Items.silicon, 15, RustingItems.melonaleum, 10))
+                new UnitPlan(RustingUnits.duono, 1920, ItemStack.with(Items.lead, 25, Items.silicon, 35, Items.titanium, 10)),
+                new UnitPlan(RustingUnits.marrow, 1920, ItemStack.with(Items.lead, 25, Items.silicon, 35, Items.titanium, 10)),
+                new UnitPlan(RustingUnits.fahrenheit, 1250, ItemStack.with(Items.lead, 35, Items.silicon, 15, RustingItems.melonaleum, 10))
             );
         }};
 
@@ -384,7 +385,8 @@ public class RustingBlocks implements ContentList{
             canOverload = false;
             size = 3;
             upgrades.add(
-                new UnitType[]{RustingUnits.duono, RustingUnits.duoly}
+                new UnitType[]{RustingUnits.duono, RustingUnits.duoly},
+                new UnitType[]{RustingUnits.marrow, RustingUnits.metaphys}
             );
             constructTime = 720;
         }};
@@ -478,7 +480,7 @@ public class RustingBlocks implements ContentList{
             shootType = RustingBullets.fossilShard;
             shots = 2;
             burstSpacing = 15f;
-            //inaccuracy = 2;
+            inaccuracy = 2;
         }};
 
         prsimdeome = new PanelTurret("prsimdeome"){{

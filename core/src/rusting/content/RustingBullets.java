@@ -18,7 +18,7 @@ import rusting.entities.bullet.*;
 import rusting.math.Mathr;
 import rusting.world.blocks.defense.turret.PanelTurret;
 
-import static rusting.content.RustingStatusEffects.shieldShatter;
+import static rusting.content.RustingStatusEffects.*;
 
 public class RustingBullets implements ContentList{
     public static BulletType
@@ -33,13 +33,31 @@ public class RustingBullets implements ContentList{
         //essentualy small nukes
         craeBalistorm,
         //boomerangs
-        craeLightRoundaboutRight, craeLightRoundaboutLeft,
-        craeLightGlaive, craeLightGlaiveRight,
-        craeLightGlaiveLeft,
-        denseLightRoundaboutLeft, denseLightRoundaboutRight;
+        craeLightRoundaboutRight, craeLightRoundaboutLeft, denseLightRoundaboutLeft, denseLightRoundaboutRight,
+        //glaivs
+        craeLightGlaive, craeLightGlaiveRight, craeLightGlaiveLeft,
+        //instant bullets
+        horizonInstalt;
 
     @Override
     public void load(){
+
+        horizonInstalt = new InstantBounceBulletType(1, 22, "bullet"){{
+            width = 7;
+            height = 8;
+            lifetime = 54;
+            length = 132;
+            buildingDamageMultiplier = 0.45f;
+            shootEffect = Fx.shootSmall;
+            hitEffect = Fx.hitFuse;
+            bounceEffect = Fx.blockExplosionSmoke;
+            status = shieldShatter;
+            statusDuration = 450;
+            knockback = 0.1f;
+            drag = 0.005f;
+            bounciness = 1.6;
+            bounceCap = 3;
+        }};
 
         fossilShard = new BounceBulletType(4, 9, "bullet"){{
             width = 7;
@@ -48,7 +66,7 @@ public class RustingBullets implements ContentList{
             hitEffect = Fx.hitFuse;
             despawnEffect = Fx.plasticburn;
             bounceEffect = Fx.blockExplosionSmoke;
-            status = RustingStatusEffects.amberstriken;
+            status = amberstriken;
             statusDuration = 45;
             knockback = 1;
             drag = 0.005f;
@@ -62,7 +80,7 @@ public class RustingBullets implements ContentList{
             hitEffect = Fx.hitFuse;
             despawnEffect = Fx.plasticburn;
             bounceEffect = Fx.hitLancer;
-            status = RustingStatusEffects.macrosis;
+            status = macrosis;
             frontColor = Palr.pulseChargeStart;
             backColor = Palr.pulseBullet;
             trailColor = frontColor;
@@ -109,15 +127,16 @@ public class RustingBullets implements ContentList{
             incendAmount = 10;
             status = StatusEffects.burning;
             statusDuration = 3600;
+            maxRange = 156;
             width = 6;
             height = 8;
             hitSize = 12;
             lifetime = 35;
             hitEffect = Fx.hitFuse;
             trailLength = 0;
-            homingPower = 0.125F;
             drag = 0.015f;
             bounciness = 0.95;
+            bounceCap = 2;
         }};
 
         fraeShard = new ConsBulletType(10, 25, "bullet"){{
@@ -426,16 +445,10 @@ public class RustingBullets implements ContentList{
             consHit = new Cons<Bullet>() {
                 @Override
                 public void get(Bullet bullet) {
-                    float[][] points = {{0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}};
-                    float[][] params = {{2.5f, 3}, {25, 1}};
-                    for(int i = 0; i <  5; i++){
-                        ((BoomerangBulletType) craeLightRoundaboutLeft).createBoomerang(bullet.owner, bullet.team, bullet.x, bullet.y, i * 72 + bullet.rotation(), craeLightRoundaboutLeft.damage/2, 0.85f, 1, 0);
-                        ((BoomerangBulletType) craeLightRoundaboutRight).createBoomerang(bullet.owner, bullet.team, bullet.x, bullet.y, i * 72 + bullet.rotation(), craeLightRoundaboutRight.damage/2, 0.45f, 1, 0);
-                        points[0][i] = bullet.x + Angles.trnsx(i * 72 + bullet.rotation(), 0, 12);
-                        points[1][i] = bullet.y + Angles.trnsy(i * 72 + bullet.rotation(), 0, 12);
+                    for(int i = 0; i <  5; i++) {
+                        ((BoomerangBulletType) craeLightRoundaboutLeft).createBoomerang(bullet.owner, bullet.team, bullet.x, bullet.y, i * 72 + bullet.rotation(), craeLightRoundaboutLeft.damage / 2, 0.85f, 1, 0);
+                        ((BoomerangBulletType) craeLightRoundaboutRight).createBoomerang(bullet.owner, bullet.team, bullet.x, bullet.y, i * 72 + bullet.rotation(), craeLightRoundaboutRight.damage / 2, 0.45f, 1, 0);
                     }
-                    float[][][] data = {params, points};
-                    Fxr.lineCircles.at(bullet.x, bullet.y, 0, Palr.pulseBullet, data);
                 }
             };
 
@@ -474,11 +487,12 @@ public class RustingBullets implements ContentList{
             rotateMag = 5;
             rotScaleMin = 0.2f;
             rotScaleMax = 0.2f;
+            rotateRight = true;
             stayInRange = true;
             hitEffect = Fx.hitFuse;
             despawnEffect = Fx.plasticburn;
             frontColor = Palr.pulseChargeStart;
-            backColor = Palr.pulseChargeEnd;
+            backColor = Palr.pulseBullet;
             status = shieldShatter;
             drag = -0.001f;
         }};
@@ -497,11 +511,12 @@ public class RustingBullets implements ContentList{
             rotateMag = 5;
             rotScaleMin = 0.2f;
             rotScaleMax = 0.2f;
+            rotateRight = false;
             stayInRange = true;
             hitEffect = Fx.hitFuse;
             despawnEffect = Fx.plasticburn;
             frontColor = Palr.pulseChargeStart;
-            backColor = Palr.pulseChargeEnd;
+            backColor = Palr.pulseBullet;
             status = shieldShatter;
             statusDuration = 60;
             drag = -0.001f;

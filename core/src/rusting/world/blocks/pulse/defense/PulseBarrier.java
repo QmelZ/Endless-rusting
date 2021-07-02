@@ -14,8 +14,9 @@ public class PulseBarrier extends PulseBlock {
     public class PulseBarrierBuild extends PulseBlockBuild{
         @Override
         public boolean collision(Bullet other) {
-            if(other.type.pierceBuilding && other.collided.size < other.type.pierceCap && this.pulseEnergy * pulseAbsorbMulti >= other.type.damage){
+            if(other.type.pierceBuilding && pulseEnergy/pulseAbsorbMulti >= other.type.damage){
                 removePulse(other.type.damage/pulseAbsorbMulti);
+                other.remove();
                 return true;
             }
             else return super.collision(other);

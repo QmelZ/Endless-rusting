@@ -3,19 +3,20 @@ package rusting.content;
 import arc.func.Prov;
 import arc.struct.ObjectIntMap;
 import arc.struct.ObjectMap.Entry;
+import mindustry.content.StatusEffects;
 import mindustry.ctype.ContentList;
-import mindustry.gen.EntityMapping;
-import mindustry.gen.Entityc;
+import mindustry.gen.*;
+import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import rusting.ai.types.MultiSupportAI;
 import rusting.entities.abilities.*;
-import rusting.entities.units.CraeUnitEntity;
-import rusting.entities.units.CraeUnitType;
+import rusting.entities.units.*;
 
 public class RustingUnits implements ContentList{
     //Steal from BetaMindy
     private static Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new Entry[]{
-            prov(CraeUnitEntity.class, CraeUnitEntity::new)
+            prov(CraeUnitEntity.class, CraeUnitEntity::new),
+            prov(BaseUnit.class, BaseUnit::new)
     };
 
     private static ObjectIntMap<Class<? extends Entityc>> idMap = new ObjectIntMap<>();
@@ -66,6 +67,8 @@ public class RustingUnits implements ContentList{
     public static CraeUnitType
             duono, duoly, duanga,
             fahrenheit;
+    public static UnitType
+            marrow, metaphys;
 
     @Override
     public void load() {
@@ -211,7 +214,6 @@ public class RustingUnits implements ContentList{
             speed = 1.2f;
             accel = 0.045f;
             drag = 0.025f;
-            isCounted = false;
 
             pulseStorage = 25;
 
@@ -231,6 +233,90 @@ public class RustingUnits implements ContentList{
                     reload = 120;
                 }}
             );
+        }};
+
+        EntityMapping.nameMap.put("marrow", BaseUnit::new);
+        marrow = new UnitType("marrow"){{
+            hitSize = 9;
+            health = 155;
+            armor = 1;
+            speed = 0.6f;
+            accel = 0.5f;
+            drag = 0.25f;
+            itemCapacity = 15;
+            commandLimit = 4;
+            mechLegColor = Palr.dustriken;
+            //v7 compatability
+            constructor = BaseUnit::new;
+            abilities.add(
+                    new RegenerationAbility(0.1f)
+            );
+
+            immunities.addAll(
+                StatusEffects.wet,
+                StatusEffects.burning,
+                StatusEffects.sporeSlowed,
+                StatusEffects.sapped,
+                RustingStatusEffects.shieldShatter
+            );
+
+            weapons.add(
+                new Weapon("none") {{
+                    x = 4;
+                    y = 4.25f;
+                    shots = 3;
+                    spacing = 3;
+                    shotDelay = 5;
+                    bullet = RustingBullets.horizonInstalt;
+                    shootSound = Sounds.bang;
+                    reload = 125;
+                }}
+            );
+
+        }};
+
+
+        EntityMapping.nameMap.put("metaphys", BaseUnit::new);
+        metaphys = new UnitType("metaphys"){{
+            hitSize = 13;
+            health = 540;
+            armor = 3;
+            speed = 0.45f;
+            accel = 0.35f;
+            drag = 0.15f;
+            itemCapacity = 15;
+            commandLimit = 3;
+            mechLegColor = Palr.dustriken;
+            //v7 compatability
+            constructor = BaseUnit::new;
+            abilities.add(
+                    new RegenerationAbility(0.1f)
+            );
+
+            immunities.addAll(
+                StatusEffects.wet,
+                StatusEffects.burning,
+                StatusEffects.sporeSlowed,
+                StatusEffects.sapped,
+                RustingStatusEffects.shieldShatter
+            );
+
+            weapons.addAll(
+                new Weapon("endless-rusting-metaphys-sidearms"){{
+                    top = false;
+                    alternate = true;
+                    x = 7.25f;
+                    y = 1.25f;
+                    recoil = 2;
+                    shots = 2;
+                    spacing = 5;
+                    inaccuracy = 3;
+                    bullet = RustingBullets.mhenShard;
+                    shootSound = Sounds.flame2;
+                    reload = 57.5f;
+                }}
+            );
+
         }};
 
     }

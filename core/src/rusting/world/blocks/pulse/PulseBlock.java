@@ -15,6 +15,7 @@ import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Groups;
 import mindustry.graphics.*;
+import mindustry.logic.Ranged;
 import mindustry.type.ItemStack;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
@@ -172,12 +173,17 @@ public class PulseBlock extends Block{
         return returnBuilding[0];
     }
 
-    public class PulseBlockBuild extends Building implements PulseBlockc {
+    public class PulseBlockBuild extends Building implements PulseBlockc, Ranged {
 
         public float pulseEnergy = 0;
         public float falloff = resistance;
         public float xOffset = 0, yOffset = 0, alphaDraw = 0;
         public float shake = 0;
+
+        @Override
+        public float range() {
+            return projectileRange();
+        }
 
         @Override
         public float pulseEfficiency(){

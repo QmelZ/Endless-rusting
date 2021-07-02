@@ -2,7 +2,6 @@ package rusting.entities.bullet;
 
 import arc.Core;
 import arc.struct.Seq;
-import arc.util.Log;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
