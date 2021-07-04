@@ -37,7 +37,7 @@ public class RustingBullets implements ContentList{
         //glaivs
         craeLightGlaive, craeLightGlaiveRight, craeLightGlaiveLeft,
         //instant bullets
-        horizonInstalt;
+        horizonInstalt, timelessInstalt;
 
     @Override
     public void load(){
@@ -57,6 +57,24 @@ public class RustingBullets implements ContentList{
             drag = 0.005f;
             bounciness = 1.6;
             bounceCap = 3;
+        }};
+
+        timelessInstalt = new InstantBounceBulletType(1, 15, "bullet"){{
+            width = 7;
+            height = 8;
+            lifetime = 54;
+            length = 152;
+            buildingDamageMultiplier = 0.75f;
+            shootEffect = Fx.shootSmall;
+            hitEffect = Fx.hitFuse;
+            bounceEffect = Fx.blockExplosionSmoke;
+            trailColor = Palr.pulseBullet;
+            status = StatusEffects.freezing;
+            statusDuration = 250;
+            knockback = 0.3f;
+            drag = 0.005f;
+            bounciness = 1.2;
+            bounceCap = 4;
         }};
 
         fossilShard = new BounceBulletType(4, 9, "bullet"){{

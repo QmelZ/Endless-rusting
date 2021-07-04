@@ -4,6 +4,7 @@ import arc.assets.Loadable;
 import arc.struct.Seq;
 import arc.util.Log;
 import mindustry.content.Blocks;
+import rusting.core.RustedContentLoader;
 import rusting.entities.holder.ItemScoreHolder;
 import rusting.ui.RustingUI;
 import rusting.world.format.holder.FormatHolder;
@@ -17,6 +18,7 @@ public class Varsr implements Loadable {
     public static FormatHolder formats;
     public static ItemScoreHolder itemScorer;
     public static Blocks rusted;
+    public static RustedContentLoader content = new RustedContentLoader();
 
     public static void setup(){
 

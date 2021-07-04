@@ -173,6 +173,19 @@ public class PulseBlock extends Block{
         return returnBuilding[0];
     }
 
+    public void drawLaser(float x, float y, float targetX, float targetY, float laserOffset, float targetLaserOffset, float lerpPercent, Color laserCol1, Color laserCol2){
+        Draw.z(Layer.power);
+        float angle = Mathf.angle(targetX - x, targetY - y) - 90;
+        float sourcx = x + Angles.trnsx(angle, 0, laserOffset), sourcy = y + Angles.trnsy(angle, 0, laserOffset);
+        float edgex = targetX + Angles.trnsx(angle + 180, 0, targetLaserOffset), edgey = targetY + Angles.trnsy(angle + 180, 0, targetLaserOffset);
+        Draw.color(laserCol1, laserCol2, lerpPercent);
+        Lines.stroke(1.35f);
+        Lines.line(sourcx, sourcy, edgex, edgey);
+        Fill.circle(edgex, edgey, 0.85f);
+        Fill.circle(sourcx, sourcy, 1.35f);
+        Draw.reset();
+    }
+
     public class PulseBlockBuild extends Building implements PulseBlockc, Ranged {
 
         public float pulseEnergy = 0;

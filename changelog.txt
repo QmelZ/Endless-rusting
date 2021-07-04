@@ -1,0 +1,7 @@
+V8
+-Added 3 new units, fro mthe forgotten faction with names based around bones.
+-Scimatics now save Pulse Block config
+-New ContentLoader class used in Endless Rusting
+-Moved varius "Do this" items on the trello to the tasks section
+-Made class which is able to save and write things to save
+-

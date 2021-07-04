@@ -76,10 +76,32 @@ public class DysfunctionalMonolith extends PulseBlock {
         public Vec2 holloPos = new Vec2(x, y);
         @Nullable
         public Posc target = null;
+        //whether reading is finished, and whetehr to find a target based on read id
+        public boolean finishedRead = false, previousTargetFound = false;
+        //for finding which type of target after read
+        public int switchCase = 2;
+        //target id
+        @Nullable
+        public int targID;
 
         @Override
         public void updateTile() {
             super.updateTile();
+            if(!finishedRead){
+                if(previousTargetFound) {
+                    switch (switchCase) {
+                        case 0:
+                            target = Groups.unit.find(u -> u.id == targID);
+                            break;
+                        case 1:
+                            target = Groups.build.find(b -> b.id == targID);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                finishedRead = true;
+            }
             displayHologram = Mathf.randomBoolean(0.85f);
             if(Mathf.randomBoolean(0.1f)) {
                 randRotation += 0.1 * (randRotationDirection ? -1 : 1);
@@ -259,18 +281,12 @@ public class DysfunctionalMonolith extends PulseBlock {
                 lockonTime = r.f();
                 targetPos.set(r.f(), r.f());
                 holloPos.set(r.f(), r.f());
-                if(revision >= 3){
-                    if(r.bool()) switch(r.i()){
-                        case 0:
-                            target = Groups.unit.find(u -> u.id == r.i());
-                            break;
-                        case 1:
-                            target = Groups.build.find(b -> b.id == r.i());
-                            break;
-                        default:
-                            r.i();
-                            break;
-                    }
+            }
+            if(revision >= 3){
+                if(r.bool()) {
+                    previousTargetFound = true;
+                    switchCase = r.i();
+                    targID = r.i();
                 }
             }
         }

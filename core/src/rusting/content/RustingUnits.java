@@ -1,11 +1,14 @@
 package rusting.content;
 
 import arc.func.Prov;
+import arc.graphics.Color;
 import arc.struct.ObjectIntMap;
 import arc.struct.ObjectMap.Entry;
+import mindustry.content.Bullets;
 import mindustry.content.StatusEffects;
 import mindustry.ctype.ContentList;
 import mindustry.gen.*;
+import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import rusting.ai.types.MultiSupportAI;
@@ -68,7 +71,7 @@ public class RustingUnits implements ContentList{
             duono, duoly, duanga,
             fahrenheit;
     public static UnitType
-            marrow, metaphys;
+            marrow, metaphys, ribigen;
 
     @Override
     public void load() {
@@ -237,12 +240,15 @@ public class RustingUnits implements ContentList{
 
         EntityMapping.nameMap.put("marrow", BaseUnit::new);
         marrow = new UnitType("marrow"){{
-            hitSize = 9;
+            hitSize = 8;
             health = 155;
             armor = 1;
             speed = 0.6f;
             accel = 0.5f;
             drag = 0.25f;
+            lightRadius = hitSize * 2.5f;
+            lightColor = Palr.dustriken;
+            lightOpacity = 0.15f;
             itemCapacity = 15;
             commandLimit = 4;
             mechLegColor = Palr.dustriken;
@@ -275,16 +281,18 @@ public class RustingUnits implements ContentList{
 
         }};
 
-
         EntityMapping.nameMap.put("metaphys", BaseUnit::new);
         metaphys = new UnitType("metaphys"){{
-            hitSize = 13;
+            hitSize = 10;
             health = 540;
-            armor = 3;
+            armor = 4;
             speed = 0.45f;
-            accel = 0.35f;
-            drag = 0.15f;
-            itemCapacity = 15;
+            accel = 0.15f;
+            drag = 0.05f;
+            lightRadius = hitSize * 2.5f;
+            lightColor = Palr.dustriken;
+            lightOpacity = 0.35f;
+            itemCapacity = 35;
             commandLimit = 3;
             mechLegColor = Palr.dustriken;
             //v7 compatability
@@ -317,6 +325,77 @@ public class RustingUnits implements ContentList{
                 }}
             );
 
+        }};
+
+        EntityMapping.nameMap.put("ribigen", BaseUnit::new);
+        ribigen = new UnitType("ribigen"){{
+            hitSize = 13;
+            health = 940;
+            armor = 10;
+            speed = 0.35f;
+            accel = 0.35f;
+            drag = 0.15f;
+            lightRadius = hitSize * 3.5f;
+            lightColor = Palr.dustriken;
+            lightOpacity = 0.05f;
+            itemCapacity = 75;
+            commandLimit = 2;
+            mechLegColor = Palr.dustriken;
+            //v7 compatability
+            constructor = BaseUnit::new;
+            abilities.add(
+                    new RegenerationAbility(0.3f)
+            );
+
+            immunities.addAll(
+                    StatusEffects.wet,
+                    StatusEffects.burning,
+                    StatusEffects.sporeSlowed,
+                    StatusEffects.sapped,
+                    RustingStatusEffects.shieldShatter,
+                    RustingStatusEffects.amberstriken,
+                    RustingStatusEffects.umbrafliction
+            );
+
+            weapons.addAll(
+                new Weapon("endless-rusting-ribigen-instalt-launcher"){{
+                    x = 13.25f;
+                    y = 6.25f;
+                    reload = 120;
+                    recoil = 3;
+                    shots = 4;
+                    spacing = 4;
+                    shootSound = Sounds.artillery;
+                    bullet = RustingBullets.timelessInstalt;
+                    top = false;
+                }},
+                new Weapon("endless-rusting-ribigen-weapon"){{
+                    x = 0;
+                    y = 0;
+                    shootY = 7.75f;
+                    shots = 5;
+                    spacing = 1;
+                    inaccuracy = 0.25f;
+                    shotDelay = 1;
+                    recoil = 0;
+                    reload = 150;
+                    heatColor = new Color(Pal.turretHeat).a(0.54f);
+                    bullet = Bullets.heavyOilShot;
+                    shootSound = Sounds.release;
+                    mirror = false;
+                }},
+                new Weapon("none"){{
+                    x = 0;
+                    y = 0;
+                    shots = 25;
+                    spacing = 2;
+                    inaccuracy = 1;
+                    shotDelay = 0.35f;
+                    reload = 150;
+                    bullet = Bullets.oilShot;
+                    shootSound = Sounds.none;
+                }}
+            );
         }};
 
     }

@@ -2,7 +2,6 @@ package rusting.entities.holder;
 
 import arc.math.Mathf;
 import arc.struct.*;
-import arc.util.Log;
 import mindustry.Vars;
 import mindustry.content.Items;
 import mindustry.entities.bullet.BulletType;
@@ -96,7 +95,6 @@ public class ItemScoreHolder {
                 OrderedMap.of();
             }
         });
-        itemScores.each(s -> Log.info(s));
     }
 
 }

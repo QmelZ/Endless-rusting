@@ -3,31 +3,18 @@ package rusting;
 import arc.Core;
 import arc.Events;
 import arc.graphics.Color;
-import arc.struct.Seq;
 import mindustry.Vars;
-import mindustry.ctype.ContentList;
 import mindustry.game.EventType;
 import mindustry.mod.Mod;
-import rusting.content.*;
-import rusting.entities.holder.ItemScoreHolder;
+import rusting.content.Palr;
+import rusting.content.RustedSettingAdder;
 import rusting.graphics.Drawr;
 
 public class EndlessRusting extends Mod{
 
     public static String modname = "endless-rusting";
 
-    public static ItemScoreHolder itemScorer;
     public static RustedSettingAdder settingAdder = new RustedSettingAdder();
-
-    private static final Seq<ContentList> contentLists = Seq.with(
-        new RustingStatusEffects(),
-        new RustingItems(),
-        new RustingBullets(),
-        new RustingUnits(),
-        new RustingBlocks(),
-        new RustingWeathers(),
-        new RustingPlanets()
-    );
 
     public EndlessRusting(){
 
@@ -56,7 +43,7 @@ public class EndlessRusting extends Mod{
     @Override
     public void loadContent(){
         Drawr.setMethods();
-        contentLists.each(ContentList::load);
+        Varsr.content.load();
         Color.cyan.set(Palr.pulseChargeEnd);
         Color.sky.set(Palr.pulseChargeStart);
     }

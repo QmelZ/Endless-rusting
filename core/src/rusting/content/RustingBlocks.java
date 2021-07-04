@@ -4,6 +4,7 @@ import arc.graphics.Color;
 import arc.struct.EnumSet;
 import mindustry.content.*;
 import mindustry.ctype.ContentList;
+import mindustry.entities.Effect;
 import mindustry.gen.Sounds;
 import mindustry.graphics.CacheLayer;
 import mindustry.graphics.Pal;
@@ -59,6 +60,8 @@ public class RustingBlocks implements ContentList{
         pulseResearchCenter,
         //Suport
         pulseUpkeeper,
+        //particle spawning
+        smallParticleSpawner,
         //turrets
         //environment/turrets
         archangel,
@@ -276,7 +279,7 @@ public class RustingBlocks implements ContentList{
             size = 1;
             health = 410 * size * size;
             powerLoss = 0.000035f;
-            pulseStorage = 45;
+            pulseStorage = 55;
             canOverload = false;
         }};
 
@@ -287,6 +290,7 @@ public class RustingBlocks implements ContentList{
             health = 410 * size * size;
             powerLoss = 0.000035f;
             pulseStorage = 135;
+            laserOffset = 5.5f;
             canOverload = false;
         }};
 
@@ -315,6 +319,23 @@ public class RustingBlocks implements ContentList{
             healPercent = 26;
             healPercentFalloff = healPercent/3;
             overdrivePercent = 65;
+        }};
+
+        smallParticleSpawner = new PulseParticleSpawner("small-particle-spawner"){{
+            requirements(Category.effect, with(Items.copper, 300, Items.lead, 115, Items.metaglass, 50, Items.titanium, 45));
+            centerResearchRequirements = with(Items.copper, 350,  Items.coal, 95, Items.graphite, 55, Items.titanium, 225);
+            flags = EnumSet.of(BlockFlag.generator);
+            effects = new Effect[] {Fx.ballfire, Fx.burning, Fx.fire};
+            size = 1;
+            health = 35 * size * size;
+            projectileChanceModifier = 0;
+            customConsumes.pulse = 0.25f;
+            cruxInfiniteConsume = true;
+            pulseStorage = 70;
+            overloadCapacity = 30;
+            powerLoss = 0;
+            minRequiredPulsePercent = 0;
+            canOverload = true;
         }};
 
         archangel = new DysfunctionalMonolith("archangel"){{
@@ -403,7 +424,8 @@ public class RustingBlocks implements ContentList{
             canOverload = false;
             size = 5;
             upgrades.add(
-                    new UnitType[]{RustingUnits.duoly, RustingUnits.duanga}
+                    new UnitType[]{RustingUnits.duoly, RustingUnits.duanga},
+                    new UnitType[]{RustingUnits.metaphys, RustingUnits.ribigen}
             );
             constructTime = 720;
         }};

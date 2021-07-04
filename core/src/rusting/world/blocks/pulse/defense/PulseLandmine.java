@@ -60,6 +60,12 @@ public class PulseLandmine extends PulseBlock {
         protected Color[] stateColours = {Color.blue, Team.crux.color, Team.sharded.color, Team.green.color};
 
         @Override
+        public void placed() {
+            super.placed();
+            pulseEnergy = pulseStorage;
+        }
+
+        @Override
         public void update() {
             super.update();
             if(allConsValid()){
