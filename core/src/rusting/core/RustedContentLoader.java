@@ -34,6 +34,7 @@ public class RustedContentLoader {
         return null;
     }
 
+    public <T extends ERContent> Seq<T> getBy(ERContentType type){
         return (Seq<T>)contentMap[type.ordinal];
     }
 
