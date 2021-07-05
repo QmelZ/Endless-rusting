@@ -7,8 +7,8 @@ group pGroup
 sourceCompatibility = 1.8
 
 sourceSets.main {
-    java.srcDir("core/src/")
-    resources.srcDir("core/assets/")
+    java.srcDir("src/")
+    resources.srcDir("assets/")
 }
 
 repositories {
