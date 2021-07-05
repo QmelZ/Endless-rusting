@@ -24,8 +24,8 @@ import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Stat;
 import rusting.content.Palr;
 import rusting.content.RustingBullets;
-import rusting.entities.holder.CustomConsumerModule;
-import rusting.entities.holder.CustomStatHolder;
+import rusting.core.holder.CustomConsumerModule;
+import rusting.core.holder.CustomStatHolder;
 import rusting.interfaces.PulseBlockc;
 import rusting.world.blocks.pulse.utility.PulseResearchBlock;
 

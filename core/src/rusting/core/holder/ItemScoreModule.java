@@ -1,4 +1,4 @@
-package rusting.entities.holder;
+package rusting.core.holder;
 
 import mindustry.content.Items;
 import mindustry.type.Item;

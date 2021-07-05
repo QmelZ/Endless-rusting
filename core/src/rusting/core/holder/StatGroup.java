@@ -1,6 +1,5 @@
-package rusting.entities.holder;
+package rusting.core.holder;
 
-import arc.Core;
 import arc.struct.Seq;
 
 public class StatGroup {

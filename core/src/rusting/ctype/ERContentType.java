@@ -1,7 +1,16 @@
 package rusting.ctype;
-import rusting.ctype.*;
+public class ERContentType {
 
-public enum ERContentType {
-    capsule;
-    public static final ERContentType[] all = values();
+
+    public int ordinal = 0;
+    private static float nextFreeOrdinal = 0;
+
+    public ERContentType(String name){
+        this.name = name;
+        this.ordinal = 0;
+        nextFreeOrdinal++;
+    }
+
+    //how you find the ERContentType
+    public String name = "UNUSED";
 }

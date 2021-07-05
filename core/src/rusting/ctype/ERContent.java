@@ -1,19 +1,23 @@
 package rusting.ctype;
-import arc.files.*;
-import arc.util.*;
-import mindustry.*;
-import mindustry.ctype.*;
-import mindustry.mod.Mods.*;
 
-/** Base class for a content type that is loaded in {@link mindustry.core.ContentLoader}. */
-public abstract class ERContent extends Content{
+import arc.files.Fi;
+import arc.util.Disposable;
+import arc.util.Nullable;
+import mindustry.ctype.Content;
+import mindustry.mod.Mods.LoadedMod;
+
+@SuppressWarnings("uninitialized")
+
+/** Base class for a content type that is loaded in {@link rusting.core.RustedContentLoader}. */
+public abstract class ERContent implements Comparable<Content>, Disposable{
     public final short id;
     /** Info on which mod this content was loaded from. */
     public ModContentInfo minfo = new ModContentInfo();
 
     public ERContent(){
-        this.id = (short)Vars.content.getBy(getContentType()).size;
-        Vars.content.handleContent(this);
+        id = 0;
+        //id = (short) Varsr.content.getBy(getContentType()).size;
+        //Vars.content.handleContent(this);
     }
 
     /**
@@ -21,7 +25,7 @@ public abstract class ERContent extends Content{
      * This should return the same value for all instances of this content type.
      * @return
      */
-    public abstract ContentType getContentType();
+    //public abstract ERContentType getContentType();
 
     /** Called after all content and modules are created. Do not use to load regions or texture data! */
     public void init(){}
@@ -43,8 +47,17 @@ public abstract class ERContent extends Content{
     }
 
     @Override
+    public int compareTo(Content o) {
+        return Integer.compare(id, o.id);
+    }
+
+    @Override
     public String toString(){
-        return getContentType().name() + "#" + id;
+        return getContentType().name + "#" + id;
+    }
+
+    public ERContentType getContentType(){
+        return null;
     }
 
     public static class ModContentInfo{

@@ -4,7 +4,7 @@ import arc.graphics.g2d.Draw;
 import arc.struct.Seq;
 import mindustry.entities.bullet.BulletType;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
-import rusting.entities.holder.PanelHolder;
+import rusting.core.holder.PanelHolder;
 
 //Multi panel panel now supported
 public class PanelTurret extends PowerTurret {

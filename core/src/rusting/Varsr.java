@@ -5,7 +5,7 @@ import arc.struct.Seq;
 import arc.util.Log;
 import mindustry.content.Blocks;
 import rusting.core.RustedContentLoader;
-import rusting.entities.holder.ItemScoreHolder;
+import rusting.core.holder.ItemScoreHolder;
 import rusting.ui.RustingUI;
 import rusting.world.format.holder.FormatHolder;
 

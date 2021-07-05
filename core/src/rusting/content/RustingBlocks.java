@@ -16,11 +16,12 @@ import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.StaticWall;
 import mindustry.world.meta.Attribute;
 import mindustry.world.meta.BlockFlag;
-import rusting.entities.holder.PanelHolder;
-import rusting.entities.holder.ShootingPanelHolder;
+import rusting.core.holder.PanelHolder;
+import rusting.core.holder.ShootingPanelHolder;
 import rusting.world.blocks.BadExporterBlock;
 import rusting.world.blocks.defense.turret.*;
 import rusting.world.blocks.environment.FixedOreBlock;
+import rusting.world.blocks.power.AttributeBurnerGenerator;
 import rusting.world.blocks.pulse.defense.*;
 import rusting.world.blocks.pulse.distribution.*;
 import rusting.world.blocks.pulse.production.PulseGenerator;
@@ -45,6 +46,8 @@ public class RustingBlocks implements ContentList{
         classemStolnene, classemPathen, classemPulsen, classemWallen, classemBarrreren,
         //ore blocks
         melonaleum,
+        //power
+        waterBoilerGenerator,
         //pulse
         //Pulse collection
         pulseGenerator, pulseCollector,
@@ -175,6 +178,20 @@ public class RustingBlocks implements ContentList{
             itemDrop = RustingItems.melonaleum;
             overrideMapColor = itemDrop.color;
             variants = 2;
+        }};
+
+        //endregion
+
+        //region power
+
+        waterBoilerGenerator = new AttributeBurnerGenerator("water-boiler-generator"){{
+            requirements(Category.power, with(Items.copper, 40, Items.graphite, 35, Items.lead, 50, Items.silicon, 35, Items.metaglass, 40));
+            powerProduction = 3.25f;
+            generateEffect = Fx.redgeneratespark;
+            size = 3;
+            minItemEfficiency = 0.15f;
+
+            consumes.liquid(Liquids.water, 0.12f).optional(false, false);
         }};
 
         //endregion

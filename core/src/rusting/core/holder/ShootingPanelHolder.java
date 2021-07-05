@@ -1,9 +1,8 @@
-package rusting.entities.holder;
+package rusting.core.holder;
 
 import arc.math.Mathf;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
-import mindustry.world.blocks.defense.turrets.Turret;
 import rusting.world.blocks.defense.turret.PanelTurret;
 
 public class ShootingPanelHolder extends PanelHolder{

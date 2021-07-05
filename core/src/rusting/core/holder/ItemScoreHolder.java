@@ -1,4 +1,4 @@
-package rusting.entities.holder;
+package rusting.core.holder;
 
 import arc.math.Mathf;
 import arc.struct.*;
