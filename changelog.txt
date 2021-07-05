@@ -1,0 +1,11 @@
+V8
+-Added 3 new units, fro mthe forgotten faction with names based around bones.
+-Scimatics now save Pulse Block config
+-New ContentLoader class used in Endless Rusting
+-Moved varius "Do this" items on the trello to the tasks section
+-Made class which is able to save and write things to save
+-PulseBarrier class now displays a shield when absorbing projectiles, fixed absorption and Pusle required
+-Gave Pulse Barrier and Pulse Barrier Large= charged and shake sprites
+-PulseLandmines now have full pulse when placed
+-new class PulseParticleSpawner which has config for particles it can spawn
+-Dysfucntional monolith has new fields for reading and writing

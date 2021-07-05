@@ -1,2 +1,3 @@
-include ':scr'
-findProject(':src')?.name = 'src'
+include 'core'
+findProject(':core')?.name = 'core'
+
