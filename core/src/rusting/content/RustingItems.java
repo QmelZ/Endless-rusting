@@ -6,7 +6,7 @@ import mindustry.type.Item;
 
 public class RustingItems implements ContentList {
     public static Item
-        melonaleum, bulastelt
+        melonaleum, bulastelt, taconite
     ;
     @Override
     public void load() {
@@ -17,6 +17,11 @@ public class RustingItems implements ContentList {
             charge = 2.25f;
             hardness = 3;
             cost = 1.35f;
+        }};
+
+        taconite = new Item("taconite", Color.valueOf("#f6cccc")){{
+            hardness = 1;
+            cost = 0.86f;
         }};
 
         bulastelt = new Item("bulastelt", Color.valueOf("#bcbcbc")){{

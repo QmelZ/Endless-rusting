@@ -16,7 +16,9 @@ public class RustedContentLoader {
             new RustingBlocks(),
             new RustingWeathers(),
             new RustingPlanets(),
-            new RustingCapsules()
+            new RustingCapsules(),
+            new RustingSectorPresets(),
+            new RustingTechTree()
     );
 
     public Seq<ERContentType> ContentTypes = Seq.with(

@@ -243,7 +243,7 @@ public class RustingUnits implements ContentList{
             hitSize = 8;
             health = 155;
             armor = 1;
-            speed = 0.6f;
+            speed = 0.5225f;
             accel = 0.5f;
             drag = 0.25f;
             lightRadius = hitSize * 2.5f;

@@ -58,6 +58,8 @@ public class PulseController extends PulseControlModule {
 
             if(isControlled()) enabled(unit.isShooting());
 
+            tempRotation %= 360;
+
             rotation = interval * Math.round(tempRotation/interval);
         }
 

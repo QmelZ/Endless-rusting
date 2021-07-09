@@ -540,7 +540,5 @@ public class RustingBullets implements ContentList{
             drag = -0.001f;
         }};
 
-        UnitTypes.gamma.weapons.get(0).bullet = craeLightGlaiveLeft;
-
     }
 }

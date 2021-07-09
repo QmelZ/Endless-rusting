@@ -2,6 +2,7 @@ package rusting.content;
 
 import arc.graphics.Color;
 import arc.struct.EnumSet;
+import arc.struct.Seq;
 import mindustry.content.*;
 import mindustry.ctype.ContentList;
 import mindustry.entities.Effect;
@@ -10,18 +11,22 @@ import mindustry.graphics.CacheLayer;
 import mindustry.graphics.Pal;
 import mindustry.type.*;
 import mindustry.world.Block;
+import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
+import mindustry.world.blocks.distribution.Conveyor;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.StaticWall;
-import mindustry.world.meta.Attribute;
-import mindustry.world.meta.BlockFlag;
+import mindustry.world.blocks.logic.MessageBlock;
+import mindustry.world.blocks.production.GenericCrafter;
+import mindustry.world.blocks.storage.CoreBlock;
+import mindustry.world.meta.*;
 import rusting.core.holder.PanelHolder;
 import rusting.core.holder.ShootingPanelHolder;
-import rusting.world.blocks.BadExporterBlock;
 import rusting.world.blocks.defense.turret.*;
 import rusting.world.blocks.environment.FixedOreBlock;
 import rusting.world.blocks.power.AttributeBurnerGenerator;
+import rusting.world.blocks.production.ConditionalDrill;
 import rusting.world.blocks.pulse.defense.*;
 import rusting.world.blocks.pulse.distribution.*;
 import rusting.world.blocks.pulse.production.PulseGenerator;
@@ -33,7 +38,6 @@ import static mindustry.type.ItemStack.with;
 
 public class RustingBlocks implements ContentList{
     public static Block
-        expre,
         //environment
         //liquids
         melainLiquae,
@@ -45,9 +49,17 @@ public class RustingBlocks implements ContentList{
         //classem
         classemStolnene, classemPathen, classemPulsen, classemWallen, classemBarrreren,
         //ore blocks
-        melonaleum,
+        melonaleum, taconite,
+        //crafting
+        bulasteltForgery,
+        //defense
+        terraMound, terraMoundLarge,
         //power
         waterBoilerGenerator,
+        //drill
+        terraPulveriser,
+        //distribution
+        terraConveyor,
         //pulse
         //Pulse collection
         pulseGenerator, pulseCollector,
@@ -65,6 +77,9 @@ public class RustingBlocks implements ContentList{
         pulseUpkeeper,
         //particle spawning
         smallParticleSpawner,
+        //storage
+        fraeCore,
+        //endregion storage
         //turrets
         //environment/turrets
         archangel,
@@ -79,14 +94,12 @@ public class RustingBlocks implements ContentList{
         //pannel turrets
         prikend, prsimdeome, prefraecon, pafleaver,
         //bomerang related turrets
-        refract, diffract, reflect;
+        refract, diffract, reflect,
+        //logic
+        fraeLog;
         
     public void load(){
         //region environment
-
-        expre = new BadExporterBlock("don't use me"){{
-            requirements(Category.effect, ItemStack.with());
-        }};
 
         melainLiquae = new Floor("melain-liquae"){{
             speedMultiplier = 0.5f;
@@ -100,7 +113,7 @@ public class RustingBlocks implements ContentList{
             drawLiquidLight = true;
             emitLight = true;
             lightColor = new Color(Palr.pulseChargeStart).a(0.15f);
-            lightRadius = 8;
+            lightRadius = 16;
         }};
 
         paileanStolnen = new Floor("pailean-stolnen"){{
@@ -180,7 +193,45 @@ public class RustingBlocks implements ContentList{
             variants = 2;
         }};
 
+        taconite = new FixedOreBlock("taconite"){{
+            itemDrop = RustingItems.taconite;
+            overrideMapColor = itemDrop.color;
+            variants = 1;
+        }};
+
         //endregion
+
+        //region crafting
+        bulasteltForgery = new GenericCrafter("bulastelt-forgery"){{
+            requirements(Category.crafting, with(Items.coal, 6, RustingItems.taconite, 7, RustingItems.bulastelt, 5));
+            craftEffect = Fx.smeltsmoke;
+            outputItem = new ItemStack(RustingItems.bulastelt, 6);
+            craftTime = 425f;
+            size = 2;
+            hasPower = false;
+            hasLiquids = true;
+
+            consumes.items(with(Items.coal, 3, RustingItems.taconite, 5));
+            consumes.liquid(Liquids.water, 0.155f);
+        }};
+        //endregion crafting
+
+        //region defense
+        terraMound = new Wall("terra-mound"){{
+            requirements(Category.defense, with(Items.coal, 6, RustingItems.taconite, 3, RustingItems.bulastelt, 1));
+            size = 1;
+            health = 420 * size * size;
+            insulated = true;
+        }};
+
+        terraMoundLarge = new Wall("terra-mound-large"){{
+            requirements(Category.defense, with(Items.coal, 24, RustingItems.taconite, 12, RustingItems.bulastelt, 4));
+            size = 2;
+            health = 420 * size * size;
+            insulated = true;
+        }};
+
+        //endregion defense
 
         //region power
 
@@ -195,6 +246,44 @@ public class RustingBlocks implements ContentList{
         }};
 
         //endregion
+
+        //region drill
+
+        terraPulveriser = new ConditionalDrill("terra-pulveriser"){{
+            requirements(Category.production, with(Items.copper, 25, Items.coal, 15, RustingItems.taconite, 15));
+            size = 2;
+            tier = 2;
+            drops = Seq.with(
+                new ItemModule(){{
+                    item = RustingItems.taconite;
+                    floors = Seq.with(Blocks.stone.asFloor(), Blocks.craters.asFloor(), Blocks.basalt.asFloor());
+                }},
+                new ItemModule(){{
+                    item = Items.sand;
+                    floors = Seq.with(Blocks.sand.asFloor(), Blocks.darksand.asFloor(), Blocks.sandWater.asFloor());
+                }},
+                new ItemModule(){{
+                    item = Items.coal;
+                    floors = Seq.with(Blocks.charr.asFloor());
+                }}
+            );
+
+            consumes.liquid(Liquids.water, 0.05f).boost();
+
+        }};
+
+        //endregion
+
+        //region distribution
+
+        terraConveyor = new Conveyor("terra-conveyor"){{
+            requirements(Category.distribution, with(Items.copper, 2, Items.coal, 1, RustingItems.bulastelt, 2));
+            health = 95;
+            speed = 0.04f;
+            displayedSpeed = 5.5f;
+        }};
+
+        //endregion distribution
 
         //region pulse
 
@@ -353,6 +442,18 @@ public class RustingBlocks implements ContentList{
             powerLoss = 0;
             minRequiredPulsePercent = 0;
             canOverload = true;
+        }};
+
+        fraeCore = new CoreBlock("frae-core"){{
+            requirements(Category.effect, BuildVisibility.editorOnly, with(Items.copper, 1000, Items.lead, 800));
+            alwaysUnlocked = false;
+
+            unitType = RustingUnits.duoly;
+            health = 2100;
+            itemCapacity = 6500;
+            size = 3;
+
+            unitCapModifier = 13;
         }};
 
         archangel = new DysfunctionalMonolith("archangel"){{
@@ -675,6 +776,16 @@ public class RustingBlocks implements ContentList{
             shootSound = Sounds.bang;
         }};
 
+        //endregion
+
+        //region, *sigh* logic
+        fraeLog = new MessageBlock("frae-log"){{
+            buildVisibility = BuildVisibility.editorOnly;
+            targetable = false;
+            breakable = false;
+            replaceable = false;
+            destructible = false;
+        }};
         //endregion
     }
 }
