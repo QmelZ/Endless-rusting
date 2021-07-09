@@ -89,6 +89,23 @@ With multiple guardian waves, during the canonical 23 waves, you might want to g
 
 Difficulty: Peaceful/Easy
 
+###Plantae Preservae Domae
+![image](https://user-images.githubusercontent.com/73347888/125019908-289fce80-e0bb-11eb-835c-ea0e116c0127.png)
+
+Intro: Conflict between the enemy and the natives is in session, as they knew you'd try to come ask for help. Unfortunately for the Crux, it seems like the natives were ready to repourpose the resource collecting base into a fortress. The place is flooded, and a river runs through the middle of the map. Sand is quite abundant, as with the other resources here, such as the copper, lead and coal.
+
+Base: The blue base consists of two outposts, and one main fort. It's advised to leave the Crux base alive, as it draws the attacks from blue away from you, while you prepear your forces. Theres two easy ways to deal with the presense. Strike the ruined center outpost first. You'll want to clear a way to this part of the fort. 
+![image](https://user-images.githubusercontent.com/73347888/125020218-ce533d80-e0bb-11eb-9607-7c46263cb67c.png)
+It's the easiest to crash into with t1 navals, and if nescecary, using ground units to tank shots from the boomerang and pannel turrets can be a good stratagy.
+
+Alternatively, attack the leftmost part of the base with your naval and air units. 
+![stratagy](https://user-images.githubusercontent.com/73347888/125020530-5a656500-e0bc-11eb-86d8-9c700398c663.png)
+Theres two nodes you'll want to prioritize in your attack. Either use bombing on the rightmost node, or use minkes to snipe the left most node. This will leave a significant amount of the defenses unpowered, including the turrets which inflict long burning.
+
+Waves: Not much threat is present here, as the natives were quite startled when the Cruc and you arived. The guardians come on waves 16 and 32, though they're quite weak and if you let them, they die on the Crux base. Only thing to watch out for are the Marrows, which can cause massive group damage if positioned right. Don't let them catch you offguard when you attack. They come from wave 10 and onwards. Other than that, suport units come in to deflect bullets and defend at waves 3 for t1, and 23 for t2. They can be easly be baited into some AA similar with you you baited them over in Incipens Grounds.
+
+Difficulty: Easy
+
 ### Pailean Coridors
 ![image](https://user-images.githubusercontent.com/73347888/124103849-07305880-daa5-11eb-8b62-feb2c4df92a5.png)
 
