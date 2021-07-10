@@ -23,6 +23,7 @@ public class Varsr implements Loadable {
     public static void setup(){
 
         itemScorer.setupItems();
+        content.init();
 
     }
 

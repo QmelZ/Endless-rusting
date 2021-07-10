@@ -1,18 +1,22 @@
 package rusting.content;
 
-import arc.struct.Seq;
 import mindustry.ctype.ContentList;
+import rusting.EndlessRusting;
 import rusting.type.Capsule;
 
 public class RustingCapsules implements ContentList {
 
     public Capsule
-    basic
+    basic, basicLiquid
     ;
 
     @Override
     public void load() {
-        basic = new Capsule("endless-rusting-capsule"){{
+        basic = new Capsule(EndlessRusting.modname + "-basic-capsule"){{
+
+        }};
+
+        basicLiquid = new Capsule(EndlessRusting.modname + "-liquid-capsule"){{
 
         }};
     }

@@ -1,9 +1,11 @@
 package rusting.core;
 
+import arc.func.Cons;
 import arc.struct.Seq;
 import mindustry.ctype.ContentList;
 import rusting.content.*;
 import rusting.ctype.*;
+import rusting.type.Capsule;
 
 //class to store special content, not found in Vars, and ER's content
 public class RustedContentLoader {
@@ -22,11 +24,12 @@ public class RustedContentLoader {
     );
 
     public Seq<ERContentType> ContentTypes = Seq.with(
+            new ERContentType("unused"),
             new ERContentType("capsule"),
             new ERContentType("logicFormat")
     );
 
-    private Seq<ERContent>[] contentMap;
+    private Seq<MappableERContent>[] contentMap;
 
     public ERContentType getContentType(String name){
         return ContentTypes.find(c -> c.name == name);
@@ -41,8 +44,42 @@ public class RustedContentLoader {
     }
 
     public void load(){
+        createContent();
+    }
+
+    public void createContent(){
         contentMap = new Seq[ContentTypes.size];
+        for (int i = 0; i < contentMap.length; i++) {
+            contentMap[i] = new Seq();
+        }
         contentLists.each(ContentList::load);
+
+    }
+
+    public void init(){
+        each(c -> {
+            if (c instanceof UnlockableERContent) {
+                UnlockableERContent content = (UnlockableERContent) c;
+                content.init();
+            }
+        });
+    }
+
+    public void each(Cons c){
+        for (int i = 0; i < contentMap.length; i++) {
+            contentMap[i].each(content -> {
+                c.get(content);
+            });
+        }
+    }
+
+    public Seq<Capsule> capsules(){
+        return getBy(getContentType("capsule"));
+    }
+
+    public void handleContent(MappableERContent content){
+        if(contentMap[content.getContentType().ordinal] == null) contentMap[content.getContentType().ordinal] = new Seq();
+        contentMap[content.getContentType().ordinal].add(content);
     }
 
 }

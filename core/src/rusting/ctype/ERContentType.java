@@ -13,4 +13,8 @@ public class ERContentType {
 
     //how you find the ERContentType
     public String name = "UNUSED";
+
+    public String name(){
+        return name;
+    }
 }

@@ -23,6 +23,7 @@ import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.*;
 import rusting.core.holder.PanelHolder;
 import rusting.core.holder.ShootingPanelHolder;
+import rusting.world.blocks.capsules.CapsuleCenter;
 import rusting.world.blocks.defense.turret.*;
 import rusting.world.blocks.environment.FixedOreBlock;
 import rusting.world.blocks.power.AttributeBurnerGenerator;
@@ -38,6 +39,7 @@ import static mindustry.type.ItemStack.with;
 
 public class RustingBlocks implements ContentList{
     public static Block
+        capsuleCenterTest,
         //environment
         //liquids
         melainLiquae,
@@ -200,6 +202,10 @@ public class RustingBlocks implements ContentList{
         }};
 
         //endregion
+
+        capsuleCenterTest = new CapsuleCenter("etst"){{
+            requirements(Category.effect, with());
+        }};
 
         //region crafting
         bulasteltForgery = new GenericCrafter("bulastelt-forgery"){{

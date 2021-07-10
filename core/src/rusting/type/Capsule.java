@@ -13,24 +13,25 @@ public class Capsule<itemStack, liquidStack> extends UnlockableERContent {
     public int insulation = 0;
     //Resistance to heat. Used in game, only a stat outside of in game usage.
     public int heatResistance = 0;
+    //hidden from ui
+    public boolean hidden = false;
 
     public Capsule(String name){
         super(name);
     }
+
     public Capsule(String name, float itemPayloadStore, float liquidPayloadStore) {
         super(name);
         this.itemPayloadStore = itemPayloadStore;
         this.liquidPayloadStore = liquidPayloadStore;
+        //just for now, till I get researching done
+        alwaysUnlocked = true;
     }
 
-    public void load(){
-
-        fullIcon = Core.atlas.find(name);
-        if(!Core.atlas.isFound(fullIcon)) fullIcon = Core.atlas.find("endless-rusting-default-capsule");
-        String bundleKey = getContentType().name + "." + name;
-        if(localizedName == null) localizedName = Core.bundle.get(bundleKey + ".name", Core.bundle.get(bundleKey + ".displayName", name));
-        if(description == null) description = Core.bundle.get(bundleKey + ".description", "");
-        if(details == null) details = Core.bundle.get(bundleKey + ".description", "");
+    @Override
+    public void loadIcon() {
+        fullIcon = Core.atlas.find(name, "endless-rusting-default-capsule");
+        uiIcon = Core.atlas.find(name + "-ui", fullIcon);
     }
 
     public String name(){

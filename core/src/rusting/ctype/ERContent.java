@@ -5,6 +5,7 @@ import arc.util.Disposable;
 import arc.util.Nullable;
 import mindustry.ctype.Content;
 import mindustry.mod.Mods.LoadedMod;
+import rusting.Varsr;
 
 @SuppressWarnings("uninitialized")
 
@@ -34,7 +35,9 @@ public abstract class ERContent implements Comparable<Content>, Disposable{
      * Called after all content is created, only on non-headless versions.
      * Use for loading regions or other image data.
      */
-    public void load(){}
+    public void load(){
+
+    }
 
     /** @return whether an error occurred during mod loading. */
     public boolean hasErrored(){
@@ -57,7 +60,7 @@ public abstract class ERContent implements Comparable<Content>, Disposable{
     }
 
     public ERContentType getContentType(){
-        return null;
+        return Varsr.content.getContentType("unused");
     }
 
     public static class ModContentInfo{
