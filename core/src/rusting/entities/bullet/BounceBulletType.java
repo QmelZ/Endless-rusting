@@ -20,7 +20,7 @@ public class BounceBulletType extends ConsBulletType {
     //How thick trail is
     public float trailWidth = 1;
 
-    public BounceBulletType(int speed, int damage, String sprite) {
+    public BounceBulletType(float speed, float damage, String sprite) {
         super(speed, damage, sprite);
         this.sprite = sprite;
         this.speed = speed;

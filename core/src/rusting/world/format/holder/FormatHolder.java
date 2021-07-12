@@ -4,7 +4,7 @@ import arc.func.Func2;
 import arc.math.Mathf;
 import arc.struct.Seq;
 import arc.util.Tmp;
-import rusting.world.format.DataFormat;
+import rusting.ctype.DataFormat;
 
 //used to hold multiple data formats
 public class FormatHolder {

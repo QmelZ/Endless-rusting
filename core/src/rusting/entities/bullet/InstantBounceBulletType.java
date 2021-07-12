@@ -16,12 +16,15 @@ public class InstantBounceBulletType extends BounceBulletType implements instant
     public float length = 100;
     public float trailFadeIn = 5, trailFadeOut = 25;
 
-    public InstantBounceBulletType(int speed, int damage, String sprite) {
+    public InstantBounceBulletType(float speed, float damage, String sprite) {
         super(speed, damage, sprite);
         this.hitSize = 0;
         this.lifetime = 3600;
         this.speed = 0.1f;
         this.despawnEffect = Fx.none;
+        this.collidesGround = true;
+        this.absorbable = false;
+        this.hittable = false;
     }
 
     @Override
@@ -41,6 +44,9 @@ public class InstantBounceBulletType extends BounceBulletType implements instant
 
     @Override
     public void init(Bullet b){
+
+        super.init(b);
+
         //no trails
         if(killShooter && b.owner() instanceof Healthc){
             ((Healthc) b.owner()).kill();
@@ -77,13 +83,12 @@ public class InstantBounceBulletType extends BounceBulletType implements instant
                 b.vel.setAngle((b.rotation() + b.rotation() - b.angleTo(targ)) * 2);
                 b.vel.rotate(180);
                 Unit target = (Unit) targ;
-                x = target.x + Angles.trnsx(b.rotation(), target.hitSize + 1);
-                y = target.y + Angles.trnsy(b.rotation(), target.hitSize + 1);
+                x = target.x + Angles.trnsx(b.rotation() - 90, target.hitSize + 1);
+                y = target.y + Angles.trnsy(b.rotation() - 90, target.hitSize + 1);
                 b.fdata *= bounciness;
 
             }
             else if(targ instanceof Building){
-
 
                 float angle = b.angleTo(targ) - 180;
 
@@ -124,6 +129,9 @@ public class InstantBounceBulletType extends BounceBulletType implements instant
             else{
                 despawnEffect.at(x, y);
                 graphicEffects.trailEffect(trailColor, x, y, 2.5f, 2, 1, trailFadeIn, trailFadeOut, points);
+                Posc owner = null;
+                if(b.owner instanceof Posc) owner = (Posc) owner;
+                graphicEffects.trailEffect(trailColor, owner.x(), owner.y(), 2.5f, 2, 1, trailFadeIn, trailFadeOut, points);
                 b.remove();
             }
         }
@@ -140,6 +148,10 @@ public class InstantBounceBulletType extends BounceBulletType implements instant
 
             despawnEffect.at(ox, oy);
             graphicEffects.trailEffect(trailColor, ox, oy, 2.5f, 2, 1, trailFadeIn, trailFadeOut, points);
+            if(b.owner != null && b.owner instanceof Posc) {
+                Posc owner = (Posc) b.owner;
+                graphicEffects.trailEffect(trailColor, owner.x(), owner.y(), 2.5f, 2, 1, trailFadeIn, trailFadeOut, points);
+            }
             b.remove();
         }
     }

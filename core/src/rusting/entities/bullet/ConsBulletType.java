@@ -16,25 +16,26 @@ public class ConsBulletType extends BasicBulletType {
     @Nullable
     public Cons<Bullet> consHit;
 
-    public ConsBulletType(int speed, int damage, String sprite){
+    public ConsBulletType(float speed, float damage, String sprite){
         super(speed, damage, sprite);
     }
 
     @Override
     public void update(Bullet b) {
-        super.update(b);
         if(consUpdate != null) consUpdate.get(b);
+        super.update(b);
+
     }
 
     @Override
     public void hit(Bullet b, float x, float y) {
-        super.hit(b, x, y);
         if(consHit != null) consHit.get(b);
+        super.hit(b, x, y);
     }
 
     @Override
     public void despawned(Bullet b) {
-        super.despawned(b);
         if(consDespawned != null) consDespawned.get(b);
+        super.despawned(b);
     }
 }

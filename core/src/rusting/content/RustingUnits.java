@@ -7,6 +7,7 @@ import arc.struct.ObjectMap.Entry;
 import mindustry.content.Bullets;
 import mindustry.content.StatusEffects;
 import mindustry.ctype.ContentList;
+import mindustry.entities.abilities.StatusFieldAbility;
 import mindustry.gen.*;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
@@ -71,7 +72,7 @@ public class RustingUnits implements ContentList{
             duono, duoly, duanga,
             fahrenheit;
     public static UnitType
-            marrow, metaphys, ribigen;
+            marrow, metaphys, ribigen, spinascene;
 
     @Override
     public void load() {
@@ -398,5 +399,83 @@ public class RustingUnits implements ContentList{
             );
         }};
 
+        EntityMapping.nameMap.put("spinascene", BaseUnit::new);
+        spinascene = new UnitType("spinascene"){{
+            hitSize = 24;
+            health = 8950;
+            armor = 13;
+            speed = 0.25f;
+            accel = 0.35f;
+            drag = 0.25f;
+            rotateSpeed = 0.55f;
+            lightRadius = hitSize * 4.5f;
+            lightColor = Palr.dustriken;
+            lightOpacity = 0.125f;
+            itemCapacity = 125;
+            commandLimit = 2;
+            mechLegColor = Palr.dustriken;
+            //v7 compatability
+            constructor = BaseUnit::new;
+            abilities.add(
+                new RegenerationAbility(0.7f),
+                new StatusFieldAbility(RustingStatusEffects.corruptShield, 1440, 600, 45)
+            );
+
+            immunities.addAll(
+                    StatusEffects.wet,
+                    StatusEffects.burning,
+                    StatusEffects.sporeSlowed,
+                    StatusEffects.sapped,
+                    RustingStatusEffects.shieldShatter,
+                    RustingStatusEffects.amberstriken,
+                    RustingStatusEffects.umbrafliction
+            );
+
+            weapons.addAll(
+                new Weapon("endless-rusting-spinascene-branches"){{
+                    x = 16.5f;
+                    y = -0.35f;
+                    shootY = 19.45f;
+                    reload = 430;
+                    shots = 3;
+                    spacing = 3;
+                    shootSound = Sounds.none;
+                    recoil = 3;
+                    bullet = RustingBullets.timelessInstalt;
+                    top = false;
+                }},
+                new Weapon("endless-rusting-spinascene-beam"){{
+                    x = 19.17f;
+                    y = 3.45f;
+                    bullet = RustingBullets.mhemQuadStorm;
+                    shots = 3;
+                    reload = 430;
+                    shots = 1;
+                    inaccuracy = 4;
+                    recoil = 4;
+                }},
+                new Weapon("endless-rusting-spinascene-beam"){{
+                    x = 16.25f;
+                    y = -5.25f;
+                    bullet = RustingBullets.fossilShard;
+                    shots = 4;
+                    shotDelay = 5;
+                    reload = 430;
+                    inaccuracy = 4;
+                    recoil = 4;
+                }},
+                new Weapon("none"){{
+                    x = 0;
+                    y = 0;
+                    bullet = RustingBullets.darkShard;
+                    shots = 45;
+                    reload = 45/4 * 7.5f;
+                    inaccuracy = 360;
+                    shotDelay = 7.5f;
+                    shootCone = 360;
+                    rotate = true;
+                }}
+            );
+        }};
     }
 }

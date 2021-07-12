@@ -137,7 +137,7 @@ public class RustingStatusEffects implements ContentList {
         }};
 
         corruptShield = new ConsStatusEffect("corrupt-shield"){{
-            speedMultiplier = 0.85f;
+            speedMultiplier = 1.15f;
             effect = Fxr.blackened;
         }};
 

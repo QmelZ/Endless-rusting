@@ -20,6 +20,7 @@ import mindustry.world.blocks.environment.StaticWall;
 import mindustry.world.blocks.logic.MessageBlock;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.storage.CoreBlock;
+import mindustry.world.blocks.units.UnitFactory;
 import mindustry.world.meta.*;
 import rusting.core.holder.PanelHolder;
 import rusting.core.holder.ShootingPanelHolder;
@@ -50,6 +51,8 @@ public class RustingBlocks implements ContentList{
         ebrinDrylon,
         //classem
         classemStolnene, classemPathen, classemPulsen, classemWallen, classemBarrreren,
+        //dripive
+        dripiveGrassen, dripiveWallen,
         //ore blocks
         melonaleum, taconite,
         //crafting
@@ -97,6 +100,8 @@ public class RustingBlocks implements ContentList{
         prikend, prsimdeome, prefraecon, pafleaver,
         //bomerang related turrets
         refract, diffract, reflect,
+        //region unit
+        fraeFactory,
         //logic
         fraeLog;
         
@@ -173,6 +178,13 @@ public class RustingBlocks implements ContentList{
             attributes.set(Attribute.heat, -0.35f);
         }};
 
+        dripiveGrassen = new Floor("dripive-grassen"){{
+            speedMultiplier = 0.95f;
+            attributes.set(Attribute.water, 1.14f);
+            attributes.set(Attribute.spores, -0.25f);
+            attributes.set(Attribute.heat, -0.35f);
+        }};
+
         paileanWallen = new StaticWall("pailean-wallen"){{
             variants = 2;
         }};
@@ -186,6 +198,10 @@ public class RustingBlocks implements ContentList{
         }};
 
         classemBarrreren = new StaticWall("classem-barreren"){{
+            variants = 2;
+        }};
+
+        dripiveWallen = new StaticWall("dripive-wallen"){{
             variants = 2;
         }};
 
@@ -513,7 +529,6 @@ public class RustingBlocks implements ContentList{
             size = 3;
             plans.addAll(
                 new UnitPlan(RustingUnits.duono, 1920, ItemStack.with(Items.lead, 25, Items.silicon, 35, Items.titanium, 10)),
-                new UnitPlan(RustingUnits.marrow, 1920, ItemStack.with(Items.lead, 25, Items.silicon, 35, Items.titanium, 10)),
                 new UnitPlan(RustingUnits.fahrenheit, 1250, ItemStack.with(Items.lead, 35, Items.silicon, 15, RustingItems.melonaleum, 10))
             );
         }};
@@ -554,11 +569,6 @@ public class RustingBlocks implements ContentList{
             constructTime = 720;
         }};
 
-        pulseDistributor = new PulsePoint("pulse-distributor"){{
-            requirements(Category.units, with(Items.lead, 465, Items.metaglass, 245, Items.pyratite, 85, Items.titanium, 85));
-
-        }};
-
         //region logic
 
         pulseDirectionalController = new PulseController("pulse-controller"){{
@@ -592,7 +602,7 @@ public class RustingBlocks implements ContentList{
             targetGround = true;
         }};
 
-        spikent = new HealerBeamTurret("spikent"){{
+        spikent = new AreaHealerBeamTurret("spikent"){{
             requirements(Category.turret, with(Items.copper, 125, Items.lead, 85, Items.silicon, 55, RustingItems.melonaleum, 35));
             health = 650;
             size = 2;
@@ -603,6 +613,7 @@ public class RustingBlocks implements ContentList{
             rotateSpeed = 8;
             alphaFalloff = 0.35f;
             healing = 35;
+            healRadius = 18;
             targetAir = true;
             targetGround = true;
         }};
@@ -715,9 +726,6 @@ public class RustingBlocks implements ContentList{
                 }}
             );
         }};
-        //endregion
-
-        //region boomerang
 
         refract = new ItemTurret("refract"){{
             requirements(Category.turret, with(Items.copper, 40, Items.graphite, 17));
@@ -780,6 +788,25 @@ public class RustingBlocks implements ContentList{
             shootCone = 360f;
             rotateSpeed = 1;
             shootSound = Sounds.bang;
+        }};
+
+        //endregion
+
+
+        //region unit
+
+        fraeFactory = new UnitFactory("frae-factory"){{
+            requirements(Category.units, with(Items.copper, 60, Items.lead, 70));
+            plans = Seq.with(
+                new UnitPlan(RustingUnits.marrow, 2345, with(Items.silicon, 15))
+            );
+            size = 3;
+            consumes.power(0.85f);
+        }};
+
+        pulseDistributor = new PulsePoint("pulse-distributor"){{
+            requirements(Category.units, with(Items.lead, 465, Items.metaglass, 245, Items.pyratite, 85, Items.titanium, 85));
+
         }};
 
         //endregion

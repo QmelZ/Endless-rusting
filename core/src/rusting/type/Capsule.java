@@ -1,6 +1,5 @@
 package rusting.type;
 
-import arc.Core;
 import rusting.ctype.UnlockableERContent;
 
 public class Capsule<itemStack, liquidStack> extends UnlockableERContent {
@@ -26,12 +25,6 @@ public class Capsule<itemStack, liquidStack> extends UnlockableERContent {
         this.liquidPayloadStore = liquidPayloadStore;
         //just for now, till I get researching done
         alwaysUnlocked = true;
-    }
-
-    @Override
-    public void loadIcon() {
-        fullIcon = Core.atlas.find(name, "endless-rusting-default-capsule");
-        uiIcon = Core.atlas.find(name + "-ui", fullIcon);
     }
 
     public String name(){

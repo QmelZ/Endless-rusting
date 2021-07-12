@@ -1,8 +1,6 @@
 package rusting.content;
 
-import arc.func.Cons;
 import mindustry.ctype.ContentList;
-import mindustry.game.Rules;
 import mindustry.type.SectorPreset;
 
 public class RustingSectorPresets implements ContentList {
@@ -41,23 +39,11 @@ public class RustingSectorPresets implements ContentList {
         hangout = new SectorPreset("pure-past-void-future", RustingPlanets.err, 35){{
             difficulty = 0;
             captureWave = 0;
-            rules = new Cons<Rules>() {
-                @Override
-                public void get(Rules rules) {
-                    rules.waves = false;
-                }
-            };
         }};
 
         preservatory = new SectorPreset("lush-preservatory", RustingPlanets.err, 110){{
             difficulty = 0;
             captureWave = 0;
-            rules = new Cons<Rules>() {
-                @Override
-                public void get(Rules rules) {
-                    rules.waves = false;
-                }
-            };
         }};
 
     }

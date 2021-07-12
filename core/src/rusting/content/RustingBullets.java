@@ -4,14 +4,16 @@ import arc.func.Cons;
 import arc.graphics.Color;
 import arc.math.Angles;
 import arc.math.Mathf;
+import arc.struct.Seq;
 import arc.util.Time;
 import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.ctype.ContentList;
 import mindustry.entities.Fires;
+import mindustry.entities.Units;
 import mindustry.entities.bullet.*;
-import mindustry.gen.Bullet;
-import mindustry.gen.Sounds;
+import mindustry.game.Team;
+import mindustry.gen.*;
 import mindustry.graphics.Pal;
 import mindustry.world.blocks.defense.turrets.Turret.TurretBuild;
 import rusting.entities.bullet.*;
@@ -24,6 +26,8 @@ public class RustingBullets implements ContentList{
     public static BulletType
         //basic bullets
         fossilShard, craeShard, raehShard, mhenShard, fraeShard, paveShard, darkShard,
+        //artillery
+        mhemQuadStorm,
         //missile/weaving bullets
         craeWeaver, paveWeaver,
         //lightning bullets
@@ -37,7 +41,7 @@ public class RustingBullets implements ContentList{
         //glaivs
         craeLightGlaive, craeLightGlaiveRight, craeLightGlaiveLeft,
         //instant bullets
-        horizonInstalt, timelessInstalt;
+        horizonInstalt, nummingInstalt, timelessInstalt;
 
     @Override
     public void load(){
@@ -59,7 +63,7 @@ public class RustingBullets implements ContentList{
             bounceCap = 3;
         }};
 
-        timelessInstalt = new InstantBounceBulletType(1, 15, "bullet"){{
+        nummingInstalt = new InstantBounceBulletType(1,  7.5f, "bullet"){{
             width = 7;
             height = 8;
             lifetime = 54;
@@ -68,13 +72,30 @@ public class RustingBullets implements ContentList{
             shootEffect = Fx.shootSmall;
             hitEffect = Fx.hitFuse;
             bounceEffect = Fx.blockExplosionSmoke;
-            trailColor = Palr.pulseBullet;
-            status = StatusEffects.freezing;
+            trailColor = Palr.lightstriken;
+            status = StatusEffects.shocked;
             statusDuration = 250;
             knockback = 0.3f;
             drag = 0.005f;
             bounciness = 1.2;
             bounceCap = 4;
+        }};
+
+        timelessInstalt = new InstantBounceBulletType(1, 15, "bullet"){{
+            width = 7;
+            height = 8;
+            lifetime = 192;
+            length = 166;
+            buildingDamageMultiplier = 0.35f;
+            shootEffect = Fx.shootSmall;
+            hitEffect = Fx.hitFuse;
+            bounceEffect = Fx.blockExplosionSmoke;
+            trailColor = Palr.pulseBullet;
+            status = StatusEffects.freezing;
+            knockback = 0.3f;
+            drag = 0.005f;
+            bounciness = 1.2;
+            bounceCap = 2;
         }};
 
         fossilShard = new BounceBulletType(4, 9, "bullet"){{
@@ -169,6 +190,7 @@ public class RustingBullets implements ContentList{
             hitEffect = Fx.plasticExplosion;
             status = StatusEffects.corroded;
             statusDuration = 7200;
+            lightOpacity = 0;
             width = 10;
             height = 12;
             pierce = true;
@@ -206,7 +228,7 @@ public class RustingBullets implements ContentList{
             hitEffect = Fx.hitFuse;
         }};
 
-        darkShard = new BounceBulletType(4, 15, "bullet"){{
+        darkShard = new BounceBulletType(4, 2.5f, "bullet"){{
             consUpdate = new Cons<Bullet>() {
                 @Override
                 public void get(Bullet bullet) {
@@ -216,18 +238,83 @@ public class RustingBullets implements ContentList{
             despawnEffect = Fx.fireSmoke;
             hitEffect = Fx.casing3Double;
             bounceEffect = Fx.none;
+            shootEffect = Fxr.blackened;
             frontColor = Color.darkGray;
             backColor = Palr.voidBullet;
             status = RustingStatusEffects.umbrafliction;
-            statusDuration = 3600;
+            statusDuration = 160;
+            lightOpacity = 0;
             width = 10;
             height = 12;
             lifetime = 35;
             hitEffect = Fx.hitFuse;
             trailLength = 0;
-            homingPower = 0.125F;
+            homingPower = 0.125f;
             drag = 0.015f;
             bounciness = 0.95;
+        }};
+
+        mhemQuadStorm = new ConsBulletType(2.85f, 3.5f, "shell"){{
+
+            consDespawned = new Cons<Bullet>() {
+                @Override
+                public void get(Bullet b) {
+                    Seq targetSeq = Seq.with();
+                    Entityc owner = b.owner;
+                    Team team = b.team;
+                    float x = b.x, y = b.y;
+                    float range = nummingInstalt.range();
+                    for (int p = 0; p < 240/15; p++) {
+                        int i = p;
+                        float[] rotation = {0};
+                        Time.run(15 * p, () -> {
+                            Teamc targ = Units.closestEnemy(team, x, y, range, u -> !targetSeq.contains(u));
+                            if(owner != null && (owner instanceof Unit || owner instanceof TurretBuild)){
+                                if(owner instanceof Unit){
+                                    Unit unitOwner = ((Unit) owner);
+                                    rotation[0] = Mathf.angle(unitOwner.aimX - x,unitOwner.aimY - y);
+                                }
+                                else if(owner instanceof TurretBuild){
+                                    rotation[0] = b.angleTo(((TurretBuild) owner).targetPos);
+                                }
+                            }
+                            else if(targ != null){
+                                targetSeq.add(targ);
+                                rotation[0] = Mathf.angle(targ.x() - x, targ.y() - y);
+                            }
+                            else rotation[0] = 360/(240/15) * (i + 1);
+                            nummingInstalt.create(owner, team, x, y, rotation[0]);
+                            darkShard.create(owner, team, x, y, rotation[0]);
+                            if(i >= 240/15 - 1) fraeShard.create(owner, team, x, y, rotation[0]);
+                            Sounds.artillery.at(x, y);
+                        });
+                    }
+
+                }
+            };
+
+            consHit = consDespawned;
+            scaleVelocity = true;
+            hitShake = 1f;
+            frontColor = Palr.lightstriken;
+            backColor = Pal.bulletYellowBack;
+            hitEffect = Fx.flakExplosion;
+            despawnEffect = Fxr.instantSummoner;
+            knockback = 0.8f;
+            lifetime = 105f;
+            width = height = 11f;
+            splashDamageRadius = 35f * 0.75f;
+            splashDamage = 33f;
+            shootEffect = Fx.shootBig;
+            trailEffect = Fx.artilleryTrail;
+            trailChance = 0.15f;
+            fragBullet = Bullets.fragGlassFrag;
+            fragBullets = 13;
+
+            shrinkX = 0.15f;
+            shrinkY = 0.63f;
+
+            drag = 0.13f;
         }};
 
         craeWeaver = new BounceBulletType(3, 14, "bullet"){{
@@ -539,6 +626,5 @@ public class RustingBullets implements ContentList{
             statusDuration = 60;
             drag = -0.001f;
         }};
-
     }
 }

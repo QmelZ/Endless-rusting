@@ -237,6 +237,19 @@ public class Fxr{
             Lines.line(points[0][i], points[1][i], points[0][i+ 1], points[1][i + 1]);
             Fill.circle(points[0][i + 1], points[1][i + 1], circleRadius);
         }
+    }),
+
+    instantSummoner = new Effect(240, e -> {
+        Draw.color(Palr.lightstriken, Palr.dustriken, e.fin());
+        float initialScaling = Math.min(e.fout() * 4, Math.min(e.fin() * 4, 1));
+        float scaling = e.fout() * 4;
+        Draw.alpha(initialScaling);
+        Fill.circle(e.x, e.y, initialScaling * 8);
+        float spacing = 2;
+        for(float i = 0; i < scaling; i++){
+            Lines.stroke((scaling - i) * spacing/3);
+            Lines.circle(e.x, e.y, (scaling - i) * spacing + i + 8);
+        }
     });
 
 }

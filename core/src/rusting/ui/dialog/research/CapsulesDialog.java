@@ -65,7 +65,7 @@ public class CapsulesDialog extends CustomBaseDialog {
                     final boolean isResearched = capsule.unlockedNow();
                     Image nonfinalImage = new Image();
                     if(Core.atlas.isFound(capsule.uiIcon)) nonfinalImage = new Image(capsule.uiIcon).setScaling(Scaling.fit);
-                    Image image = nonfinalImage;
+                    Image image = nonfinalImage.setScaling(Scaling.fit);
                     Color imageCol = isResearched ? Color.white : Pal.darkerGray;
                     list.add(image).size(8 * 12).pad(3);
                     ClickListener listener = new ClickListener();
@@ -79,7 +79,6 @@ public class CapsulesDialog extends CustomBaseDialog {
                     image.clicked(() -> {
                         //do things
                     });
-                    boolean finalIsResearched1 = isResearched;
 
                     if ((++count[0]) % cols == 0) {
                         list.row();

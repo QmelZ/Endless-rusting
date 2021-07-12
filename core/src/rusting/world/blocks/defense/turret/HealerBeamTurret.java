@@ -220,33 +220,38 @@ public class HealerBeamTurret extends PowerTurret {
 
         @Override
         protected void shoot(BulletType type) {
+            if(((logicControlled() || isControlled()) && within(targetPos, range)) || target != null && target instanceof Building && ((Building) target).damaged() && validateTarget()) {
+                setLastP();
+                healTargets();
+            }
+            else if(canShootBullet) super.shoot(type);
+        }
+
+        public void healTarget(Posc targ){
+            if(targ instanceof Building) healBuilding((Building) targ);
+        }
+
+        public void healBuilding(Building TempBuild){
+            TempBuild.heal(percentageHealing ? (TempBuild.maxHealth/100 * healing) : healing);
+            Fx.healBlockFull.at(TempBuild.x, TempBuild.y, TempBuild.block.size, Color.valueOf("#82f48f"));
+            beamAlpha = 1;
+        }
+
+        public void healTargets(){
             if((logicControlled() || isControlled()) && within(targetPos, range)){
-                Building TempBuild = Vars.world.buildWorld(this.targetPos.x, this.targetPos.y);
+                Building TempBuild = Vars.world.buildWorld(LTP.x, LTP.y);
                 if(TempBuild != null && TempBuild.team == team && TempBuild.damaged()){
                     recoil = recoilAmount;
                     heat = 1;
-                    healBuilding(TempBuild, type);
+                    healBuilding(TempBuild);
                 }
-                else if(canShootBullet) super.shoot(type);
             }
             else if(target != null && target instanceof Building && ((Building) target).damaged() && validateTarget()){
                 this.recoil = 1;
                 recoil = recoilAmount;
                 heat = 1;
-                healTarget(target, type);
+                healTarget(target);
             }
-            else if(canShootBullet) super.shoot(type);
-        }
-
-        public void healTarget(Posc targ, BulletType type){
-            if(targ instanceof Building) healBuilding((Building) targ, type);
-        }
-
-        public void healBuilding(Building TempBuild, BulletType type){
-            TempBuild.heal(percentageHealing ? (TempBuild.maxHealth/100 * healing) : healing);
-            Fx.healBlockFull.at(TempBuild.x, TempBuild.y, TempBuild.block.size, Color.valueOf("#82f48f"));
-            beamAlpha = 1;
-            setLastP();
         }
 
         @Override
@@ -276,7 +281,7 @@ public class HealerBeamTurret extends PowerTurret {
                 Fill.circle(LTP.x, LTP.y,pulsate);
 
                 Draw.color(Color.white, Pal.heal, this.beamAlpha * this.beamAlpha);
-                Lines.circle(COOP.x, COOP.y, 4 - 1.5f * this.beamAlpha * this.beamAlpha);
+                Lines.circle(LTP.x, LTP.y, 4 - 1.5f * this.beamAlpha * this.beamAlpha);
             }
         }
     }

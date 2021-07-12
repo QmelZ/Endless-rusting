@@ -4,7 +4,7 @@ import arc.func.Func2;
 import arc.struct.Seq;
 import rusting.Varsr;
 import rusting.ctype.UnlockableERContent;
-import rusting.world.format.DataFormat;
+import rusting.ctype.DataFormat;
 
 public class PrimitiveDataFormat extends UnlockableERContent {
 

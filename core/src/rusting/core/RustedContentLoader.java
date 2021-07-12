@@ -44,7 +44,13 @@ public class RustedContentLoader {
     }
 
     public void load(){
-        createContent();
+        each(c -> {
+            if (c instanceof UnlockableERContent) {
+                UnlockableERContent content = (UnlockableERContent) c;
+                content.load();
+                content.loadIcon();
+            }
+        });
     }
 
     public void createContent(){
@@ -53,7 +59,6 @@ public class RustedContentLoader {
             contentMap[i] = new Seq();
         }
         contentLists.each(ContentList::load);
-
     }
 
     public void init(){

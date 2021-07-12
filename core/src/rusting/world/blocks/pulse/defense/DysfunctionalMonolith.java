@@ -102,7 +102,6 @@ public class DysfunctionalMonolith extends PulseBlock {
                 }
                 finishedRead = true;
             }
-            displayHologram = Mathf.randomBoolean(0.85f);
             if(Mathf.randomBoolean(0.1f)) {
                 randRotation += 0.1 * (randRotationDirection ? -1 : 1);
             }
@@ -218,6 +217,7 @@ public class DysfunctionalMonolith extends PulseBlock {
         @Override
         public void draw() {
             super.draw();
+            displayHologram = Mathf.randomBoolean(0.85f);
             if(displayHologram){
                 Draw.color(chargeColourEnd, Color.white, 0.15f);
                 if(reload > 0){

@@ -42,12 +42,13 @@ public class EndlessRusting extends Mod{
     public void setup(){
         Varsr.setup();
         settingAdder.init();
+        Varsr.content.load();
     }
 
     @Override
     public void loadContent(){
         Drawr.setMethods();
-        Varsr.content.load();
+        Varsr.content.createContent();
         Color.cyan.set(Palr.pulseChargeEnd);
         Color.sky.set(Palr.pulseChargeStart);
     }
