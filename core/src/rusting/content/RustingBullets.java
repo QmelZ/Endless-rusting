@@ -170,7 +170,7 @@ public class RustingBullets implements ContentList{
                 @Override
                 public void get(Bullet bullet) {
                     Fxr.singingFlame.at(bullet.x, bullet.y, bullet.rotation());
-                    if(bullet.fdata() != 1){
+                    if(bullet.fdata() != 1 && bullet.collided.size < 2){
                         if(bullet.owner instanceof TurretBuild) {
                             bullet.vel.setAngle(Angles.moveToward(bullet.rotation(), bullet.angleTo(((TurretBuild) bullet.owner).targetPos.x, ((TurretBuild) bullet.owner).targetPos.y), Time.delta * 261f * bullet.fin()));
                             //stop homing in after reaching cursor
@@ -288,9 +288,12 @@ public class RustingBullets implements ContentList{
             frontColor = Color.white;
             despawnEffect = Fx.plasticburn;
             hitEffect = Fx.plasticburn;
+            shootEffect = Fx.shootBig;
             pierce = true;
             pierceCap = 2;
             drag = 0.015f;
+            status = fragmentaein;
+            statusDuration = 3600;
         }};
 
         spawnerGlass = new BasicBulletType(1.25f, 13, "bullet"){{
@@ -302,6 +305,7 @@ public class RustingBullets implements ContentList{
             frontColor = Color.white;
             despawnEffect = Fx.blastExplosion;
             despawnEffect = Fx.plasticExplosionFlak;
+            hitSound = Sounds.explosion;
             fragBullet = spawnerGlassFrag;
             fragBullets = 11;
             fragVelocityMin = 0.85f;
@@ -337,14 +341,20 @@ public class RustingBullets implements ContentList{
             height = 22f;
             shrinkY = 0.8f;
             lifetime = 175;
+            knockback = -0.75f;
             frontColor = Pal.plastaniumBack;
             despawnEffect = Fx.plasticExplosionFlak;
+            hitEffect = Fxr.spawnerBulatExplosion;
+            shootEffect = Fx.shootBig;
+            hitSound = Sounds.explosion;
             fragBullet = spawnerBulatFrag;
             fragBullets = 9;
             fragVelocityMin = 0.85f;
             fragLifeMin = 0.75f;
             fragLifeMax = 1.15f;
             scaleVelocity = true;
+            status = StatusEffects.corroded;
+            statusDuration = 360;
         }};
 
         mhemQuadStorm = new ConsBulletType(2.85f, 3.5f, "shell"){{
@@ -728,7 +738,7 @@ public class RustingBullets implements ContentList{
             scaleDrawOut = 7f;
         }};
 
-        cloudyVortex = new BulletSpawnBulletType(0.15f, 250, "none"){{
+        cloudyVortex = new BulletSpawnBulletType(0.35f, 250, "none"){{
             bullets = Seq.with(
                 new BulletSpawner(){{
                     bullet = cloudyShard;
@@ -763,6 +773,9 @@ public class RustingBullets implements ContentList{
             scaleDrawIn = 4;
             scaleDrawOut = 9;
             drawSize = 6;
+
+            homingPower = 0.02f;
+            drag = 0.005f;
 
         }};
 

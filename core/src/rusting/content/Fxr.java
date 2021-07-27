@@ -26,6 +26,13 @@ public class Fxr{
 
         none = new Effect(0, 0f, e -> {}),
 
+        corrodedEffect = new Effect(75, e -> {
+            Draw.color(Color.white, Pal.plastanium, Pal.darkMetal, e.fin());
+            Fill.circle(e.x, e.y, e.fout() * 1.6f);
+            Draw.color(Color.white, Pal.plastanium, Pal.darkMetal, e.fin());
+            Fill.circle(e.x, e.y, e.fout() * 1.25f);
+        }),
+
         blackened = new Effect(35, 0f, e -> {
             color(Color.black, Color.black, e.fin());
             randLenVectors(e.id, 2, e.finpow() * 3, e.rotation, 360, (x, y) -> {
@@ -134,6 +141,31 @@ public class Fxr{
         randLenVectors(e.id, 2, e.fin() * 6 + 5, e.rotation - 90, 2, (x, y) -> {
             Lines.lineAngle(e.x, e.y, angle(x, y) - 90, e.fout() * e.fout() * 5);
         });
+    }),
+
+    spawnerBulatExplosion = new Effect(145, e -> {
+
+        color(Color.gray);
+
+        randLenVectors(e.id, 9, 3f + 26f * e.finpow(), (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, e.fout() * e.fout() * 4f + 0.5f);
+        });
+
+        color(Pal.plastaniumBack);
+        stroke(e.fout());
+
+        randLenVectors(e.id + 1, 4, 1f + 30f * e.finpow(), (x, y) -> {
+            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 1f + e.fout() * 3f);
+        });
+
+        Draw.color(Pal.plasticSmoke);
+        e.scaled(85, h -> {
+            Draw.alpha(h.fout() * 0.15f);
+            Angles.randLenVectors(e.id, 6, 3 + 25 * h.fout(), (x, y) -> {
+                Fill.circle(h.x + x, h.y + y, (28 - Mathf.dst(x, y))/ 2 * (1 - h.fslope() * h.fslope()));
+            });
+        });
+
     }),
 
     pulseExplosion = new Effect(85f, e -> {

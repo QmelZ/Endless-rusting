@@ -17,7 +17,6 @@ import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.distribution.Conveyor;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.StaticWall;
-import mindustry.world.blocks.logic.MessageBlock;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.blocks.units.Reconstructor;
@@ -28,8 +27,10 @@ import rusting.core.holder.ShootingPanelHolder;
 import rusting.world.blocks.capsules.CapsuleCenter;
 import rusting.world.blocks.defense.turret.*;
 import rusting.world.blocks.environment.FixedOreBlock;
+import rusting.world.blocks.logic.UnbreakableMessageBlock;
 import rusting.world.blocks.power.AttributeBurnerGenerator;
 import rusting.world.blocks.production.ConditionalDrill;
+import rusting.world.blocks.pulse.crafting.PulseGenericCrafter;
 import rusting.world.blocks.pulse.defense.*;
 import rusting.world.blocks.pulse.distribution.*;
 import rusting.world.blocks.pulse.production.PulseGenerator;
@@ -54,6 +55,8 @@ public class RustingBlocks implements ContentList{
         classemStolnene, classemPathen, classemPulsen, classemWallen, classemBarrreren,
         //dripive
         dripiveGrassen, dripiveWallen,
+        //volen, drier variants of normal stone, could be used for warmer looking maps. Not resprited stone floors, I promise
+        volenStolnene, volenWallen,
         //ore blocks
         melonaleum, taconite,
         //crafting
@@ -75,6 +78,8 @@ public class RustingBlocks implements ContentList{
         pulseResonator,
         //Siphon
         pulseSiphon,
+        //crafting
+        pulseCondensery,
         //Walls
         pulseBarrier, pulseBarrierLarge,
         //Research
@@ -100,7 +105,7 @@ public class RustingBlocks implements ContentList{
         //pannel turrets
         prikend, prsimdeome, prefraecon, rangi, pafleaver,
         //spawner turrets.
-        octain, triagon,
+        octain, triagon, cuin,
         //bomerang related turrets
         refract, diffract, reflect,
         //region unit
@@ -188,6 +193,10 @@ public class RustingBlocks implements ContentList{
             attributes.set(Attribute.heat, -0.35f);
         }};
 
+        volenStolnene = new Floor("volen-stolnene"){{
+            variants = 3;
+        }};
+
         paileanWallen = new StaticWall("pailean-wallen"){{
             variants = 2;
         }};
@@ -205,6 +214,10 @@ public class RustingBlocks implements ContentList{
         }};
 
         dripiveWallen = new StaticWall("dripive-wallen"){{
+            variants = 2;
+        }};
+
+        volenWallen = new StaticWall("volen-wallen"){{
             variants = 2;
         }};
 
@@ -408,6 +421,20 @@ public class RustingBlocks implements ContentList{
             pulseStorage = 35;
             laserRange = 6;
             canOverload = false;
+        }};
+
+        pulseCondensery = new PulseGenericCrafter("pulse-melonaleum-condensery"){{
+            requirements(Category.crafting, with());
+            centerResearchRequirements = with(Items.coal, 65, Items.silicon, 45, Items.metaglass, 65);
+            size = 2;
+            powerLoss = 0.15f;
+            pulseStorage = 150;
+            canOverload = false;
+            minRequiredPulsePercent = 0.45f;
+            customConsumes.pulse = 55;
+            craftTime = 85;
+
+            outputItem = new ItemStack(RustingItems.melonaleum, 3);
         }};
 
         pulseBarrier = new PulseBarrier("pulse-barrier"){{
@@ -717,7 +744,7 @@ public class RustingBlocks implements ContentList{
         }};
 
         pafleaver  = new PanelTurret("pafleaver"){{
-            //requirements(Category.turret, with(Items.copper, 60, Items.lead, 70, Items.silicon, 50));
+            requirements(Category.turret, with(Items.copper, 60, Items.lead, 70, Items.silicon, 50));
             range = 260f;
             recoilAmount = 2f;
             reloadTime = 60f;
@@ -728,7 +755,7 @@ public class RustingBlocks implements ContentList{
             heatColor = Pal.darkPyraFlame;
             size = 4;
             health = 280 * size * size;
-            shootSound = Sounds.flame2;
+            shootSound = Sounds.flame;
             shootType = RustingBullets.paveShard;
             shots = 1;
             panels.add(
@@ -753,7 +780,7 @@ public class RustingBlocks implements ContentList{
             );
         }};
 
-        octain = new ItemTurret("octain"){{
+        octain = new AutoreloadItemTurret("octain"){{
             requirements(Category.turret, with(Items.graphite, 35, Items.metaglass, 25, RustingItems.taconite, 65));
             size = 2;
             health = 275 * size * size;
@@ -770,15 +797,16 @@ public class RustingBlocks implements ContentList{
             shootCone = 25f;
             shootSound = Sounds.release;
             coolantMultiplier = 0.35f;
+            autoreloadThreshold = 1 - 1/reloadTime;
         }};
 
-        triagon = new ItemTurret("triagon"){{
+        triagon = new AutoreloadItemTurret("triagon"){{
             requirements(Category.turret, with(Items.graphite, 35, Items.metaglass, 25, RustingItems.taconite, 65));
             size = 3;
             health = 275 * size * size;
             ammo(
-                Items.pyratite, RustingBullets.flamstrikenVortex,
-                RustingItems.melonaleum, RustingBullets.boltingVortex
+                    Items.pyratite, RustingBullets.flamstrikenVortex,
+                    RustingItems.melonaleum, RustingBullets.boltingVortex
             );
             shots = 1;
             reloadTime = 325f;
@@ -787,6 +815,25 @@ public class RustingBlocks implements ContentList{
             shootCone = 25f;
             shootSound = Sounds.release;
             coolantMultiplier = 0.35f;
+            autoreloadThreshold = 1 - 1/reloadTime;
+        }};
+
+        cuin = new QuakeTurret("cuin"){{
+            requirements(Category.turret, with(Items.graphite, 35, Items.metaglass, 25, RustingItems.taconite, 65));
+            size = 3;
+            health = 275 * size * size;
+            targetAir = false;
+            shots = 3;
+            spread = 15;
+            reloadTime = 325f;
+            recoilAmount = 2.5f;
+            range = 175f;
+            quakeInterval = 4;
+            spacing = 14;
+            shootCone = 25f;
+            shootSound = Sounds.release;
+            coolantMultiplier = 0.35f;
+            shootType = Bullets.artilleryIncendiary;
         }};
 
 
@@ -895,12 +942,8 @@ public class RustingBlocks implements ContentList{
         //endregion
 
         //region, *sigh* logic
-        fraeLog = new MessageBlock("frae-log"){{
-            buildVisibility = BuildVisibility.editorOnly;
-            targetable = false;
-            breakable = false;
-            replaceable = false;
-            destructible = false;
+        fraeLog = new UnbreakableMessageBlock("frae-log"){{
+            buildVisibility = BuildVisibility.shown;
         }};
         //endregion
     }

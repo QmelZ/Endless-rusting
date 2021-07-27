@@ -23,7 +23,7 @@ import rusting.type.statusEffect.*;
 
 public class RustingStatusEffects implements ContentList {
     public static StatusEffect
-            weather, amberstriken, umbrafliction, macrosis, macotagus, causticBurning, shieldShatter, corruptShield;
+            weather, amberstriken, umbrafliction, macrosis, macotagus, causticBurning, shieldShatter, corruptShield, fragmentaein;
     public static Cons
             corruptShieldCons;
 
@@ -140,6 +140,30 @@ public class RustingStatusEffects implements ContentList {
             speedMultiplier = 1.15f;
             effect = Fxr.blackened;
         }};
+
+        fragmentaein = new ConsStatusEffect("fragmentaein"){{
+            transitionDamage = 15;
+            effect = Fx.bubble;
+            init(() -> {
+                affinity(amberstriken, ((unit, time, newTime, result) -> {
+                    unit.damagePierce(transitionDamage);
+                    unit.damage(amberstriken.transitionDamage);
+                    Fx.plasticburn.at(unit.x, unit.y);
+                    result.set(fragmentaein, 0);
+                    unit.unapply(amberstriken);
+                }));
+                affinity(umbrafliction, ((unit, time, newTime, result) -> {
+                    unit.damagePierce(transitionDamage);
+                    unit.damage(umbrafliction.transitionDamage);
+                    Fxr.blackened.at(unit.x, unit.y);
+                    result.set(fragmentaein, 0);
+                    unit.unapply(amberstriken);
+                }));
+            });
+        }};
+
+        //you know I had to
+        StatusEffects.corroded.effect = Fxr.corrodedEffect;
 
         corruptShieldCons = new Cons() {
             @Override

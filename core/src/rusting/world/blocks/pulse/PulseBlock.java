@@ -22,16 +22,17 @@ import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Stat;
+import mindustry.world.modules.ItemModule.ItemConsumer;
 import rusting.content.Palr;
 import rusting.content.RustingBullets;
 import rusting.core.holder.CustomConsumerModule;
 import rusting.core.holder.CustomStatHolder;
-import rusting.interfaces.PulseBlockc;
+import rusting.interfaces.*;
 import rusting.world.blocks.pulse.utility.PulseResearchBlock;
 
 import static mindustry.Vars.*;
 
-public class PulseBlock extends Block{
+public class PulseBlock extends Block implements ResearchableBlock {
 
     public CustomStatHolder pStats = new CustomStatHolder();
 
@@ -196,6 +197,13 @@ public class PulseBlock extends Block{
         @Override
         public float range() {
             return projectileRange();
+        }
+
+        @Override
+        public void created() {
+            super.created();
+
+            setupValues();
         }
 
         @Override

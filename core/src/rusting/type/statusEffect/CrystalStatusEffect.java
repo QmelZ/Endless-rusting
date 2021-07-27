@@ -41,7 +41,7 @@ public class CrystalStatusEffect extends ConsStatusEffect {
     public void draw(Unit unit) {
         super.draw(unit);
 
-        Draw.reset();
+        Draw.mixcol();
         Draw.color(drawColor, Color.white, (float) (Mathf.absin(Time.time, 1) * 0.45 + 0.35));
         Draw.z(Mathf.lerpDelta(Layer.groundUnit, Layer.flyingUnit, unit.elevation) + 0.1f);
         Draw.alpha((float) (Mathf.absin(Time.time, 1) * 0.45 + 0.35));

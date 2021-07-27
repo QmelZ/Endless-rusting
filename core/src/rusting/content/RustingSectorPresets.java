@@ -5,7 +5,7 @@ import mindustry.type.SectorPreset;
 
 public class RustingSectorPresets implements ContentList {
     public static SectorPreset
-    incipiensGrounds, plantaePresevereDomae, paileanCorridors, abystrikenCrevasse, pulsatingGroves, hangout, preservatory;
+    incipiensGrounds, plantaePresevereDomae, volenChannels, paileanCorridors, abystrikenCrevasse, pulsatingGroves, hangout, preservatory;
     ;
 
     @Override
@@ -19,6 +19,11 @@ public class RustingSectorPresets implements ContentList {
 
         plantaePresevereDomae = new SectorPreset("plantae-presevere-domae", RustingPlanets.err, 196){{
             difficulty = 1f;
+            useAI = false;
+        }};
+
+        volenChannels = new SectorPreset("volen-channels", RustingPlanets.err, 154){{
+            difficulty = 4;
             useAI = false;
         }};
 

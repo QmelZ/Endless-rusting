@@ -87,6 +87,12 @@ public class PulseResearchBlock extends PulseBlock {
     public class PulseResearchBuild extends PulseBlockBuild implements ResearchCenterc {
         public Seq<String> researchedBlocks = new Seq<>();
 
+        @Override
+        public void created() {
+            super.created();
+            setResearchableBlocks();
+        }
+
         public void buildConfiguration(Table table){
             super.buildConfiguration(table);
             table.button(Icon.pencil, () -> {
@@ -108,6 +114,7 @@ public class PulseResearchBlock extends PulseBlock {
 
         @Override
         public void read(Reads r, byte revision) {
+            setResearchableBlocks();
             super.read(r, revision);
             //might mess up any classes which extend off this, only keep temporarily or have one block
             double index = r.d();

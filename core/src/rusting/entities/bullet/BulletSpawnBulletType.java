@@ -74,9 +74,11 @@ public class BulletSpawnBulletType extends ConsBulletType{
                         if(b.owner instanceof Unit){
                             unitOwner = ((Unit) b.owner);
                             rotation = Mathf.angle(unitOwner.aimX - b.x,unitOwner.aimY - b.y);
+                            if(spawner.inaccuracy != 0) rotation += Math.random() * spawner.inaccuracy;
                         }
                         else if(b.owner instanceof TurretBuild){
                             rotation = b.angleTo(((TurretBuild) b.owner).targetPos);
+                            if(spawner.inaccuracy != 0) rotation += Math.random() * spawner.inaccuracy;
                         }
                     }
                 }
@@ -84,6 +86,7 @@ public class BulletSpawnBulletType extends ConsBulletType{
                     Teamc targ = Units.closestEnemy(b.team, b.x, b.y, spawner.bullet.range(), u -> spawner.bullet.collidesGround && !u.isFlying() || spawner.bullet.collidesAir && u.isFlying());
                     if(targ instanceof Posc){
                         rotation = b.angleTo(targ);
+                        if(spawner.inaccuracy != 0) rotation += Math.random() * spawner.inaccuracy;
                     }
                 }
                 spawner.bullet.create(b.owner, b.team, b.x, b.y, rotation + spawner.inaccuracy);

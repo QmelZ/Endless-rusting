@@ -1,18 +1,15 @@
 package rusting.content;
 
 import arc.struct.Seq;
-import mindustry.content.Items;
-import mindustry.content.TechTree;
+import mindustry.content.*;
 import mindustry.content.TechTree.TechNode;
 import mindustry.ctype.ContentList;
 import mindustry.ctype.UnlockableContent;
-import mindustry.game.Objectives.*;
 import mindustry.type.ItemStack;
 
 import static mindustry.content.Blocks.*;
-import static mindustry.content.Blocks.steamGenerator;
 import static mindustry.content.SectorPresets.groundZero;
-import static mindustry.game.Objectives.SectorComplete;
+import static mindustry.game.Objectives.*;
 import static rusting.content.RustingBlocks.*;
 import static rusting.content.RustingSectorPresets.*;
 
@@ -99,7 +96,7 @@ public class RustingTechTree implements ContentList {
 
                     });
 
-                    node(rangi, () -> {
+                    node(rangi, Seq.with(new SectorComplete(volenChannels)), () -> {
 
                     });
                 });
@@ -107,10 +104,16 @@ public class RustingTechTree implements ContentList {
 
             node(refract, Seq.with(new SectorComplete(plantaePresevereDomae)), () -> {
                 node(diffract, () -> {
-                    node(refract, () -> {
+                    node(reflect, () -> {
 
                     });
                 });
+            });
+        });
+
+        extendNode(scatter, () -> {
+            node(octain, Seq.with(new SectorComplete(volenChannels)), () -> {
+
             });
         });
 
@@ -129,7 +132,9 @@ public class RustingTechTree implements ContentList {
                 });
 
                 node(plantaePresevereDomae, Seq.with(new SectorComplete(incipiensGrounds), new Research(navalFactory)), () -> {
+                    node(volenChannels, Seq.with(new SectorComplete(plantaePresevereDomae), new Research(hail), new Research(lancer), new Research(UnitTypes.horizon)), () -> {
 
+                    });
                 });
 
                 node(paileanCorridors, Seq.with(new SectorComplete(incipiensGrounds), new Research(pneumaticDrill), new Research(itemBridge), new Produce(Items.graphite), new Produce(Items.silicon)), () -> {

@@ -3,6 +3,7 @@ package rusting.interfaces;
 import arc.util.Nullable;
 import mindustry.gen.Building;
 import mindustry.gen.Buildingc;
+import rusting.content.RustingResearchTypes;
 import rusting.world.modules.PulseModule;
 
 public abstract interface PulseBlockc extends Buildingc, Researchablec{
@@ -14,7 +15,9 @@ public abstract interface PulseBlockc extends Buildingc, Researchablec{
 
     PulseModule pulseModule = new PulseModule();
 
-    default void setupValues(){}
+    default void setupValues(){
+        researchTypes.add(RustingResearchTypes.pulse);
+    }
 
     default float pulseEfficiency(){
         return 1;

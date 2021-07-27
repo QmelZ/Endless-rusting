@@ -34,11 +34,9 @@ public class PulsePayloadAcceptor extends PulseBlock {
     @Override
     public void load() {
         super.load();
-        topRegion = Core.atlas.find(this.name + "-top");
-        outRegion = Core.atlas.find(this.name + "-outRegion");
-        if(outRegion == Core.atlas.find("error")) outRegion = Core.atlas.find("factory-out-" + size);
-        inRegion = Core.atlas.find(this.name + "-inRegion");
-        if(inRegion == Core.atlas.find("error")) inRegion = Core.atlas.find("factory-in-" + size);
+        topRegion = Core.atlas.find(this.name + "-top", "factory-top-" + size);
+        outRegion = Core.atlas.find(this.name + "-outRegion", "factory-out-" + size);
+        inRegion = Core.atlas.find(this.name + "-outRegion", "factory-in-" + size);
     }
 
     public static boolean blends(Building build, int direction){

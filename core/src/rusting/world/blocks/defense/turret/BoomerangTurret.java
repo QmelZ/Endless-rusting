@@ -5,17 +5,16 @@ import arc.util.Time;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.BulletType;
-import mindustry.world.blocks.defense.turrets.ItemTurret;
 import rusting.entities.bullet.BoomerangBulletType;
 
-public class BoomerangTurret extends ItemTurret {
+public class BoomerangTurret extends AutoreloadItemTurret {
 
 
     public BoomerangTurret(String name) {
         super(name);
     }
 
-    public class BoomerangTurretBuild extends ItemTurretBuild{
+    public class BoomerangTurretBuild extends AutoreloadItemTurretBuild{
         @Override
         protected void shoot(BulletType type) {
 

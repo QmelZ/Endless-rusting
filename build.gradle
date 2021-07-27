@@ -55,7 +55,7 @@ task dexify(type: Jar) {
     archiveName "dexed-$pArtifactFilename"
 
     final File jarArtifact = new File(tasks.jar.archiveFile.get().asFile.parent, pArtifactFilename),
-               dexedArtifact = new File(tasks.dexify.getTemporaryDir(), "dexed.jar")
+               dexedArtifact = new File(tasks.dexify.getTemporaryDir(), "Dexed.jar")
     doFirst {
         exec {
             workingDir dexedArtifact.parent
