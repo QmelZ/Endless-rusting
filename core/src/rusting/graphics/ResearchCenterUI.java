@@ -2,7 +2,6 @@ package rusting.graphics;
 
 import arc.Core;
 import arc.graphics.Color;
-import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Log;
@@ -13,7 +12,7 @@ import rusting.world.blocks.pulse.PulseBlock;
 public class ResearchCenterUI {
 
     public static String getQuote(PulseBlock content, Seq<String> randomQuotes){
-        return content == RustingBlocks.pulseTesla ? randomQuotes.get(4) : randomQuotes.random();
+        return content == RustingBlocks.pulseTesla && randomQuotes.size > 5 ? randomQuotes.get(4) : randomQuotes.random();
     }
 
     public static void displayCustomStats(Table table, PulseBlock content, Seq<String> randomQuotes) {

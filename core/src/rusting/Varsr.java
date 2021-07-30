@@ -38,7 +38,8 @@ public class Varsr implements Loadable {
 
         defaultUsername = Core.bundle.get("settings.er.username.default", "the unnamed one");
         username = Core.settings.getString("settings.er.username", defaultUsername);
-        debug = Core.settings.getBool("er.debug", false);
+        if(username.equals("")) username = defaultUsername;
+        debug = Core.settings.getBool("settings.er.debug", false);
 
         ui = new RustingUI();
         formats = new FormatHolder();
@@ -49,7 +50,7 @@ public class Varsr implements Loadable {
             "[cyan] Places of learning",
             "[cyan] Storages of information",
             "[cyan] Database Entries",
-            "[#d8e2e0] Welcome back."
+            "[#d8e2e0] Welcome back, " + username + "."
         );
 
         //come and join our conversation, randomizer
@@ -81,7 +82,14 @@ public class Varsr implements Loadable {
         RustingBlocks.cuin.buildVisibility = BuildVisibility.shown;
         defaultRandomQuotes = Seq.with(
             "[cyan] Welcome back " + username,
-            "[sky] This is a message to my master"
+            "[sky] This is my message to my master\n" +
+                    "This is a fight you cannot win\n" +
+                    "I think that past your great disasters\n" +
+                    "Their victory stirs below your skin",
+            "[orange] Dirty cheater haha\n[grey]Debug go br",
+            "[purple] Dingus",
+            "[purple] Roombae smithae teslan woop woop",
+            "[red] N O  E S C A P I N G  U S\nC O M E  A N D  S U F F E R  W I T H  U S"
         );
     }
 }

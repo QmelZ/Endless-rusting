@@ -94,14 +94,14 @@ public class AreaHealerBeamTurret extends HealerBeamTurret{
                     Draw.color(Color.white, Pal.heal, this.beamAlpha * this.beamAlpha);
                     Lines.circle(COOP.x, COOP.y, 4 - 1.5f * this.beamAlpha * this.beamAlpha);
 
-                        if(!Core.settings.getBool("advancedeffects")) {
+                        if(!Core.settings.getBool("er.advancedeffects")) {
                             Draw.alpha(beamAlpha);
                             Lines.line(LTPb.x, LTPb.y, LTP.x, LTP.y);
                         }
                     }
 
                 }
-                if(Core.settings.getBool("advancedeffects")) Fill.light(LTP.x, LTP.y, 10, healRadius, Tmp.c1.set(Color.valueOf("#62ac7d")).a(beamAlpha), Tmp.c2.set(Color.valueOf("#82f48f")).a(beamAlpha));
+                if(Core.settings.getBool("er.advancedeffects")) Fill.light(LTP.x, LTP.y, 10, healRadius, Tmp.c1.set(Color.valueOf("#62ac7d")).a(beamAlpha), Tmp.c2.set(Color.valueOf("#82f48f")).a(beamAlpha));
                 else {
                     Draw.color(Color.valueOf("#e8ffd7"), Color.valueOf("#ffffff"), this.beamAlpha);
                     Draw.alpha(this.beamAlpha / 2);

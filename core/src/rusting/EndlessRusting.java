@@ -18,7 +18,8 @@ public class EndlessRusting extends Mod{
 
     public EndlessRusting(){
 
-        Core.settings.defaults("drawtrails", true);
+        Core.settings.defaults("er.drawtrails", true);
+        Core.settings.defaults("er.advancedeffects", true);
 
         Events.on(EventType.ClientLoadEvent.class,
             e -> {

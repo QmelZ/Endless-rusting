@@ -7,6 +7,7 @@ import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.entities.Damage;
 import mindustry.gen.*;
+import rusting.content.Fxr;
 import rusting.graphics.graphicEffects;
 
 import java.util.Arrays;
@@ -25,6 +26,8 @@ public class InstantBounceBulletType extends BounceBulletType implements instant
         this.collidesGround = true;
         this.absorbable = false;
         this.hittable = false;
+        this.trailEffect = Fxr.lineCircles;
+        this.trailChance = 0;
     }
 
     @Override

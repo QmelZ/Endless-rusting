@@ -21,76 +21,76 @@ public class RustingTechTree implements ContentList {
 
         extendNode(coreShard, () -> {
             node(pulseResearchCenter, Seq.with(new SectorComplete(paileanCorridors)), () -> {
+                node(pulseCollector, Seq.with(new SectorComplete(abystrikenCrevasse)), () -> {
 
+                    node(pulseNode, () -> {
+                        node(pulseResonator, () -> {
+                            node(pulseSiphon, () -> {
+
+                            });
+                        });
+
+
+                        node(pulseUpkeeper, Seq.with(new SectorComplete(pulsatingGroves)), () -> {
+                            node(smallParticleSpawner, () -> {
+
+                            });
+                        });
+
+                        node(pulseTesla, Seq.with(new SectorComplete(pulsatingGroves)), () -> {
+
+                        });
+                    });
+                    node(pulseGenerator, Seq.with(new SectorComplete(crystalineCrags), new Produce(RustingItems.melonaleum)), () -> {
+
+                    });
+                });
+
+                node(pulseCondensery, Seq.with(new SectorComplete(crystalineCrags), new Research(paileanCorridors), new Produce(melonaleum)), () -> {});
+
+                node(archangel, Seq.with(new SectorComplete(abystrikenCrevasse)), () -> {
+
+                });
+
+                node(pulseFactory, Seq.with(new SectorComplete(pulsatingGroves)), () -> {
+
+                    node(RustingUnits.duono, () -> {
+                        node(RustingUnits.duoly, () -> {
+                            node(RustingUnits.duanga, Seq.with(new SectorComplete(crystalineCrags)), () -> {
+
+                            });
+                        });
+                    });
+
+                    node(pulseDistributor, () -> {
+
+                    });
+
+                    node(enlightenmentReconstructor, () -> {
+                        node(ascendanceReconstructor, () -> {
+
+                        });
+                    });
+                });
+
+                node(pulseLandmine, () -> {
+
+                });
+
+                node(pulseBarrier, () -> {
+                    node(pulseBarrierLarge, () -> {});
+                });
+
+                node(RustingItems.melonaleum, Seq.with(new Produce(RustingItems.melonaleum)), () -> {
+
+                });
             });
         });
 
-        extendNode(pulseResearchCenter, () -> {
-            node(pulseCollector, () -> {
 
-                node(pulseNode, () -> {
-                    node(pulseResonator, () -> {
-                        node(pulseSiphon, () -> {
-
-                        });
-                    });
-
-
-                    node(pulseUpkeeper, Seq.with(new SectorComplete(pulsatingGroves)), () -> {
-                        node(smallParticleSpawner, () -> {
-
-                        });
-                    });
-
-                    node(pulseTesla, Seq.with(new SectorComplete(pulsatingGroves)), () -> {
-
-                    });
-                });
-                node(pulseGenerator, Seq.with(new SectorComplete(abystrikenCrevasse), new Produce(RustingItems.melonaleum)), () -> {
-
-                });
-            });
-
-            node(archangel, Seq.with(new SectorComplete(abystrikenCrevasse)), () -> {
-
-            });
-
-            node(pulseFactory, Seq.with(new SectorComplete(pulsatingGroves)), () -> {
-
-                node(RustingUnits.duono, () -> {
-                    node(RustingUnits.duoly, () -> {
-                        node(RustingUnits.duanga, () -> {
-
-                        });
-                    });
-                });
-
-                node(pulseDistributor, () -> {
-
-                });
-
-                node(enlightenmentReconstructor, () -> {
-                    node(ascendanceReconstructor, () -> {
-
-                    });
-                });
-            });
-
-            node(pulseLandmine, () -> {
-
-            });
-
-            node(pulseBarrier, () -> {
-                node(pulseBarrierLarge, () -> {});
-            });
-
-            node(RustingItems.melonaleum, Seq.with(new Produce(RustingItems.melonaleum)), () -> {
-
-            });
-        });
 
         extendNode(duo, () -> {
-            node(prikend, Seq.with(new SectorComplete(pulsatingGroves)), () -> {
+            node(prikend, Seq.with(new SectorComplete(plantaePresevereDomae)), () -> {
                 node(prsimdeome, () -> {
                     node(prefraecon, Seq.with(new SectorComplete(pulsatingGroves), new Research(RustingStatusEffects.fragmentaein)), () -> {
 
@@ -113,7 +113,9 @@ public class RustingTechTree implements ContentList {
 
         extendNode(scatter, () -> {
             node(octain, Seq.with(new SectorComplete(volenChannels)), () -> {
+                node(triagon, Seq.with(new SectorComplete(crystalineCrags)), () -> {
 
+                });
             });
         });
 
@@ -132,14 +134,19 @@ public class RustingTechTree implements ContentList {
                 });
 
                 node(plantaePresevereDomae, Seq.with(new SectorComplete(incipiensGrounds), new Research(navalFactory)), () -> {
-                    node(volenChannels, Seq.with(new SectorComplete(plantaePresevereDomae), new Research(hail), new Research(lancer), new Research(UnitTypes.horizon)), () -> {
+                    node(volenChannels, Seq.with(new SectorComplete(plantaePresevereDomae), new Research(hail), new Research(lancer), new Research(UnitTypes.horizon), new Produce(Items.pyratite)), () -> {
 
                     });
                 });
 
                 node(paileanCorridors, Seq.with(new SectorComplete(incipiensGrounds), new Research(pneumaticDrill), new Research(itemBridge), new Produce(Items.graphite), new Produce(Items.silicon)), () -> {
-                    node(abystrikenCrevasse, Seq.with(new SectorComplete(paileanCorridors), new Research(pulseResearchCenter), new Research(ripple), new Research(titaniumConveyor)), () -> {});
-                    node(pulsatingGroves, Seq.with(new SectorComplete(paileanCorridors), new Research(prsimdeome), new Research(steamGenerator)), () -> {
+                    node(abystrikenCrevasse, Seq.with(new SectorComplete(paileanCorridors), new Research(pulseResearchCenter), new Research(ripple), new Research(titaniumConveyor)), () -> {
+                        node(crystalineCrags, Seq.with(new SectorComplete(abystrikenCrevasse), new Research(octain), new Research(thermalGenerator), new Produce(melonaleum)), () -> {
+
+                        });
+                    });
+
+                    node(pulsatingGroves, Seq.with(new SectorComplete(paileanCorridors), new SectorComplete(crystalineCrags), new Research(prsimdeome), new Research(waterBoilerGenerator)), () -> {
 
                     });
                 });

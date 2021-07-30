@@ -22,8 +22,8 @@ public class RustedSettingAdder {
         boolean tmp = Core.settings.getBool("uiscalechanged", false);
         Core.settings.put("uiscalechanged", false);
 
-        addGraphicSetting("er.drawtrails");
-        addGraphicSetting("er.advancedeffects");
+        addGraphicSetting("settings.er.drawtrails");
+        addGraphicSetting("settings.er.advancedeffects");
 
         Core.settings.put("uiscalechanged", tmp);
 

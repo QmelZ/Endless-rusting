@@ -40,12 +40,12 @@ public class BounceBulletType extends ConsBulletType {
     @Override
     public void update(Bullet b){
         super.update(b);
-        if(Core.settings.getBool("drawtrails")) ((Seq<Trail>)b.data).each(t -> t.update(b.x, b.y));
+        if(Core.settings.getBool("er.drawtrails")) ((Seq<Trail>)b.data).each(t -> t.update(b.x, b.y));
     }
 
     @Override
     public void draw(Bullet b){
-        if(Core.settings.getBool("drawtrails")) ((Seq<Trail>)b.data).each(t -> t.draw(trailColor, trailWidth * b.fout()));
+        if(Core.settings.getBool("er.drawtrails")) ((Seq<Trail>)b.data).each(t -> t.draw(trailColor, trailWidth * b.fout()));
         super.draw(b);
     }
 
