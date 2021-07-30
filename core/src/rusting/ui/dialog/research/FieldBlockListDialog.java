@@ -9,11 +9,11 @@ import arc.scene.event.HandCursorListener;
 import arc.scene.ui.Image;
 import arc.scene.ui.Tooltip;
 import arc.struct.Seq;
-import arc.util.*;
+import arc.util.Scaling;
+import arc.util.Time;
 import mindustry.Vars;
 import mindustry.ctype.UnlockableContent;
 import mindustry.gen.Building;
-import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
 import mindustry.ui.Cicon;
 import mindustry.ui.Fonts;
@@ -117,7 +117,7 @@ public class FieldBlockListDialog extends CustomBaseDialog {
                         else if(unlocked(unlock)) Varsr.ui.unlock.show(unlock);
                     });
                     boolean finalIsResearched1 = isResearched;
-                    image.addListener(new Tooltip(t -> t.background(Tex.button).add((finalIsResearched1 ? "The " : "Unlock the ") + unlock.localizedName + (finalIsResearched1 ? "" : "?"))));
+                    image.addListener(new Tooltip(t -> t.background(arc.Core.atlas.drawable("button")).add((finalIsResearched1 ? "The " : "Unlock the ") + unlock.localizedName + (finalIsResearched1 ? "" : "?"))));
 
                     if ((++count[0]) % cols == 0) {
                         list.row();

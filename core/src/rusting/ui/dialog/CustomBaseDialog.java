@@ -16,12 +16,20 @@ public class CustomBaseDialog extends Dialog {
     protected boolean shouldPause;
 
     public CustomBaseDialog(String title, DialogStyle style){
+        this(title, style, true);
+    }
+
+    public CustomBaseDialog(String title, DialogStyle style, Boolean shouldHeader){
         super(title, style);
         setFillParent(true);
-        this.title.setAlignment(Align.center);
-        titleTable.row();
-        titleTable.image(Tex.whiteui, Pal.accent)
-                .growX().height(3f).pad(4f);
+        if(shouldHeader){
+            this.title.setAlignment(Align.center);
+            titleTable.row();
+            titleTable.image(
+                arc.Core.atlas.drawable("whiteui"),
+                Pal.accent)
+            .growX().height(3f).pad(4f);
+        }
 
         hidden(() -> {
             if(shouldPause && state.isGame()){

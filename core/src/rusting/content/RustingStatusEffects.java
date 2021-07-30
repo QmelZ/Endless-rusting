@@ -23,9 +23,13 @@ import rusting.type.statusEffect.*;
 
 public class RustingStatusEffects implements ContentList {
     public static StatusEffect
-            weather, amberstriken, umbrafliction, macrosis, macotagus, causticBurning, shieldShatter, corruptShield, fragmentaein;
+            weather, fuesin, amberstriken, umbrafliction, macrosis, macotagus, causticBurning, shieldShatter, corruptShield, fragmentaein;
     public static Cons
             corruptShieldCons;
+
+    private float voidRepulseShieldRange = 64;
+    private FloatSeq floatSeq;
+    private float index;
 
     @Override
     public void load() {
@@ -34,6 +38,28 @@ public class RustingStatusEffects implements ContentList {
         weather = new StatusEffect("weather"){
 
         };
+
+        //reacts with a lot of status effects to create others
+        //the statement above me is a lie
+        fuesin = new StatusEffect("fuesin"){{
+            init(() -> {
+                affinity(macrosis, ((unit, time, newTime, result) -> {
+                    unit.damagePierce(transitionDamage);
+                    unit.apply(macotagus, time * 3);
+                    result.set(fuesin, 0);
+                }));
+                affinity(StatusEffects.freezing, ((unit, time, newTime, result) -> {
+                    unit.damagePierce(transitionDamage);
+                    unit.apply(StatusEffects.wet, time * 3);
+                    result.set(fuesin, 0);
+                }));
+                affinity(StatusEffects.burning, ((unit, time, newTime, result) -> {
+                    unit.damagePierce(transitionDamage);
+                    unit.apply(StatusEffects.melting, time * 3);
+                    result.set(fuesin, 0);
+                }));
+            });
+        }};
 
         amberstriken = new CrystalStatusEffect("amberstriken"){{
             speedMultiplier = 0.35F;
@@ -114,10 +140,8 @@ public class RustingStatusEffects implements ContentList {
             updateCons = new Cons<Unit>() {
                 @Override
                 public void get(Unit unit) {
-                    if(Time.time % 2 > 1) {
-                        if(unit.damaged() && unit.healthf() > 0.15f && unit.healthf() < 0.85f) unit.damagePierce(Math.min((unit.type.health - unit.health)/60, Math.min(10/60f, unit.health / 2500)) * Time.delta);
-                        else unit.heal(0.125f);
-                    }
+                    if(unit.damaged() && unit.healthf() > 0.15f && unit.healthf() < 0.85f) unit.damagePierce(Math.min((unit.type.health - unit.health)/60, Math.min(10/60f, unit.health / 2500)) * Time.delta);
+                    else unit.heal(0.125f);
                 }
             };
 
@@ -174,9 +198,8 @@ public class RustingStatusEffects implements ContentList {
 
                     if(Vars.state.isPaused()) return;
                     if(!b.type.reflectable) return;
-                    float range = 64;
 
-                    Seq<Unit> intUnits = Groups.unit.intersect(b.x - range, b.y - range, range * 2, range * 2);
+                    Seq<Unit> intUnits = Groups.unit.intersect(b.x - voidRepulseShieldRange, b.y - voidRepulseShieldRange, voidRepulseShieldRange * 2, voidRepulseShieldRange * 2);
                     FloatSeq forces = new FloatSeq();
                     float[] greatestDistance = {0};
 
@@ -193,18 +216,18 @@ public class RustingStatusEffects implements ContentList {
                         if(!u.hasEffect(corruptShield) || u.team == b.team) return;
 
                         float distance = u.dst(b);
-                        float force = Mathf.floor(range - u.dst(b)) * distance/greatestDistance[0];
+                        float force = Mathf.floor(voidRepulseShieldRange - u.dst(b)) * distance/greatestDistance[0];
                         forces.add(force);
                     });
 
-                    int[] index = {0};
+                    index = 0;
 
                     intUnits.each(u -> {
 
                         if(!u.hasEffect(corruptShield) || u.team == b.team) return;
 
-                        b.vel.setAngle(Angles.moveToward(b.rotation(), u.angleTo(b), forces.get(index[0]) * Time.delta/30));
-                        index[0]++;
+                        b.vel.setAngle(Angles.moveToward(b.rotation(), u.angleTo(b), index * Time.delta/30));
+                        index++;
                     });
                 });
 

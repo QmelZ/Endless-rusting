@@ -1,8 +1,10 @@
 package rusting.world.blocks.defense.turret;
 
+import arc.math.Mathf;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.entities.Damage;
+import mindustry.entities.Effect;
 import mindustry.entities.bullet.BulletType;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 
@@ -15,8 +17,17 @@ public class QuakeTurret extends PowerTurret {
     public float quakeInterval = 5;
     //whether to actaly create bullet at the spot
     public boolean createBullet;
+
+    public Effect quakeEffect;
+
     public QuakeTurret(String name) {
         super(name);
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        if(quakeEffect == null) quakeEffect = shootType.hitEffect;
     }
 
     public class QuakeTurretBuild extends PowerTurretBuild{
@@ -34,7 +45,8 @@ public class QuakeTurret extends PowerTurret {
                         Tmp.v1.set(x + tr.x, y + tr.y).add(Tmp.v2.trns(rot, i * spacing));
                         Damage.damage(team, Tmp.v1.x, Tmp.v1.y, type.splashDamageRadius, type.splashDamage, type.collidesAir, type.collidesGround);
                         if(type.status != null) Damage.status(team, Tmp.v1.x, Tmp.v1.y, type.splashDamageRadius, type.status, type.statusDuration, type.collidesAir, type.collidesGround);
-                        type.hitEffect.at(Tmp.v1.x, Tmp.v1.y);
+                        quakeEffect.at(Tmp.v1.x, Tmp.v1.y);
+                        shootType.hitSound.at(Tmp.v1.x, Tmp.v1.y, Mathf.range(0.85f, 1.15f), 0.75f);
                     });
                 }
             }

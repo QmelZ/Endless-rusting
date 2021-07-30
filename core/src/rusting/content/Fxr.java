@@ -9,8 +9,7 @@ import arc.util.Tmp;
 import mindustry.entities.Effect;
 import mindustry.game.Team;
 import mindustry.gen.Bullet;
-import mindustry.graphics.Drawf;
-import mindustry.graphics.Pal;
+import mindustry.graphics.*;
 import rusting.entities.units.CraeUnitEntity;
 import rusting.entities.units.CraeUnitType;
 
@@ -71,7 +70,6 @@ public class Fxr{
 
         shootMhemFlame = new Effect(25f, 80f, e -> {
             color(Pal.lightPyraFlame, Pal.darkPyraFlame, Color.gray, e.fin() * e.fin());
-
             randLenVectors(e.id, 6, e.finpow() * 45f, e.rotation, 10f, (x, y) -> {
                 Fill.circle(e.x + x, e.y + y, 0.65f + e.fout() * 1.6f);
             });
@@ -310,6 +308,31 @@ public class Fxr{
 
         randLenVectors(e.id + 1, 6, 1f + 23f * e.finpow(), (x, y) -> {
             lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 1f + e.fout() * 5f);
+        });
+    }),
+
+    earthpoundShockwave = new Effect(225, 150, e -> {
+        for (int i = 0; i < 5; i++) {
+            int[] l = {i};
+            Draw.z(Layer.groundUnit + 1);
+            e.scaled(65 + 30 * (i + 1)/5 * (i + 1)/5 * 5, h -> {
+                Tmp.v1.trns(e.rotation, h.finpow() * (60 + (4 - l[0] + 1) * 18));
+                Draw.color(Palr.lightstriken, Palr.dustriken, h.fin());
+                Lines.stroke((3 + (5 - l[0]) * 0.25f) * h.fout() * h.fout());
+                Lines.swirl(e.x + Tmp.v1.x, e.y + Tmp.v1.y, 2 + 39 * h.finpow(), (115 +55 * h.fout())/360, e.rotation - 57.5f - 27.5f * h.fout());
+            });
+        }
+        e.scaled(35, h -> {
+            Angles.randLenVectors(e.id, 4, 15, (ex, ey) -> {
+                color(Pal.orangeSpark, Color.gray, h.fin());
+                Lines.stroke(h.fslope() * 5);
+                Lines.circle(e.x + ex, e.y + ey, e.fout() * 2);
+                Angles.randLenVectors(e.id + 1, 3, 1, (x, y) -> {
+                    color(Pal.plasticSmoke, Pal.bulletYellow, h.fin());
+                    Lines.stroke(0.5f);
+                    Lines.lineAngle(e.x + x + ex, e.y + y + ey, Mathf.angle(x, y), h.finpow() * 3.5f);
+                });
+            });
         });
     });
 

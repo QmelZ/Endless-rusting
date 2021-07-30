@@ -168,6 +168,7 @@ public class RustingBlocks implements ContentList{
         classemPulsen = new Floor("classem-pulsen"){{
             speedMultiplier = 0.85f;
             variants = 6;
+            status = RustingStatusEffects.fuesin;
             emitLight = true;
             lightColor = new Color(Palr.pulseChargeStart).a(0.19f);
             lightRadius = 15;
@@ -179,6 +180,7 @@ public class RustingBlocks implements ContentList{
         classemPathen = new Floor("classem-pathen"){{
             speedMultiplier = 0.85f;
             variants = 2;
+            status = RustingStatusEffects.macrosis;
             emitLight = true;
             lightColor = new Color(Palr.pulseChargeStart).a(0.25f);
             lightRadius = 7;
@@ -745,6 +747,7 @@ public class RustingBlocks implements ContentList{
 
         pafleaver  = new PanelTurret("pafleaver"){{
             requirements(Category.turret, with(Items.copper, 60, Items.lead, 70, Items.silicon, 50));
+            buildVisibility = BuildVisibility.hidden;
             range = 260f;
             recoilAmount = 2f;
             reloadTime = 60f;
@@ -757,7 +760,8 @@ public class RustingBlocks implements ContentList{
             health = 280 * size * size;
             shootSound = Sounds.flame;
             shootType = RustingBullets.paveShard;
-            shots = 1;
+            shots = 3;
+            burstSpacing = 5;
             panels.add(
                 new PanelHolder(name + "1"){{
                     panelX = 10.75;
@@ -771,11 +775,13 @@ public class RustingBlocks implements ContentList{
                     panelX = 13.75;
                     panelY = -3.75;
                     shootType = RustingBullets.mhemShard;
+                    lifetimeMulti = 2.5f;
                 }},
                 new ShootingPanelHolder(name + "2"){{
                     panelX = -13.75;
                     panelY = -3.75;
                     shootType = RustingBullets.mhemShard;
+                    lifetimeMulti = 2.5f;
                 }}
             );
         }};
@@ -785,8 +791,8 @@ public class RustingBlocks implements ContentList{
             size = 2;
             health = 275 * size * size;
             ammo(
-                    Items.metaglass, RustingBullets.spawnerGlass,
-                    RustingItems.bulastelt, RustingBullets.spawnerBulat
+                Items.metaglass, RustingBullets.spawnerGlass,
+                RustingItems.bulastelt, RustingBullets.spawnerBulat
             );
             shots = 2;
             burstSpacing = 5;
@@ -816,24 +822,27 @@ public class RustingBlocks implements ContentList{
             shootSound = Sounds.release;
             coolantMultiplier = 0.35f;
             autoreloadThreshold = 1 - 1/reloadTime;
+            shootLength = 5.25f;
         }};
 
         cuin = new QuakeTurret("cuin"){{
             requirements(Category.turret, with(Items.graphite, 35, Items.metaglass, 25, RustingItems.taconite, 65));
+            buildVisibility = BuildVisibility.hidden;
             size = 3;
             health = 275 * size * size;
             targetAir = false;
             shots = 3;
             spread = 15;
-            reloadTime = 325f;
+            reloadTime = 162f;
             recoilAmount = 2.5f;
             range = 175f;
-            quakeInterval = 4;
-            spacing = 14;
+            quakeInterval = 2;
+            spacing = 7;
             shootCone = 25f;
-            shootSound = Sounds.release;
+            shootSound = Sounds.explosionbig;
             coolantMultiplier = 0.35f;
             shootType = Bullets.artilleryIncendiary;
+            shootEffect = Fx.flakExplosion;
         }};
 
 

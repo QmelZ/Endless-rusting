@@ -63,7 +63,7 @@ public class BulletSpawnBulletType extends ConsBulletType{
         for (int i = 0; i < bullets.size; i++) {
             spawner = bullets.get(i);
             //I don't get the logic behind this, interval in and interval out do the opposit of what I made them to do
-            if(spawner.intervalOut < b.fin() * lifetime && spawner.intervalIn >= b.fin() * lifetime) break;
+            if(spawner.intervalIn >= b.fin() * lifetime || spawner.intervalOut >= b.fout() * lifetime) break;
             if(((float[]) b.data)[i] < spawner.reloadTime){
                 ((float[]) b.data)[i] += Time.delta;
             }

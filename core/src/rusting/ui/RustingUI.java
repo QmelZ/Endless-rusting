@@ -9,6 +9,7 @@ public class RustingUI implements ApplicationListener, Loadable {
     public BlockEntryDialog blockEntry;
     public FieldBlockListDialog blocklist;
     public CapsulesDialog capsuleResearch;
+    public WelcomingDialog welcome;
 
     @Override
     public void init(){
@@ -16,5 +17,6 @@ public class RustingUI implements ApplicationListener, Loadable {
         blockEntry = new BlockEntryDialog();
         blocklist = new FieldBlockListDialog();
         capsuleResearch = new CapsulesDialog();
+        welcome = new WelcomingDialog();
     }
 }

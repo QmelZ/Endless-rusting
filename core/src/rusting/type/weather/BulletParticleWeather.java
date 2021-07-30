@@ -87,7 +87,7 @@ public class BulletParticleWeather extends ParticleWeather {
                 rny = rny * 8;
                 if(Vars.world.tile(rnx/8, rny/8).block() == Blocks.air) {
                     if (Mathf.chance(dynamicSpawning ? chance: chanceSpawn)) {
-                        Call.createBullet(particleBullet, Team.derelict, (float) rnx + Mathf.random(randRange.x), (float) rny + Mathf.random(randRange.y), state.windVector.angle(), particleBullet.damage, (float) (chance * chance * 4), (float) 1);
+                        Call.createBullet(particleBullet, Team.derelict, (float) rnx + Mathf.random(randRange.x), (float) rny + Mathf.random(randRange.y), state.windVector.angle(), particleBullet.damage, (float) (chance * chance * 3), (float) 1);
                         particleBullet.hitEffect.at(rnx, rny);
                     }
                 }

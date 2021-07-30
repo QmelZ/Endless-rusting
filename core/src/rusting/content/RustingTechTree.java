@@ -92,7 +92,7 @@ public class RustingTechTree implements ContentList {
         extendNode(duo, () -> {
             node(prikend, Seq.with(new SectorComplete(pulsatingGroves)), () -> {
                 node(prsimdeome, () -> {
-                    node(prefraecon, Seq.with(new SectorComplete(pulsatingGroves)), () -> {
+                    node(prefraecon, Seq.with(new SectorComplete(pulsatingGroves), new Research(RustingStatusEffects.fragmentaein)), () -> {
 
                     });
 

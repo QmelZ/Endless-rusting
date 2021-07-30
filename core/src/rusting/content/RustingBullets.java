@@ -223,7 +223,7 @@ public class RustingBullets implements ContentList{
             hitEffect = Fx.hitFuse;
         }};
 
-        paveShard = new ConsBulletType(12, 100, "bullet"){{
+        paveShard = new ConsBulletType(12, 115, "bullet"){{
             consUpdate = new Cons<Bullet>() {
                 @Override
                 public void get(Bullet bullet){
@@ -700,7 +700,7 @@ public class RustingBullets implements ContentList{
                     reloadTime = 5.5f;
                     manualAiming = true;
                     shootSound = Sounds.artillery;
-                    intervalIn = 35;
+                    intervalIn = 25;
                     intervalOut = 35;
                 }},
                 new BulletSpawner(){{
@@ -723,7 +723,7 @@ public class RustingBullets implements ContentList{
             frontColor = Palr.lightstriken;
             backColor = Pal.bulletYellowBack;
             despawnEffect = Fxr.instaltSummonerExplosion;
-            lifetime = 108f;
+            lifetime = 128f;
             width = height = 11f;
             splashDamageRadius = 35f * 0.75f;
             splashDamage = 33f;
@@ -780,15 +780,15 @@ public class RustingBullets implements ContentList{
         }};
 
         //anyone know where this one is from? ;)
-        boltingVortex = new BulletSpawnBulletType(0.15f, 250, "none"){{
+        boltingVortex = new BulletSpawnBulletType(0.099f, 250, "none"){{
             bullets = Seq.with(
-                    new BulletSpawner(){{
-                        bullet = craeBolt;
-                        reloadTime = 2.5f;
-                        shootSound = Sounds.spark;
-                        intervalIn = 65;
-                        intervalOut = 65;
-                    }}
+                new BulletSpawner(){{
+                    bullet = craeBolt;
+                    reloadTime = 2.5f;
+                    shootSound = Sounds.spark;
+                    intervalIn = 125;
+                    intervalOut = 65;
+                }}
             );
             frontColor = Palr.pulseChargeStart;
             backColor = Palr.pulseBullet;
@@ -805,7 +805,7 @@ public class RustingBullets implements ContentList{
             scaleDrawIn = 4;
             scaleDrawOut = 9;
             drawSize = 6;
-
+            drag = -0.01f;
         }};
 
         flamstrikenVortex = new BulletSpawnBulletType(0.15f, 250, "none"){{
@@ -830,7 +830,7 @@ public class RustingBullets implements ContentList{
                 }}
             );
             frontColor = Pal.lightPyraFlame;
-            backColor = Pal.darkPyraFlame;
+            backColor = Palr.darkPyraBloom;
             despawnEffect = Fx.sparkShoot;
             lifetime = 405f;
             width = height = 11f;

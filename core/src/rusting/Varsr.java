@@ -1,8 +1,11 @@
 package rusting;
 
+import arc.Core;
 import arc.assets.Loadable;
 import arc.struct.Seq;
 import arc.util.Log;
+import mindustry.world.meta.BuildVisibility;
+import rusting.content.RustingBlocks;
 import rusting.core.RustedContentLoader;
 import rusting.core.Rusting;
 import rusting.core.holder.ItemScoreHolder;
@@ -19,15 +22,23 @@ public class Varsr implements Loadable {
     public static ItemScoreHolder itemScorer;
     public static Rusting rusted;
     public static RustedContentLoader content = new RustedContentLoader();
+    public static String username;
+    public static String defaultUsername;
+    public static boolean debug = false;
 
     public static void setup(){
 
         itemScorer.setupItems();
         content.init();
+        if(username.equals(defaultUsername)) Varsr.ui.welcome.show();
 
     }
 
     public static void init(){
+
+        defaultUsername = Core.bundle.get("settings.er.username.default", "the unnamed one");
+        username = Core.settings.getString("settings.er.username", defaultUsername);
+        debug = Core.settings.getBool("er.debug", false);
 
         ui = new RustingUI();
         formats = new FormatHolder();
@@ -60,6 +71,17 @@ public class Varsr implements Loadable {
 
         formats.load();
 
+        if(debug) Varsr.debug();
+
         Log.info("Loaded Varsf");
+    }
+
+    public static void debug(){
+        RustingBlocks.pafleaver.buildVisibility = BuildVisibility.shown;
+        RustingBlocks.cuin.buildVisibility = BuildVisibility.shown;
+        defaultRandomQuotes = Seq.with(
+            "[cyan] Welcome back " + username,
+            "[sky] This is a message to my master"
+        );
     }
 }
