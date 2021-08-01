@@ -120,9 +120,29 @@ Difficulty: Easy/Medium
 
 Intro: An almost infected looking mountainside map, with geodes full of a volatile materiel. The walls are full of shards of this, however the geodes hold the only harvestable sources of this precious commodity, until we learn how to extract this crystal from the walls. The water here is filled with dust from the crystal, having slowly sept into the water after initially being released. Similar machines to the ones seen in Pailean Coridors are present here, only there seems to be something new...
 
-Aside from the crystals, resources are somewhat scarce here, featuring a small amount of titanium veins in particular. Copper and lead however are not a problem, as our miners know how to get the most out of the scarce veins. Coal and sand are both present here, allowing us to make silicon for advanced electronics and mining drones. We can also use the infected water, as the dust poses no threat to our machinery once pumped out and separated from the water.
+Aside from the crystals, resources are somewhat scarce here, featuring a small amount of titanium veins in particular. Copper and lead however are not a problem, as our miners know how to get the most out of the scarce veins. Coal and sand are both present here, allowing us to make silicon for advanced electronics and mining drones. We can also use the infected water, as the dust poses no threat to our machinery once pumped out and separated from the water, though using the water in it's raw form will jam normal machines.
 
 Waves: Two spawnpoints, with an ever growing amount of spawned low tier units and multiple guardian waves. Strap yourself in. There are 38 waves in the cannon appearance of the opposition. Thankfully, there's a 3-9 wave period where enemies sustain heavy enough damage that they die before reaching our core. The ruins sure contain some helpful machines, including ones which can shoot! Don't stay too long, as there's a guardian on wave 66 which likes to ruin things. All guardians seem to be followed by a miniwave of units, possibly protecting them. Thankfully, the guardian which appears before the ending isn't that strong.
 
 Difficulty Medium/Hard
 
+### Volen Channels
+![image](https://user-images.githubusercontent.com/73347888/127765399-e4f448bb-b939-4eb2-9e72-256c27807765.png)
+
+Intro: A heavly fortified weapon testing facility, that has pleanty of experemental weapons and tech. 
+
+Lots of starting resources are present here, however crammed into the top half of the map, becoming more scarce the further you push into enemy territory. Theres also hot spots here and small puddles present, scattered around the place. A verry scarce amount of naturaly formed taconite is exposed, however is more than enough to fuel more taconite minning. The real problem here comes with the amount of sand there is, as it's quite scarce. A good way to handle this is to use water cooling in drills, allowing them to mine at an increased rate.
+
+A salty spray appears every now and then, the cause unknown. It's only noticible effect is making air units salty, however this makes water noticibly more dangerous, as when salty units get wet, corroded is applied, however removing the moisture from the unit. A posible cause for this salty spray is 
+
+Base: The green base is a whole base, heavy fortified and defended from most points. There is a unit factory here which produces Forgotten units, to put constant preasure on you, though it is quite exposed in it's placement and a few flares could likely take it out. Multiple cores are present, and lots of turrets can be spotted. The natives have come across modern day technology, and have started using it. Examples would be the waves, scatters and hails spotted. Theres also experemental weapons that the natives invented, such as spraien, rangi and octain. These three guns are unique comapred to what we've seen so far, one being able to reload while no target is found and another being able to spawn cloudy orbs.
+
+Theres two things to note about the base, which can help it make it seem weaker than it actualy is.
+
+![planning out our attack](https://user-images.githubusercontent.com/73347888/127765801-bc8507e4-5f85-4c1c-b86f-48acde862151.jpg)
+The botom-most part of the fort is open for strikes, and is directly where the unit factory and core are.
+
+![image](https://user-images.githubusercontent.com/73347888/127765887-4f390487-fa10-4f9d-ba3b-ccb99b6d5ad5.png)
+This part of the base is easly hittable, howver destroying it is not nescecary, at first anyways. You can use horizon bombers to cary and bomb this part of the base with flamibles, although this can be costly with the scarce amount of sand there is.
+
+Waves: Despite the massive fortifications, the offensive capability it has isn't that much. The waves are quite weak, the only real threat coming out on wave 30; A T3 Forgotten unit gets sent out from a core on this wave, and can be challenging to deal with. A good thing to keep in mind is that shock mines exist. These can help take down the guardian's health before it gets to your base. It makes another appearence on wave 60, however with T2 Forgotten units by it's side. These can be a pain to deal with, so remmeber to place a few waves nearby to put out fires. They are faster than the guardian itself, and they appear to be used to deal some damage before the guardian shows up and ruins it's target's day.
