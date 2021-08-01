@@ -23,7 +23,7 @@ import rusting.type.statusEffect.*;
 
 public class RustingStatusEffects implements ContentList {
     public static StatusEffect
-            weather, fuesin, amberstriken, umbrafliction, macrosis, macotagus, causticBurning, shieldShatter, corruptShield, fragmentaein;
+            weather, fuesin, amberstriken, umbrafliction, macrosis, macotagus, hailsalilty, causticBurning, shieldShatter, corruptShield, fragmentaein;
     public static Cons
             corruptShieldCons;
 
@@ -83,6 +83,19 @@ public class RustingStatusEffects implements ContentList {
         umbrafliction = new CrystalStatusEffect("umbrafliction"){{
             speedMultiplier = 0.15F;
             effect = Fxr.blackened;
+            disarm = false;
+        }};
+
+        hailsalilty = new StatusEffect("hailsalilty"){{
+            effect = Fxr.salty;
+            init(() -> {
+                affinity(StatusEffects.wet, ((unit, time, newTime, result) -> {
+                    unit.damagePierce(transitionDamage);
+                    unit.apply(StatusEffects.corroded, time * 3);
+                    Fx.plasticburn.at(unit.x + Mathf.range(unit.bounds() / 2f), unit.y + Mathf.range(unit.bounds() / 2f));
+                    result.set(amberstriken, 0);
+                }));
+            });
             disarm = false;
         }};
 

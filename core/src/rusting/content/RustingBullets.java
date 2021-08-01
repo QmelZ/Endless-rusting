@@ -25,6 +25,8 @@ public class RustingBullets implements ContentList{
         fossilShard, cloudyShard, craeShard, raehShard, mhemShard, fraeShard, paveShard, darkShard, spawnerGlass, spawnerGlassFrag, spawnerBulat, spawnerBulatFrag,
         //artillery
         mhemQuadStorm,
+        //liquid
+        melomaeShot,
         //missile/weaving bullets
         craeWeaver, paveWeaver,
         //lightning bullets
@@ -34,7 +36,7 @@ public class RustingBullets implements ContentList{
         //essentualy small nukes
         craeBalistorm,
         //boomerangs
-        craeLightRoundaboutRight, craeLightRoundaboutLeft, denseLightRoundaboutLeft, denseLightRoundaboutRight,
+        craeLightRoundaboutRight, craeLightRoundaboutLeft, saltyLightRoundaboutRight, saltyLightRoundaboutLeft, denseLightRoundaboutLeft, denseLightRoundaboutRight,
         //glaivs
         craeLightGlaive, craeLightGlaiveRight, craeLightGlaiveLeft,
         //instant bullets
@@ -292,8 +294,6 @@ public class RustingBullets implements ContentList{
             pierce = true;
             pierceCap = 2;
             drag = 0.015f;
-            status = fragmentaein;
-            statusDuration = 3600;
         }};
 
         spawnerGlass = new BasicBulletType(1.25f, 13, "bullet"){{
@@ -380,6 +380,13 @@ public class RustingBullets implements ContentList{
             shrinkY = 0.63f;
 
             drag = 0.13f;
+        }};
+
+        melomaeShot = new LiquidBulletType(RustingLiquids.melomae){{
+            damage = 3;
+            homingPower = 0.075f;
+            knockback = 0.7f;
+            drag = 0.01f;
         }};
 
         craeWeaver = new BounceBulletType(3, 14, "bullet"){{
@@ -520,6 +527,68 @@ public class RustingBullets implements ContentList{
             status = shieldShatter;
             trailChance = 0.35f;
             drag = -0.001f;
+        }};
+
+        saltyLightRoundaboutRight = new BoomerangBulletType(2, 7, "endless-rusting-boomerang"){{
+
+            other = saltyLightRoundaboutLeft;
+
+            reloadMultiplier = 0.85f;
+            width = 14;
+            height = 13;
+            lifetime = 120;
+            homingPower = 0.05f;
+            homingRange = 45f;
+            trailWidth = 0;
+            trailLength = 0;
+            rotateMag = 1;
+            rotateVisualMag = 0.6f;
+            rotScaleMin = 0.1f;
+            rotScaleMax = 1f;
+            rotateRight = true;
+            reverseBoomerangRotScale = true;
+            hitEffect = Fx.hitFuse;
+            despawnEffect = Fx.smeltsmoke;
+            frontColor = Color.white;
+            backColor = Palr.dustriken;
+            trailEffect = Fxr.salty;
+            status = hailsalilty;
+            trailChance = 0.15f;
+            drag = 0.008f;
+            pierceCap = 1;
+            fragBullet = spawnerGlassFrag;
+            fragBullets = 3;
+        }};
+
+        saltyLightRoundaboutLeft = new BoomerangBulletType(2, 7, "endless-rusting-boomerang"){{
+
+            other = saltyLightRoundaboutRight;
+
+            reloadMultiplier = 0.85f;
+            width = 14;
+            height = 13;
+            lifetime = 120;
+            homingPower = 0.05f;
+            homingRange = 45f;
+            trailWidth = 0;
+            trailLength = 0;
+            rotateMag = 1;
+            rotateVisualMag = 0.6f;
+            rotScaleMin = 0.1f;
+            rotScaleMax = 1f;
+            rotateRight = false;
+            reverseBoomerangRotScale = false;
+            hitEffect = Fx.hitFuse;
+            despawnEffect = Fx.smeltsmoke;
+            frontColor = Color.white;
+            backColor = Palr.dustriken;
+            trailEffect = Fxr.salty;
+            status = hailsalilty;
+            trailChance = 0.15f;
+            drag = 0.008f;
+            pierceCap = 1;
+            fragBullet = spawnerGlassFrag;
+            fragBullets = 3;
         }};
 
         denseLightRoundaboutLeft = new BoomerangBulletType(1, 11, "endless-rusting-boomerang"){{
@@ -787,7 +856,7 @@ public class RustingBullets implements ContentList{
                     reloadTime = 2.5f;
                     shootSound = Sounds.spark;
                     intervalIn = 125;
-                    intervalOut = 65;
+                    intervalOut = 125;
                 }}
             );
             frontColor = Palr.pulseChargeStart;
@@ -795,8 +864,10 @@ public class RustingBullets implements ContentList{
             despawnEffect = Fx.sparkShoot;
             lifetime = 405f;
             width = height = 11f;
-            splashDamageRadius = 35f * 0.75f;
             splashDamage = 33f;
+            homingPower = 0.02f;
+            homingRange = 50;
+            splashDamageRadius = 35f * 0.75f;
             shootEffect = Fx.shootBig;
 
             shrinkX = 0.15f;

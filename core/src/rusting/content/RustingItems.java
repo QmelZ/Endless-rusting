@@ -3,10 +3,11 @@ package rusting.content;
 import arc.graphics.Color;
 import mindustry.ctype.ContentList;
 import mindustry.type.Item;
+import rusting.type.DebugItem;
 
 public class RustingItems implements ContentList {
     public static Item
-        melonaleum, bulastelt, taconite
+        melonaleum, bulastelt, taconite, halsinte
     ;
     @Override
     public void load() {
@@ -27,6 +28,11 @@ public class RustingItems implements ContentList {
         bulastelt = new Item("bulastelt", Color.valueOf("#bcbcbc")){{
             hardness = 2;
             cost = 1.05f;
+        }};
+
+        halsinte = new DebugItem("halsinte", Palr.lightstriken){{
+            hardness = 0;
+            cost = 1.35f;
         }};
     }
 }

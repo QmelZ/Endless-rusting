@@ -80,6 +80,7 @@ public class Varsr implements Loadable {
     public static void debug(){
         RustingBlocks.pafleaver.buildVisibility = BuildVisibility.shown;
         RustingBlocks.cuin.buildVisibility = BuildVisibility.shown;
+        RustingBlocks.desalinationMixer.buildVisibility = BuildVisibility.shown;
         defaultRandomQuotes = Seq.with(
             "[cyan] Welcome back " + username,
             "[sky] This is my message to my master\n" +

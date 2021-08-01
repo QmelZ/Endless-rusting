@@ -27,7 +27,7 @@ public class Drawr {
     public static boolean useNewMethods = false;
 
     public static void setMethods(){
-        if(Version.isAtLeast("126.3")){
+        if(Version.number >= 7){
             Log.debug("using latest methods");
             try {
                 drawingMethod = Pixmap.class.getDeclaredMethod("draw", Pixmap.class, int.class, int.class, int.class, int.class, int.class, int.class);

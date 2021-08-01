@@ -37,6 +37,7 @@ import rusting.world.blocks.pulse.production.PulseGenerator;
 import rusting.world.blocks.pulse.unit.PulseReconstructor;
 import rusting.world.blocks.pulse.unit.PulseUnitFactory;
 import rusting.world.blocks.pulse.utility.*;
+import rusting.world.draw.DrawItemLiquid;
 
 import static mindustry.type.ItemStack.with;
 
@@ -60,7 +61,7 @@ public class RustingBlocks implements ContentList{
         //ore blocks
         melonaleum, taconite,
         //crafting
-        bulasteltForgery,
+        bulasteltForgery, desalinationMixer,
         //defense
         terraMound, terraMoundLarge, wol,
         //power
@@ -104,7 +105,9 @@ public class RustingBlocks implements ContentList{
         thrum, spikent,
         //pannel turrets
         prikend, prsimdeome, prefraecon, rangi, pafleaver,
-        //spawner turrets.
+        //drylon
+        spraien,
+        //platonic elements represented by four turrets.
         octain, triagon, cuin,
         //bomerang related turrets
         refract, diffract, reflect,
@@ -121,7 +124,7 @@ public class RustingBlocks implements ContentList{
             variants = 0;
             status = RustingStatusEffects.macotagus;
             statusDuration = 350f;
-            liquidDrop = Liquids.water;
+            liquidDrop = RustingLiquids.melomae;
             isLiquid = true;
             cacheLayer = CacheLayer.water;
             albedo = 0.5f;
@@ -254,6 +257,21 @@ public class RustingBlocks implements ContentList{
             consumes.items(with(Items.coal, 3, RustingItems.taconite, 5));
             consumes.liquid(Liquids.water, 0.155f);
         }};
+
+        desalinationMixer = new GenericCrafter("desalination-mixer"){{
+            requirements(Category.crafting, with());
+            craftEffect = Fxr.salty;
+            outputItem = new ItemStack(RustingItems.halsinte, 3);
+            craftTime = 125;
+            size = 2;
+            hasPower = true;
+            hasLiquids = true;
+
+            drawer = new DrawItemLiquid();
+
+            consumes.power(7.2f);
+            consumes.liquid(Liquids.water, 0.1235f);
+        }};
         //endregion crafting
 
         //region defense
@@ -311,6 +329,11 @@ public class RustingBlocks implements ContentList{
                 new ItemModule(){{
                     item = Items.coal;
                     floors = Seq.with(Blocks.charr.asFloor());
+                }},
+                new ItemModule(){{
+                    item = RustingItems.halsinte;
+                    floors = Seq.with(Blocks.salt.asFloor());
+                    debug = true;
                 }}
             );
 
@@ -802,8 +825,9 @@ public class RustingBlocks implements ContentList{
             range = 175f;
             shootCone = 25f;
             shootSound = Sounds.release;
-            coolantMultiplier = 0.35f;
+            coolantMultiplier = 1.1f;
             autoreloadThreshold = 1 - 1/reloadTime;
+
         }};
 
         triagon = new AutoreloadItemTurret("triagon"){{
@@ -820,7 +844,7 @@ public class RustingBlocks implements ContentList{
             range = 175f;
             shootCone = 25f;
             shootSound = Sounds.release;
-            coolantMultiplier = 0.35f;
+            coolantMultiplier = 1.15f;
             autoreloadThreshold = 1 - 1/reloadTime;
             shootLength = 5.25f;
         }};
@@ -840,18 +864,42 @@ public class RustingBlocks implements ContentList{
             spacing = 7;
             shootCone = 25f;
             shootSound = Sounds.explosionbig;
-            coolantMultiplier = 0.35f;
+            coolantMultiplier = 0.85f;
             shootType = Bullets.artilleryIncendiary;
             shootEffect = Fx.flakExplosion;
         }};
 
+        spraien = new PumpLiquidTurret("spraien"){{
+            requirements(Category.turret, with(Items.metaglass, 45, Items.lead, 75));
+            ammo(
+                Liquids.water, Bullets.waterShot,
+                Liquids.slag, Bullets.slagShot,
+                Liquids.cryofluid, Bullets.cryoShot,
+                Liquids.oil, Bullets.oilShot,
+                RustingLiquids.melomae, RustingBullets.melomaeShot
+            );
+            floating = true;
+            size = 1;
+            recoilAmount = 0f;
+            reloadTime = 30f;
+            shots = 3;
+            spread = 5;
+            burstSpacing = 15;
+            inaccuracy = 2f;
+            shootCone = 50f;
+            liquidCapacity = 10f;
+            shootEffect = Fx.shootLiquid;
+            range = 110f;
+            health = 250 * size * size;
+            flags = EnumSet.of(BlockFlag.turret, BlockFlag.extinguisher);
+        }};
 
         refract = new ItemTurret("refract"){{
             requirements(Category.turret, with(Items.copper, 40, Items.graphite, 17));
             ammo(
-                    Items.graphite, RustingBullets.denseLightRoundaboutLeft,
-                    RustingItems.melonaleum, RustingBullets.craeLightRoundaboutLeft
-
+                Items.graphite, RustingBullets.denseLightRoundaboutLeft,
+                RustingItems.halsinte, RustingBullets.saltyLightRoundaboutLeft,
+                RustingItems.melonaleum, RustingBullets.craeLightRoundaboutLeft
             );
 
             health = 340;

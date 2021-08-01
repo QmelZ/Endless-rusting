@@ -12,6 +12,7 @@ public class RustedContentLoader {
 
     private final Seq<ContentList> contentLists = Seq.with(
             new RustingStatusEffects(),
+            new RustingLiquids(),
             new RustingItems(),
             new RustingBullets(),
             new RustingUnits(),

@@ -13,8 +13,6 @@ public class PanelHolder {
     public String name;
     public float panelDampening = 3f;
     public double panelX = 0, panelY = 0;
-    //used for shooting panel
-    public double reload, reloadTime = 60;
     public TextureRegion panelRegion, panelOutlineRegion, panelHeatRegion;
     public BulletType shootType;
     //can be used for shooting panels and others;
@@ -26,10 +24,9 @@ public class PanelHolder {
     }
 
     public void load(){
-        panelRegion = Core.atlas.find(name + "-panel");
-        panelOutlineRegion = Core.atlas.find(name + "-panel-outline");
-        panelHeatRegion = Core.atlas.find(name + "-panel-heat");
-        if(panelHeatRegion == Core.atlas.find("error")) panelHeatRegion = panelRegion;
+        panelRegion = Core.atlas.find(name + "-panel", Core.atlas.find("clear"));
+        panelOutlineRegion = Core.atlas.find(name + "-panel-outline", Core.atlas.find("clear"));
+        panelHeatRegion = Core.atlas.find(name + "-panel-heat", panelRegion);
     }
 
     public float rotation(){

@@ -49,14 +49,13 @@ public class PulseController extends PulseControlModule {
                     if(isTapping != true){
                         Sounds.click.at(x, y);
                         isTapping = true;
+                        enabled = !enabled;
                     }
                 }
                 else if(isTapping) {
                     isTapping = false;
                 }
             }
-
-            if(isControlled()) enabled(unit.isShooting());
 
             tempRotation %= 360;
 

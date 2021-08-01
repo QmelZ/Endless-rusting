@@ -24,7 +24,6 @@ public class ShootingPanelHolder extends PanelHolder{
     @Override
     public void shoot(PanelTurret.PanelTurretBuild Turret){
         shootType.create(Turret, Turret.team, getX(Turret), getY(Turret), Turret.rotation, speedMulti, lifetimeMulti);
-        reload = 0;
         if(useTurretAmmo) Turret.useAmmo();
         //like turret shoot code but no
     }

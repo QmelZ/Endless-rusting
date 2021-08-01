@@ -6,10 +6,9 @@ import arc.util.Tmp;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.BulletType;
-import mindustry.world.blocks.defense.turrets.PowerTurret;
 
 //a turret which shoots spaced projectiles, with some of their stats being treated differently.
-public class QuakeTurret extends PowerTurret {
+public class QuakeTurret extends PanelTurret {
 
     //spacing of shots
     public float spacing = 7;
