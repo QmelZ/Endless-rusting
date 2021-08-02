@@ -13,7 +13,7 @@ import rusting.type.weather.BulletParticleWeather;
 public class RustingWeathers implements ContentList{
     public static Weather
             //destructive
-            fossilStorm, corrosiveDeluge, chemNullificationStorm;
+            fossilStorm, corrosiveDeluge, chemNullificationStorm, hailsiteSpray;
 
     @Override
     public void load(){
@@ -71,6 +71,20 @@ public class RustingWeathers implements ContentList{
             attrs.set(Attribute.heat, -0.15f);
             attrs.set(Attribute.oil, -0.25f);
             attrs.set(Attribute.spores, -0.45f);
+        }};
+
+        hailsiteSpray = new ParticleWeather("hailsiteSpray"){{
+            color = noiseColor = Palr.lightstriken;
+            particleRegion = "particle";
+            statusGround = false;
+            useWindVector = true;
+            status = RustingStatusEffects.hailsalilty;
+            sizeMax = 6f;
+            sizeMin = 1.8f;
+            minAlpha = 0.5f;
+            maxAlpha = 1f;
+            density = 10000f;
+            baseSpeed = 0.09f;
         }};
     }
 }

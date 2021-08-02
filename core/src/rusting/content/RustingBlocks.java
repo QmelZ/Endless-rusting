@@ -661,6 +661,7 @@ public class RustingBlocks implements ContentList{
             healing = 40;
             targetAir = true;
             targetGround = true;
+            shootType = RustingBullets.paveBolt;
         }};
 
         spikent = new AreaHealerBeamTurret("spikent"){{
@@ -677,6 +678,7 @@ public class RustingBlocks implements ContentList{
             healRadius = 18;
             targetAir = true;
             targetGround = true;
+            shootType = RustingBullets.paveBolt;
         }};
 
         prikend = new PowerTurret("prikend"){{
@@ -870,7 +872,7 @@ public class RustingBlocks implements ContentList{
         }};
 
         spraien = new PumpLiquidTurret("spraien"){{
-            requirements(Category.turret, with(Items.metaglass, 45, Items.lead, 75));
+            requirements(Category.turret, with(Items.lead, 16, RustingItems.taconite, 23, RustingItems.halsinte, 12));
             ammo(
                 Liquids.water, Bullets.waterShot,
                 Liquids.slag, Bullets.slagShot,
@@ -887,10 +889,10 @@ public class RustingBlocks implements ContentList{
             burstSpacing = 15;
             inaccuracy = 2f;
             shootCone = 50f;
-            liquidCapacity = 10f;
+            liquidCapacity = 16f;
             shootEffect = Fx.shootLiquid;
             range = 110f;
-            health = 250 * size * size;
+            health = 250;
             flags = EnumSet.of(BlockFlag.turret, BlockFlag.extinguisher);
         }};
 
@@ -904,8 +906,8 @@ public class RustingBlocks implements ContentList{
 
             health = 340;
 
-            shots = 5;
-            burstSpacing = 5;
+            shots = 3;
+            burstSpacing = 7;
             reloadTime = 105f;
             recoilAmount = 1.5f;
             range = 135f;
@@ -917,7 +919,8 @@ public class RustingBlocks implements ContentList{
         diffract = new ItemTurret("diffract"){{
             requirements(Category.turret, with(Items.copper, 40, Items.graphite, 17));
             ammo(
-                Items.graphite, RustingBullets.craeLightGlaive
+                Items.graphite, RustingBullets.craeLightGlaive,
+                RustingItems.halsinte, RustingBullets.saltyLightGlaive
             );
 
             health = 960;
@@ -927,7 +930,7 @@ public class RustingBlocks implements ContentList{
 
             reloadTime = 120f;
             recoilAmount = 1.5f;
-            range = 165f;
+            range = 175f;
             inaccuracy = 0;
             shootCone = 15f;
             shootSound = Sounds.bang;

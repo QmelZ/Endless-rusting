@@ -38,7 +38,7 @@ public class RustingBullets implements ContentList{
         //boomerangs
         craeLightRoundaboutRight, craeLightRoundaboutLeft, saltyLightRoundaboutRight, saltyLightRoundaboutLeft, denseLightRoundaboutLeft, denseLightRoundaboutRight,
         //glaivs
-        craeLightGlaive, craeLightGlaiveRight, craeLightGlaiveLeft,
+        craeLightGlaive, craeLightGlaiveRight, craeLightGlaiveLeft, saltyLightGlaive,
         //instant bullets
         horizonInstalt, nummingInstalt, timelessInstalt,
         //bullet spawning bullets
@@ -557,7 +557,7 @@ public class RustingBullets implements ContentList{
             drag = 0.008f;
             pierceCap = 1;
             fragBullet = spawnerGlassFrag;
-            fragBullets = 3;
+            fragBullets = 2;
         }};
 
         saltyLightRoundaboutLeft = new BoomerangBulletType(2, 7, "endless-rusting-boomerang"){{
@@ -588,7 +588,7 @@ public class RustingBullets implements ContentList{
             drag = 0.008f;
             pierceCap = 1;
             fragBullet = spawnerGlassFrag;
-            fragBullets = 3;
+            fragBullets = 2;
         }};
 
         denseLightRoundaboutLeft = new BoomerangBulletType(1, 11, "endless-rusting-boomerang"){{
@@ -759,6 +759,31 @@ public class RustingBullets implements ContentList{
             status = shieldShatter;
             statusDuration = 60;
             drag = -0.001f;
+        }};
+
+        saltyLightGlaive = new BoomerangBulletType(2.5f, 45, "endless-rusting-glave"){{
+            width = 20;
+            height = 20;
+            lifetime = 72;
+            pierceCap = 4;
+            shrinkX = 0;
+            shrinkY = 0;
+            bounceCap = 0;
+            rotateMag = 5;
+            rotScaleMin = 0.2f;
+            rotScaleMax = 0.2f;
+            rotScaleMin = 0f;
+            rotScaleMax = 0f;
+            hitEffect = Fxr.instaltSummonerExplosion;
+            despawnEffect = Fxr.instaltSummonerExplosion;
+            frontColor = Color.white;
+            backColor = Palr.lightstriken;
+            status = hailsalilty;
+            drag = -0.001f;
+            fragBullet = saltyLightRoundaboutRight;
+            fragBullets = 3;
+            trailColor = Color.white;
+            trailEffect = Fxr.salty;
         }};
 
         nummingVortex = new BulletSpawnBulletType(2f, 250, "none"){{

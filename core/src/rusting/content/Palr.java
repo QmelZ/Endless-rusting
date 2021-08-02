@@ -12,7 +12,7 @@ public class Palr {
         pulseShieldEnd = new Color(Color.blue).lerp(Color.valueOf("#6e8adf"), 0.75f).lerp(Color.black, 0.25f),
         voidBullet = new Color(Color.purple).lerp(Color.black, 0.75f),
         dustriken = Color.valueOf("#70696c"),
-        lightstriken = Color.valueOf("#b1adac"),
+        lightstriken = Color.valueOf("#ddcece"),
         darkPyraBloom = new Color(Pal.darkPyraFlame).lerp(Color.white, 0.15f);
     ;
 }

@@ -49,8 +49,8 @@ public class Fxr{
         salty = new Effect(35f, e -> {
             color(Color.white, Palr.dustriken, e.fin());
 
-            randLenVectors(e.id, 3, 2f + e.fin() * 7f, (x, y) -> {
-                Fill.square(e.x + x, e.y + y, 0.2f + e.fout() * 1.7f);
+            randLenVectors(e.id, 3, 2f + e.fin() * 8f, (x, y) -> {
+                Fill.square(e.x + x, e.y + y, 0.2f + e.fout() * 1.3f);
             });
         }),
 
