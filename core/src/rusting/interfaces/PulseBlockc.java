@@ -41,8 +41,9 @@ public abstract interface PulseBlockc extends Buildingc, Researchablec{
         return false;
     }
 
-    default void receivePulse(float pulse, Building source){
+    default boolean receivePulse(float pulse, Building source){;
         pulseModule.pulse += pulse;
+        return true;
     }
 
     default void addPulse(float pulse){

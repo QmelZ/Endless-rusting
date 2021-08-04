@@ -3,7 +3,6 @@ package rusting.interfaces;
 import arc.struct.Seq;
 import arc.util.Log;
 import mindustry.Vars;
-import mindustry.gen.Building;
 import mindustry.world.Block;
 import rusting.ctype.ResearchType;
 
@@ -35,9 +34,8 @@ public interface ResearchCenterc {
 
     default boolean researchable(boolean techResearched, Block build){
         boolean[] isFound = {false};
-        Building researchBuild = ((Block) build).buildType.get();
-        if(researchBuild instanceof Researchablec){
-            Researchablec building = (Researchablec) researchBuild;
+        if(build instanceof ResearchableBlock){
+            ResearchableBlock building = (ResearchableBlock) build;
             //if block is already researched, and it's checking whether block is currently not unlocked, return false;
             if(techResearched && researchedBlocks.contains(build.name)) return false;
             //is true if block is compatable with the research types

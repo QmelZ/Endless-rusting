@@ -24,6 +24,7 @@ public class PulseGenerator extends PulseNode {
 
     public PulseGenerator(String name) {
         super(name);
+        resistance = 0;
     }
 
     public class PulseGeneratorBuild extends PulseNode.PulseNodeBuild{

@@ -2,17 +2,32 @@ package rusting;
 
 import arc.Core;
 import arc.assets.Loadable;
+import arc.struct.Queue;
 import arc.struct.Seq;
 import arc.util.Log;
+import arc.util.Tmp;
+import mindustry.Vars;
+import mindustry.content.Blocks;
+import mindustry.gen.Building;
+import mindustry.world.Tile;
 import mindustry.world.meta.BuildVisibility;
 import rusting.content.RustingBlocks;
 import rusting.core.RustedContentLoader;
 import rusting.core.Rusting;
 import rusting.core.holder.ItemScoreHolder;
+import rusting.interfaces.PulseCanalInput;
+import rusting.interfaces.PulseInstantTransportation;
 import rusting.ui.RustingUI;
+import rusting.world.blocks.pulse.distribution.PulseCanal.PulseCanalBuild;
 import rusting.world.format.holder.FormatHolder;
 
+import static rusting.world.blocks.pulse.distribution.PulseCanal.asCanal;
+
 public class Varsr implements Loadable {
+
+    protected final static Queue<PulseCanalBuild> canalQueue = new Queue<>();
+    protected static Seq<Building> buildingSeq = new Seq<>(), buildingSeq2 = new Seq<>();
+    protected static Tile tmpTile = null;
 
     public static Seq<String> defaultDatabaseQuotes, defaultRandomQuotes;
 
@@ -81,6 +96,10 @@ public class Varsr implements Loadable {
         RustingBlocks.pafleaver.buildVisibility = BuildVisibility.shown;
         RustingBlocks.cuin.buildVisibility = BuildVisibility.shown;
         RustingBlocks.desalinationMixer.buildVisibility = BuildVisibility.shown;
+        RustingBlocks.pulseTeleporterController.buildVisibility = BuildVisibility.shown;
+        RustingBlocks.pulseTeleporterCorner.buildVisibility = BuildVisibility.shown;
+        RustingBlocks.pulseCanal.buildVisibility = BuildVisibility.shown;
+        RustingBlocks.pulseTeleporterInputTerminal.buildVisibility = BuildVisibility.shown;
         defaultRandomQuotes = Seq.with(
             "[cyan] Welcome back " + username,
             "[sky] This is my message to my master\n" +
@@ -92,5 +111,41 @@ public class Varsr implements Loadable {
             "[purple] Roombae smithae teslan woop woop",
             "[red] N O  E S C A P I N G  U S\nC O M E  A N D  S U F F E R  W I T H  U S"
         );
+    }
+
+    public static void updateConnectedCanals(PulseCanalBuild building, float maxDst){
+        buildingSeq = connectedCanals(building, maxDst);
+        buildingSeq.each(b -> {
+            if(b instanceof PulseCanalBuild) {
+                ((PulseCanalBuild) b).connected.add((PulseInstantTransportation) b);
+                ((PulseCanalBuild) b).setupEnding();
+            }
+        });
+
+    }
+
+    public static Seq<Building> connectedCanals(PulseCanalBuild building, float maxDst){
+        buildingSeq = Seq.with(building);
+        while (buildingSeq != buildingSeq2) {
+            buildingSeq2 = buildingSeq;
+            buildingSeq2 = findConnectedCanals(buildingSeq2, maxDst);
+        }
+        return buildingSeq;
+    };
+
+    private static Seq<Building> findConnectedCanals(Seq<Building> build, float maxDst){
+        build.each(b -> {
+            b.proximity().each(e -> {
+                if(!(build.size > maxDst) && !build.contains(e) && e instanceof PulseCanalBuild) {
+                    if(e.rotation == b.rotation && (b.angleTo(e.x, e.y)/90 % 2 == b.rotation)) build.add(e);
+                    else{
+                        Tmp.v1.set(b.angleTo(e.x, e.y), -8);
+                        tmpTile = Vars.world.tileWorld(b.x + Tmp.v1.x, b.y + Tmp.v1.y);
+                        if(!(tmpTile.block() == Blocks.air) && (tmpTile.build instanceof PulseCanalInput)) asCanal(tmpTile.build).starting = true;
+                    }
+                }
+            });
+        });
+        return build;
     }
 }

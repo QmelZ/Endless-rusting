@@ -6,6 +6,12 @@ import arc.struct.Seq;
 
 public class Mathr {
 
+    //returns difference between numbers
+    public static float dif(double a, double b){
+        if(a > b) return (float) (Math.abs(a) - Math.abs(b));
+        return (float) (Math.abs(b) - Math.abs(a));
+    }
+
     public static float loopSin(double input, double mag, double scaling){
         return (float) ((Math.sin(input) < 0 ? 1 + Math.sin(input * scaling) : Math.sin(input * scaling)) * mag);
     }

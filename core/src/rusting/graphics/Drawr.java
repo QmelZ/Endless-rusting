@@ -39,15 +39,15 @@ public class Drawr {
                 Log.err("New Arc methods in Drawr #33 not suported!");
             }
         }
-        if(drawingMethod == null)
+        if(drawingMethod == null) {
             try {
                 drawingMethod = Pixmap.class.getDeclaredMethod("drawPixmap", Pixmap.class, int.class, int.class, int.class, int.class, int.class);
                 useNewMethods = false;
                 initializedMethods = true;
-            }
-            catch (NoSuchMethodException err){
+            } catch (NoSuchMethodException err) {
                 Log.err("Old Arc methods in Drawr #44 not suported!");
             }
+        }
     }
 
     //Learned somewhat how to do this from sk's Drawm

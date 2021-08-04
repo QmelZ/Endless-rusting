@@ -92,6 +92,7 @@ public class PulseParticleSpawner extends PulseBlock {
         public void read(Reads r, byte revision) {
             super.read(r, revision);
             state = r.i();
+            //n mn m nmn mn mn nm nm jm njkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk,
             particleSpawnInterval = r.f();
             consumeTimer = r.f();
         }

@@ -5,11 +5,17 @@ import mindustry.logic.LAccess;
 
 public interface PrimitiveControlBlock {
 
-    default void primitiveControl(LAccess type, double p1, double p2, double p3, double p4){}
+    default void primitiveControl(LAccess type, double p1, double p2, double p3, double p4){
 
-    default void primitiveControl(LAccess type, Object p1, double p2, double p3, double p4){}
+    }
 
-    default void rawControl(double p1, double p2, double p3, double p4){}
+    default void primitiveControl(LAccess type, Object p1, double p2, double p3, double p4){
+
+    }
+
+    default void rawControl(double p1, double p2, double p3, double p4){
+
+    }
 
     default void exportInformationDefault(Building build){
 

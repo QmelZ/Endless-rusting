@@ -6,14 +6,14 @@ import arc.struct.Seq;
 import mindustry.content.*;
 import mindustry.ctype.ContentList;
 import mindustry.entities.Effect;
+import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Sounds;
 import mindustry.graphics.CacheLayer;
 import mindustry.graphics.Pal;
 import mindustry.type.*;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.Wall;
-import mindustry.world.blocks.defense.turrets.ItemTurret;
-import mindustry.world.blocks.defense.turrets.PowerTurret;
+import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.distribution.Conveyor;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.StaticWall;
@@ -87,6 +87,8 @@ public class RustingBlocks implements ContentList{
         pulseResearchCenter,
         //Suport
         pulseUpkeeper,
+        //teleporter multiblock structure
+        pulseTeleporterController, pulseTeleporterCorner, pulseCanal, pulseTeleporterInputTerminal,
         //particle spawning
         smallParticleSpawner,
         //storage
@@ -115,7 +117,11 @@ public class RustingBlocks implements ContentList{
         fraeFactory, absentReconstructor, dwindlingReconstructor,
         //logic
         fraeLog;
-        
+
+    public static void addLiquidAmmo(Block turret, Liquid liquid, BulletType bullet){
+        ((LiquidTurret) turret).ammoTypes.put(liquid, bullet);
+    }
+
     public void load(){
         //region environment
 
@@ -510,6 +516,22 @@ public class RustingBlocks implements ContentList{
             overdrivePercent = 65;
         }};
 
+        pulseTeleporterController = new PulseTeleporterController("pulse-teleporter-controller"){{
+            pulseStorage = 1000;
+        }};
+
+        pulseTeleporterCorner = new PulseTeleporterCorner("pulse-teleporter-corner"){{
+
+        }};
+
+        pulseCanal = new PulseCanal("pulse-canal"){{
+
+        }};
+
+        pulseTeleporterInputTerminal = new PulseCanalInput("pulse-canal-input"){{
+
+        }};
+
         smallParticleSpawner = new PulseParticleSpawner("small-particle-spawner"){{
             requirements(Category.effect, with(Items.copper, 300, Items.lead, 115, Items.metaglass, 50, Items.titanium, 45));
             centerResearchRequirements = with(Items.copper, 350,  Items.coal, 95, Items.graphite, 55, Items.titanium, 225);
@@ -883,9 +905,9 @@ public class RustingBlocks implements ContentList{
             floating = true;
             size = 1;
             recoilAmount = 0f;
-            reloadTime = 30f;
-            shots = 3;
-            spread = 5;
+            reloadTime = 54f;
+            shots = 5;
+            spread = 2.5f;
             burstSpacing = 15;
             inaccuracy = 2f;
             shootCone = 50f;
@@ -1006,5 +1028,8 @@ public class RustingBlocks implements ContentList{
             buildVisibility = BuildVisibility.shown;
         }};
         //endregion
+
+        addLiquidAmmo(Blocks.wave, RustingLiquids.melomae, RustingBullets.melomaeShot);
+        addLiquidAmmo(Blocks.tsunami, RustingLiquids.melomae, RustingBullets.heavyMelomaeShot);
     }
 }

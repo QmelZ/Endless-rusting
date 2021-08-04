@@ -8,12 +8,12 @@ import arc.math.Mathf;
 import arc.util.*;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import mindustry.Vars;
 import mindustry.content.Items;
 import mindustry.entities.bullet.BulletType;
 import mindustry.entities.bullet.LightningBulletType;
 import mindustry.game.Team;
-import mindustry.gen.Building;
-import mindustry.gen.Groups;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.Ranged;
 import mindustry.type.ItemStack;
@@ -22,17 +22,18 @@ import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Stat;
-import mindustry.world.modules.ItemModule.ItemConsumer;
-import rusting.content.Palr;
-import rusting.content.RustingBullets;
+import rusting.content.*;
 import rusting.core.holder.CustomConsumerModule;
 import rusting.core.holder.CustomStatHolder;
-import rusting.interfaces.*;
+import rusting.interfaces.PulseBlockc;
+import rusting.interfaces.ResearchableBlock;
 import rusting.world.blocks.pulse.utility.PulseResearchBlock;
 
 import static mindustry.Vars.*;
 
 public class PulseBlock extends Block implements ResearchableBlock {
+
+    private boolean tmpBool = false;
 
     public CustomStatHolder pStats = new CustomStatHolder();
 
@@ -82,6 +83,7 @@ public class PulseBlock extends Block implements ResearchableBlock {
         group = BlockGroup.power;
         chargeColourStart = Palr.pulseChargeStart;
         chargeColourEnd = Palr.pulseChargeEnd;
+        researchTypes.add(RustingResearchTypes.pulse);
     }
 
     @Override
@@ -223,16 +225,22 @@ public class PulseBlock extends Block implements ResearchableBlock {
             return customConsumeValid() && ((team == Team.derelict || (team == state.rules.waveTeam && cruxInfiniteConsume)) && !state.rules.pvp || consValid());
         }
 
-        public boolean canRecievePulse(float charge){
-            return charge + pulseEnergy < pulseStorage + (canOverload ? overloadCapacity : 0);
+        public boolean canRecievePulse(float pulse){
+            return canRecievePulse(pulse, this);
+        }
+
+        public boolean canRecievePulse(float pulse, Building build){
+            return pulse + pulseEnergy < pulseStorage + (canOverload ? overloadCapacity : 0);
         }
 
         public boolean connectableTo(){
             return connectable;
         }
 
-        public void receivePulse(float pulse, Building source){
-            if(canRecievePulse(pulse)) addPulse(pulse, source);
+        public boolean receivePulse(float pulse, Building source){
+            tmpBool = canRecievePulse(pulse, source);
+            if(tmpBool) addPulse(pulse, source);
+            return tmpBool;
         }
 
         public void addPulse(float pulse){
@@ -263,7 +271,7 @@ public class PulseBlock extends Block implements ResearchableBlock {
 
         public void overloadEffect(){
             //for now, sprays projectiles around itself, and damages itself.
-            if(Mathf.chance(overloadChargef() * projectileChanceModifier)) projectile.create(this, team, x, y, Mathf.random(360), (float) ((Mathf.random(0.5f) + 0.3) * size));
+            if(!Vars.headless && Mathf.chance(overloadChargef() * projectileChanceModifier)) Call.createBullet(projectile, team, x, y, Mathf.random(360), projectile.damage, (float) ((Mathf.random(0.5f) + 0.3) * size), 1);
         }
 
         public boolean overloaded(){

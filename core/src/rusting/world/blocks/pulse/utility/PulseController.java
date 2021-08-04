@@ -57,9 +57,11 @@ public class PulseController extends PulseControlModule {
                 }
             }
 
-            tempRotation %= 360;
 
-            rotation = interval * Math.round(tempRotation/interval);
+            if(enabled) {
+                tempRotation %= 360;
+                rotation = interval * Math.round(tempRotation / interval);
+            }
         }
 
         public @Nullable
@@ -87,7 +89,7 @@ public class PulseController extends PulseControlModule {
         }
 
         public boolean showPointer(){
-            return !(isControlled() && dst(unit.aimX(), unit.aimY()) < size * 4);
+            return enabled && !(isControlled() && dst(unit.aimX(), unit.aimY()) < size * 4);
         }
 
         @Override

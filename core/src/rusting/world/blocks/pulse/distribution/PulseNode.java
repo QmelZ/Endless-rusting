@@ -219,10 +219,7 @@ public class PulseNode extends PulseBlock {
                 if(pulseEnergy < 0 || j == null) return;
                 if(index[0] > connectionsPotential) connections.remove(l);
                 float energyTransmitted = Math.min(pulseEnergy, energyTransmission);
-                if(((PulseBlockBuild)j).canRecievePulse(energyTransmitted)){
-                    ((PulseBlockBuild) j).receivePulse(energyTransmitted, this);
-                    pulseEnergy -= energyTransmitted;
-                }
+                if(((PulseBlockBuild)j).receivePulse(energyTransmitted, this)) pulseEnergy -= energyTransmitted;
                 index[0]++;
             });
         }

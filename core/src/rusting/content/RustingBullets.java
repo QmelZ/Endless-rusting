@@ -26,7 +26,7 @@ public class RustingBullets implements ContentList{
         //artillery
         mhemQuadStorm,
         //liquid
-        melomaeShot,
+        melomaeShot, heavyMelomaeShot,
         //missile/weaving bullets
         craeWeaver, paveWeaver,
         //lightning bullets
@@ -387,6 +387,19 @@ public class RustingBullets implements ContentList{
             homingPower = 0.075f;
             knockback = 0.7f;
             drag = 0.01f;
+        }};
+
+        heavyMelomaeShot = new LiquidBulletType(RustingLiquids.melomae){{
+            damage = 9.3f;
+            homingPower = 0.075f;
+            lifetime = 49f;
+            speed = 4f;
+            knockback = 1.5f;
+            puddleSize = 8f;
+            orbSize = 4f;
+            drag = 0.001f;
+            ammoMultiplier = 0.4f;
+            statusDuration = 60f * 4f;
         }};
 
         craeWeaver = new BounceBulletType(3, 14, "bullet"){{
@@ -942,6 +955,5 @@ public class RustingBullets implements ContentList{
             drawSize = 6;
 
         }};
-
     }
 }

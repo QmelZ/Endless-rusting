@@ -12,7 +12,9 @@ import mindustry.gen.Icon;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import rusting.Varsr;
+import rusting.content.RustingResearchTypes;
 import rusting.interfaces.ResearchCenterc;
+import rusting.interfaces.Researchablec;
 import rusting.world.blocks.pulse.PulseBlock;
 
 import static mindustry.Vars.player;
@@ -90,6 +92,7 @@ public class PulseResearchBlock extends PulseBlock {
         @Override
         public void created() {
             super.created();
+            Researchablec.researchTypes.add(RustingResearchTypes.pulse);
             setResearchableBlocks();
         }
 
