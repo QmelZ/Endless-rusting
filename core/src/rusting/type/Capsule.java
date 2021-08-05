@@ -1,5 +1,7 @@
 package rusting.type;
 
+import rusting.Varsr;
+import rusting.ctype.ERContentType;
 import rusting.ctype.UnlockableERContent;
 
 public class Capsule<itemStack, liquidStack> extends UnlockableERContent {
@@ -36,4 +38,8 @@ public class Capsule<itemStack, liquidStack> extends UnlockableERContent {
         return super.isDisposed();
     }
 
+    @Override
+    public ERContentType getContentType() {
+        return Varsr.content.getContentType("capsule");
+    }
 }

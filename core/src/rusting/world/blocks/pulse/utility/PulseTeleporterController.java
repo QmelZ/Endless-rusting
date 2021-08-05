@@ -60,21 +60,21 @@ public class PulseTeleporterController extends PulseTeleporterPart {
         build = asControllerBuild(tile.build);
         build.proximity().each(b -> {
             if(returnBool == true) {
-                Log.info("breaking out of loop");
+                //Log.info("breaking out of loop");
                 return;
             }
-            Log.info("Building is instance of canal: " + (b instanceof PulseCanalBuild));
-            Log.info("build is facing: " + (b.rotation * 90) % 360);
-            Log.info("angle to block is: " + build.angleTo(b.x, b.y));
+            //Log.info("Building is instance of canal: " + (b instanceof PulseCanalBuild));
+            //Log.info("build is facing: " + (b.rotation * 90) % 360);
+            //Log.info("angle to block is: " + build.angleTo(b.x, b.y));
             if(b instanceof PulseCanalBuild && (b.rotation * 90) % 360 == build.angleTo(b.x, b.y)) {
                 returnBool = true;
                 tmpBuild2 = b;
             }
         });
         if(returnBool == false) return returnBool;
-        Log.info("found canal");
+        //Log.info("found canal");
         for (int i = 0; i < 3; i++) {
-            Log.info("cycle " + (i + 1));
+            //Log.info("cycle " + (i + 1));
             if(tmpBuild2 instanceof PulseCanalBuild) {
                 tmpTile = rusting.world.blocks.pulse.distribution.PulseCanal.asCanal(tmpBuild2).canalEnding;
                 if(Mathf.dst(tmpBuild2.tile.x, tmpBuild2.tile.y, tmpTile.x, tmpTile.y) < 8) break;
@@ -91,6 +91,13 @@ public class PulseTeleporterController extends PulseTeleporterPart {
 
     public class PulseTeleporterControllerBuild extends PulseBlockBuild {
 
+        /*
+        0: idle
+        1: teleporting unknown blocks and units in
+        2: teleporting blocks and units from  the unknown
+         */
+        public int state = 0;
+        boolean multiblockFormed = false;
         Seq<Integer> connections = new Seq();
         Seq<Building> multiblockParts = new Seq();
 
@@ -120,6 +127,12 @@ public class PulseTeleporterController extends PulseTeleporterPart {
             });
 
             Draw.reset();
+        }
+
+        @Override
+        public void updateTile() {
+            super.updateTile();
+            if(chargef() > 0.9f && !multiblockFormed) multiblockFormed = multiblockFormed(tile);
         }
     }
 }

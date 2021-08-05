@@ -14,6 +14,7 @@ import mindustry.game.Team;
 import mindustry.gen.Sounds;
 import mindustry.gen.Unit;
 import mindustry.type.Category;
+import mindustry.world.Tile;
 import rusting.content.RustingBullets;
 import rusting.world.blocks.pulse.PulseBlock;
 
@@ -40,6 +41,12 @@ public class PulseLandmine extends PulseBlock {
         targetable = false;
         hasShadow = false;
         solid = false;
+    }
+
+    @Override
+    public int minimapColor(Tile tile){
+        PulseLandmineBuild build = (PulseLandmineBuild)tile.build;
+        return build != null && build.team == Vars.player.team() ? build.team.color.rgba() : tile.floor().mapColor.rgba();
     }
 
     public class PulseLandmineBuild extends PulseBlockBuild{
@@ -108,6 +115,8 @@ public class PulseLandmine extends PulseBlock {
                 Draw.alpha(drawAlpha);
                 Draw.rect(indicatorRegion, x, y, 270);
             }
+
+            if(tile.floor().emitLight) tile.floor().drawEnvironmentLight(tile);
         }
 
         @Override

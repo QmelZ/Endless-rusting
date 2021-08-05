@@ -18,6 +18,7 @@ public class BoomerangBulletType extends BounceBulletType {
 
     //preferably a copy of this boomerang but only with rotateRight inverted
     public BulletType other = null;
+    public float drawAlpha = 1f;
     public boolean rotateRight = true;
     public float revolutions = 10;
     public float rotateTotalAngle = revolutions * 360;
@@ -42,6 +43,8 @@ public class BoomerangBulletType extends BounceBulletType {
     @Override
     public void draw(Bullet b) {
 
+        if(Core.settings.getBool("settings.er.drawtrails")) ((Seq<Trail>)b.data).each(t -> t.draw(trailColor, trailWidth * b.fout()));
+
         float height = this.height * ((1f - shrinkY) + shrinkY * b.fout());
         float width = this.width * ((1f - shrinkX) + shrinkX * b.fout());
         float offset = -90 + (spin != 0 ? Mathf.randomSeed(b.id, 360f) + b.time * spin : 0f);
@@ -53,14 +56,13 @@ public class BoomerangBulletType extends BounceBulletType {
         Draw.mixcol(mix, mix.a);
 
         Draw.color(backColor);
+        Draw.alpha(drawAlpha);
         Draw.rect(backRegion, b.x, b.y, width, height, rotation);
         Draw.color(frontColor);
+        Draw.alpha(drawAlpha);
         Draw.rect(frontRegion, b.x, b.y, width, height, rotation);
 
         Draw.reset();
-
-        if(Core.settings.getBool("drawtrails")) ((Seq<Trail>)b.data).each(t -> t.draw(trailColor, trailWidth * b.fout()));
-
     }
 
     public void update(Bullet b) {

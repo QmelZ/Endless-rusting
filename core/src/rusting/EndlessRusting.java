@@ -30,13 +30,17 @@ public class EndlessRusting extends Mod{
         Events.on(EventType.ContentInitEvent.class, e -> {
             Varsr.content.init();
         });
+
+        Events.on(EventType.WorldLoadEvent.class, e -> {
+                    Varsr.research.setupGameResearch();
+                }
+        );
     }
 
     @Override
     public void init(){
         Vars.enableConsole = true;
         Varsr.init();
-        Varsr.ui.init();
     }
 
     //called after all content is loaded. can be called again, for debugging.

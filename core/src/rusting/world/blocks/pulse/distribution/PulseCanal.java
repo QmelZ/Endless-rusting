@@ -1,16 +1,18 @@
 package rusting.world.blocks.pulse.distribution;
 
 import arc.Core;
+import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
+import arc.math.Mathf;
 import arc.struct.Queue;
-import arc.util.Eachable;
-import arc.util.Tmp;
+import arc.util.*;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.world.Tile;
 import rusting.Varsr;
+import rusting.content.Palr;
 import rusting.interfaces.PulseCanalInput;
 import rusting.interfaces.PulseCornerpiece;
 import rusting.world.blocks.pulse.PulseBlock;
@@ -79,6 +81,10 @@ public class PulseCanal extends PulseBlock {
         public Tile canalEnding = tile;
         //if it's the starting canal
         public boolean starting = false;
+        //how long pulse bursts are actively displayed for
+        public float pulseBurstTime = 0;
+        //variable used to cycle through the colours. resets at 100
+        public float cycle = 0;
 
         @Override
         public void onProximityAdded(){
@@ -108,7 +114,12 @@ public class PulseCanal extends PulseBlock {
 
         @Override
         public void addPulse(float pulse, Building building) {
-            if(canalEnding != tile && canalEnding.build instanceof PulseBlockBuild) ((PulseBlockBuild) canalEnding.build).addPulse(pulse);
+            if(canalEnding != tile && canalEnding.build instanceof PulseBlockBuild) {
+                ((PulseBlockBuild) canalEnding.build).addPulse(pulse);
+                connected.each(e -> {
+                    ((PulseCanalBuild) e).pulseBurstTime = 60;
+                });
+            }
         }
 
         @Override
@@ -152,10 +163,24 @@ public class PulseCanal extends PulseBlock {
         }
 
         @Override
+        public void updateTile() {
+            super.updateTile();
+            if(pulseBurstTime > 0) {
+                pulseBurstTime -= Time.delta;
+                cycle += Time.delta/50;
+                cycle %= 2;
+            }
+            else Mathf.lerpDelta(cycle, 0, 0.1f);
+            Math.max(pulseBurstTime, 0);
+
+        }
+
+        @Override
         public void draw() {
             Draw.rect(region, x, y);
             Draw.z(Layer.blockOver + 0.1f);
 
+            Draw.color(Palr.pulseBullet, Color.sky, Color.white, Math.abs(1 - cycle));
             Draw.rect(topRegion, x, y, rotation * 90 - 90);
         }
     }

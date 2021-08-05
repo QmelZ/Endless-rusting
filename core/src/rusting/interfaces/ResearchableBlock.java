@@ -1,10 +1,7 @@
 package rusting.interfaces;
 
-import arc.struct.Seq;
-import rusting.ctype.ResearchType;
+//used in blocks
+public interface ResearchableBlock extends ResearchableObject{
 
-public interface ResearchableBlock {
 
-    //research types for the block
-    public Seq<ResearchType> researchTypes = new Seq<ResearchType>();
 }

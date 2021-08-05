@@ -8,6 +8,7 @@ import arc.util.Time;
 import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.ctype.ContentList;
+import mindustry.entities.Effect;
 import mindustry.entities.Fires;
 import mindustry.entities.bullet.*;
 import mindustry.gen.Bullet;
@@ -774,29 +775,56 @@ public class RustingBullets implements ContentList{
             drag = -0.001f;
         }};
 
-        saltyLightGlaive = new BoomerangBulletType(2.5f, 45, "endless-rusting-glave"){{
-            width = 20;
-            height = 20;
-            lifetime = 72;
+        saltyLightGlaive = new BoomerangBulletType(3f, 45, "endless-rusting-glave-large"){{
+
+            consDespawned = new Cons<Bullet>() {
+                @Override
+                public void get(Bullet b) {
+
+                    Sounds.explosion.at(b.x, b.y);
+                    Effect.shake(4, 36, b.x, b.y);
+
+                }
+            };
+
+            consHit = new Cons<Bullet>() {
+                @Override
+                public void get(Bullet b) {
+
+                    if(b.collided.size == pierceCap) consDespawned.get(b);
+
+                }
+            };
+            width = 22;
+            height = 22;
+            lifetime = 60;
             pierceCap = 4;
+            hitShake = 2;
             shrinkX = 0;
             shrinkY = 0;
-            bounceCap = 0;
-            rotateMag = 5;
-            rotScaleMin = 0.2f;
-            rotScaleMax = 0.2f;
+            bounceUnits = false;
+            drawAlpha = 0.85f;
+            spin = 0.25f;
+            rotateMag = 0.25f;
             rotScaleMin = 0f;
             rotScaleMax = 0f;
-            hitEffect = Fxr.instaltSummonerExplosion;
+            hitEffect = Fx.smoke;
             despawnEffect = Fxr.instaltSummonerExplosion;
-            frontColor = Color.white;
+            frontColor = RustingItems.halsinte.color;
             backColor = Palr.lightstriken;
             status = hailsalilty;
             drag = -0.001f;
             fragBullet = saltyLightRoundaboutRight;
             fragBullets = 3;
+            fragVelocityMin = 3;
+            fragLifeMin = 0.15f;
+            fragLifeMax = 0.15f;
+            fragAngle = 180;
+            fragCone = 35;
             trailColor = Color.white;
             trailEffect = Fxr.salty;
+            trailWidth = 4;
+            trailLength = 7;
         }};
 
         nummingVortex = new BulletSpawnBulletType(2f, 250, "none"){{

@@ -13,6 +13,7 @@ public class BounceBulletType extends ConsBulletType {
     public double bounciness = 1;
     //Cap for how many times it can bounce. Set to -1 to disable, 0 or null to stop bouncing.
     public int bounceCap = -1;
+    public boolean bounceUnits, bounceBuildings;
     //Effect displayed on bounce
     public Effect bounceEffect = Fx.casing1;
     //trail length for the bullet
@@ -25,8 +26,7 @@ public class BounceBulletType extends ConsBulletType {
         this.sprite = sprite;
         this.speed = speed;
         this.damage = damage;
-        this.pierce = true;
-        this.pierceBuilding = true;
+        this.pierceBuilding = this.pierce = this.bounceBuildings = this.bounceUnits = true;
         this.trailWidth = width/5;
         this.shrinkX = 0.8f;
     }
@@ -40,12 +40,12 @@ public class BounceBulletType extends ConsBulletType {
     @Override
     public void update(Bullet b){
         super.update(b);
-        if(Core.settings.getBool("er.drawtrails")) ((Seq<Trail>)b.data).each(t -> t.update(b.x, b.y));
+        if(Core.settings.getBool("settings.er.drawtrails")) ((Seq<Trail>)b.data).each(t -> t.update(b.x, b.y));
     }
 
     @Override
     public void draw(Bullet b){
-        if(Core.settings.getBool("er.drawtrails")) ((Seq<Trail>)b.data).each(t -> t.draw(trailColor, trailWidth * b.fout()));
+        if(Core.settings.getBool("settings.er.drawtrails")) ((Seq<Trail>)b.data).each(t -> t.draw(trailColor, trailWidth * b.fout()));
         super.draw(b);
     }
 
@@ -53,11 +53,11 @@ public class BounceBulletType extends ConsBulletType {
     public void hit(Bullet b, float x, float y) {
         super.hit(b, x, y);
         Teamc teamc = Units.closestEnemy(b.team, x, y, hitSize * 2 + 4, e -> b.collides(e));
-        if(!(teamc instanceof  Unit)) return;
+        if(!(teamc instanceof Unit)) return;
         Unit unit = null;
         float difX = Math.abs(b.vel.x - x), difY = Math.abs(b.vel.y - y);
         unit = (Unit)teamc;
-        if (bounceCap == -1 || b.collided.size <= bounceCap){
+        if ((bounceCap == -1 || b.collided.size <= bounceCap ) && bounceUnits){
             float rotation = b.vel.angle();
             b.vel.setAngle(360 + rotation - (rotation - b.angleTo(unit)) * 2);
             b.vel.rotate(180);
@@ -82,7 +82,7 @@ public class BounceBulletType extends ConsBulletType {
             flipX = true;
             flipY = false;
         }
-        if (bounceCap == -1 || b.collided.size <= bounceCap) {
+        if ((bounceCap == -1 || b.collided.size <= bounceCap) && bounceBuildings) {
             if (flipX) {
                 b.vel.x *= -1 * bounciness;
                 //check if bullet is inside block

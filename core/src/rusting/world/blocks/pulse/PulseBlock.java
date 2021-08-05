@@ -9,14 +9,12 @@ import arc.util.*;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
-import mindustry.content.Items;
 import mindustry.entities.bullet.BulletType;
 import mindustry.entities.bullet.LightningBulletType;
 import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.Ranged;
-import mindustry.type.ItemStack;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
 import mindustry.world.Tile;
@@ -66,10 +64,6 @@ public class PulseBlock extends Block implements ResearchableBlock {
     public CustomConsumerModule customConsumes = new CustomConsumerModule();
     //whether crux has infinite resources. PVP excluded
     public boolean cruxInfiniteConsume = false;
-    //self explanatory
-    public boolean needsResearching = true;
-    //requirements to be researched
-    public ItemStack[] centerResearchRequirements = ItemStack.with(Items.copper, 1);
     //regions for charge and shake
     public TextureRegion chargeRegion, shakeRegion;
     //colours for charge
@@ -83,6 +77,7 @@ public class PulseBlock extends Block implements ResearchableBlock {
         group = BlockGroup.power;
         chargeColourStart = Palr.pulseChargeStart;
         chargeColourEnd = Palr.pulseChargeEnd;
+        researchTypes.clear();
         researchTypes.add(RustingResearchTypes.pulse);
     }
 
@@ -127,13 +122,13 @@ public class PulseBlock extends Block implements ResearchableBlock {
 
     @Override
     public boolean isHidden(){
-        return (!PulseResearchBlock.researched(this, player.team()) && needsResearching) || super.isHidden();
+        return (!PulseResearchBlock.researched(this, player.team()) && researchModule.needsResearching) || super.isHidden();
     }
 
     @Override
     public boolean canPlaceOn(Tile tile, Team team){
         //must have been researched, but for now checks if research center exists
-        if(tile == null || (needsResearching && !PulseResearchBlock.researched(this, team))) return false;
+        if(tile == null || (researchModule.needsResearching && !PulseResearchBlock.researched(this, team))) return false;
         return super.canPlaceOn(tile, team);
     }
 
@@ -149,7 +144,7 @@ public class PulseBlock extends Block implements ResearchableBlock {
                 Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, projectileRange(), chargeColourEnd);
                 Draw.reset();
             }
-            if(!canPlaceOn(tile, player.team()) && needsResearching){
+            if(!canPlaceOn(tile, player.team()) && researchModule.needsResearching){
                 drawPlaceText(Core.bundle.get(validCenter(player.team()) ? "bar.requitesresearching" : "bar.dosnthavecenter"), x, y, valid);
             }
         }

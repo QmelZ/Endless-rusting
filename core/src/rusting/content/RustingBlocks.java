@@ -365,7 +365,7 @@ public class RustingBlocks implements ContentList{
         //Generates pulse. Requires some sort of Siphon to collect the pulse.
         pulseCollector = new PulseGenerator("pulse-collector"){{
             requirements(Category.power, with(Items.copper, 35, Items.coal, 15, Items.titanium, 10));
-            centerResearchRequirements = with(Items.copper, 100,  Items.coal, 50, Items.titanium, 25);
+            centerResearchRequirements(true, with(Items.copper, 100,  Items.coal, 50, Items.titanium, 25));
             size = 1;
             canOverload = false;
             configurable = false;
@@ -381,7 +381,7 @@ public class RustingBlocks implements ContentList{
         //Generates pulse. Quite good at storing pulse, but requires additional fuel.
         pulseGenerator = new PulseGenerator("pulse-generator"){{
             requirements(Category.power, with(Items.copper, 90, Items.silicon, 55, Items.titanium, 45));
-            centerResearchRequirements = with(Items.copper, 350,  Items.coal, 95, Items.graphite, 55, Items.titanium, 225, RustingItems.melonaleum, 75);
+            centerResearchRequirements(true, with(Items.copper, 350,  Items.coal, 95, Items.graphite, 55, Items.titanium, 225, RustingItems.melonaleum, 75));
             consumes.item(RustingItems.melonaleum, 1);
             size = 3;
             canOverload = true;
@@ -400,7 +400,7 @@ public class RustingBlocks implements ContentList{
         //Loses power fast, but is great at transmitting pulses to far blocks.
         pulseNode = new PulseNode("pulse-node"){{
             requirements(Category.power, with(Items.copper, 5, Items.lead, 4, Items.titanium, 3));
-            centerResearchRequirements = with(Items.copper, 120, Items.lead, 95, Items.titanium, 65);
+            centerResearchRequirements(true, with(Items.copper, 120, Items.lead, 95, Items.titanium, 65));
             size = 1;
             powerLoss = 0.0025f;
             pulseReloadTime = 15;
@@ -414,7 +414,7 @@ public class RustingBlocks implements ContentList{
         //Shoots lightning around itself when overloaded. Easly overloads. Acts as a large power node, with two connections, but slower reload
         pulseTesla = new PulseNode("pulse-tesla"){{
             requirements(Category.power, with(Items.copper, 85, Items.lead, 65, Items.graphite, 25, Items.titanium, 20));
-            centerResearchRequirements = with(Items.copper, 365, Items.lead, 125, Items.coal, 85, Items.titanium, 80);
+            centerResearchRequirements(true, with(Items.copper, 365, Items.lead, 125, Items.coal, 85, Items.titanium, 80));
             size = 2;
             projectile = RustingBullets.craeBolt;
             projectileChanceModifier = 0.15f;
@@ -434,7 +434,7 @@ public class RustingBlocks implements ContentList{
         //stores power for later usage less effectively than nodes, but stores more power. Transmits power to blocks nearby with less pulse power percentage.
         pulseResonator = new ConductivePulseBlock("pulse-resonator"){{
             requirements(Category.power, with(Items.copper, 35, Items.silicon, 20, Items.titanium, 10));
-            centerResearchRequirements = with(Items.copper, 175, Items.coal, 35, Items.silicon, 90, Items.titanium, 65);
+            centerResearchRequirements(true, with(Items.copper, 175, Items.coal, 35, Items.silicon, 90, Items.titanium, 65));
             size = 1;
             powerLoss = 0.00425f;
             resistance = 0;
@@ -444,7 +444,7 @@ public class RustingBlocks implements ContentList{
 
         pulseSiphon = new PulseSiphon("pulse-siphon"){{
             requirements(Category.power, with(Items.copper, 10, Items.silicon, 20, Items.titanium, 15));
-            centerResearchRequirements = with(Items.copper, 125,  Items.coal, 65, Items.graphite, 45, Items.titanium, 35);
+            centerResearchRequirements(true, with(Items.copper, 125,  Items.coal, 65, Items.graphite, 45, Items.titanium, 35));
             size = 1;
             powerLoss = 0.000035f;
             siphonAmount = 1.5f;
@@ -456,7 +456,7 @@ public class RustingBlocks implements ContentList{
 
         pulseCondensery = new PulseGenericCrafter("pulse-melonaleum-condensery"){{
             requirements(Category.crafting, with());
-            centerResearchRequirements = with(Items.coal, 65, Items.silicon, 45, Items.metaglass, 65);
+            centerResearchRequirements(true, with(Items.coal, 65, Items.silicon, 45, Items.metaglass, 65));
             size = 2;
             powerLoss = 0.15f;
             pulseStorage = 150;
@@ -470,7 +470,7 @@ public class RustingBlocks implements ContentList{
 
         pulseBarrier = new PulseBarrier("pulse-barrier"){{
             requirements(Category.defense, with(Items.copper, 8, Items.graphite, 6, Items.titanium, 5));
-            centerResearchRequirements = with(Items.copper, 115, Items.coal, 65, Items.titanium, 30);
+            centerResearchRequirements(true, with(Items.copper, 115, Items.coal, 65, Items.titanium, 30));
             size = 1;
             health = 410 * size * size;
             powerLoss = 0.000035f;
@@ -480,7 +480,7 @@ public class RustingBlocks implements ContentList{
 
         pulseBarrierLarge = new PulseBarrier("pulse-barrier-large"){{
             requirements(Category.defense, with(Items.copper, 32, Items.graphite, 24, Items.titanium, 20));
-            centerResearchRequirements = with(Items.copper, 450, Items.graphite, 75, Items.titanium, 120);
+            centerResearchRequirements(true, with(Items.copper, 450, Items.graphite, 75, Items.titanium, 120));
             size = 2;
             health = 410 * size * size;
             powerLoss = 0.000035f;
@@ -491,7 +491,7 @@ public class RustingBlocks implements ContentList{
 
         pulseResearchCenter = new PulseResearchBlock("pulse-research-center"){{
             requirements(Category.effect, with(Items.copper, 65, Items.lead, 50, Items.coal, 25));
-            centerResearchRequirements = with(Items.copper, 40,  Items.coal, 15);
+            centerResearchRequirements(false, with(Items.copper, 40,  Items.coal, 15));
             size = 2;
             fieldNames.add("pulseStorage");
             fieldNames.add("canOverload");
@@ -499,7 +499,7 @@ public class RustingBlocks implements ContentList{
 
         pulseUpkeeper = new PulseChainNode("pulse-upkeeper"){{
             requirements(Category.effect, with(Items.copper, 95, Items.lead, 75, Items.silicon, 45, Items.titanium, 25));
-            centerResearchRequirements = with(Items.copper, 550,  Items.coal, 355, Items.metaglass, 100, Items.graphite, 125, Items.titanium, 175, RustingItems.melonaleum, 75);
+            centerResearchRequirements(true, with(Items.copper, 550,  Items.coal, 355, Items.metaglass, 100, Items.graphite, 125, Items.titanium, 175, RustingItems.melonaleum, 75));
             size = 2;
             powerLoss = 0.0000155f;
             minRequiredPulsePercent = 0.5f;
@@ -534,7 +534,7 @@ public class RustingBlocks implements ContentList{
 
         smallParticleSpawner = new PulseParticleSpawner("small-particle-spawner"){{
             requirements(Category.effect, with(Items.copper, 300, Items.lead, 115, Items.metaglass, 50, Items.titanium, 45));
-            centerResearchRequirements = with(Items.copper, 350,  Items.coal, 95, Items.graphite, 55, Items.titanium, 225);
+            centerResearchRequirements(with(Items.copper, 350,  Items.coal, 95, Items.graphite, 55, Items.titanium, 225));
             flags = EnumSet.of(BlockFlag.generator);
             effects = new Effect[] {Fx.ballfire, Fx.burning, Fx.fire};
             size = 1;
@@ -563,7 +563,7 @@ public class RustingBlocks implements ContentList{
 
         archangel = new DysfunctionalMonolith("archangel"){{
             requirements(Category.effect, with(Items.copper, 300, Items.lead, 115, Items.metaglass, 50, Items.titanium, 45));
-            centerResearchRequirements = with(Items.copper, 350,  Items.coal, 95, Items.graphite, 55, Items.titanium, 225);
+            centerResearchRequirements(with(Items.copper, 350,  Items.coal, 95, Items.graphite, 55, Items.titanium, 225));
             flags = EnumSet.of(BlockFlag.turret);
             size = 3;
             health = 135 * size * size;
@@ -586,7 +586,7 @@ public class RustingBlocks implements ContentList{
         //region landmines
         pulseLandmine = new PulseLandmine("pulse-landmine") {{
             requirements(Category.effect, with(Items.lead, 15, Items.silicon, 10, RustingItems.melonaleum, 5));
-            centerResearchRequirements = with(Items.copper, 45,  Items.coal, 245, Items.graphite, 95, Items.silicon, 55, RustingItems.melonaleum, 15);
+            centerResearchRequirements(with(Items.copper, 45,  Items.coal, 245, Items.graphite, 95, Items.silicon, 55, RustingItems.melonaleum, 15));
             health = 135;
             reloadTime = 85;
             shots = 3;
@@ -602,7 +602,7 @@ public class RustingBlocks implements ContentList{
 
         pulseFactory = new PulseUnitFactory("pulse-factory"){{
             requirements(Category.units, with(Items.copper, 75, Items.lead, 60, Items.coal, 35, Items.titanium, 25));
-            centerResearchRequirements = with(Items.copper, 145,  Items.lead, 145, Items.graphite, 55, Items.titanium, 85, Items.pyratite, 35);
+            centerResearchRequirements(with(Items.copper, 145,  Items.lead, 145, Items.graphite, 55, Items.titanium, 85, Items.pyratite, 35));
             customConsumes.pulse = 10f;
             powerLoss = 0.00155f;
             minRequiredPulsePercent = 0.35f;
@@ -618,7 +618,7 @@ public class RustingBlocks implements ContentList{
 
         enlightenmentReconstructor = new PulseReconstructor("enlightenment-reconstructor") {{
             requirements(Category.units, with(Items.copper, 135, Items.lead, 85, Items.silicon, 45, Items.titanium, 35));
-            centerResearchRequirements = with(Items.copper, 450,  Items.lead, 375, Items.silicon, 145, Items.titanium, 135, Items.pyratite, 75, RustingItems.melonaleum, 45);
+            centerResearchRequirements(with(Items.copper, 450,  Items.lead, 375, Items.silicon, 145, Items.titanium, 135, Items.pyratite, 75, RustingItems.melonaleum, 45));
             consumes.items(ItemStack.with(Items.silicon, 35, Items.titanium, 15, RustingItems.melonaleum, 10));
             customConsumes.pulse = 25f;
             powerLoss = 0.00155f;
@@ -636,7 +636,7 @@ public class RustingBlocks implements ContentList{
 
         ascendanceReconstructor = new PulseReconstructor("ascendance-reconstructor") {{
             requirements(Category.units, with(Items.lead, 465, Items.metaglass, 245, Items.pyratite, 85, Items.titanium, 85));
-            centerResearchRequirements = with(Items.lead, 1255, Items.silicon, 455, Items.titanium, 235, Items.pyratite, 145, RustingItems.melonaleum, 125);
+            centerResearchRequirements(with(Items.lead, 1255, Items.silicon, 455, Items.titanium, 235, Items.pyratite, 145, RustingItems.melonaleum, 125));
             consumes.items(ItemStack.with(Items.silicon, 65, Items.titanium, 25, Items.pyratite, 5, RustingItems.melonaleum, 15));
             customConsumes.pulse = 65f;
             powerLoss = 0.00155f;

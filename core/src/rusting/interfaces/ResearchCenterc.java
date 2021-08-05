@@ -1,50 +1,36 @@
 package rusting.interfaces;
 
 import arc.struct.Seq;
-import arc.util.Log;
-import mindustry.Vars;
-import mindustry.world.Block;
+import mindustry.game.Team;
+import rusting.Varsr;
 import rusting.ctype.ResearchType;
+import rusting.world.research.RustingResearch;
 
 public interface ResearchCenterc {
 
-    Seq<String> researchableBlocks = new Seq<String>();
+    public RustingResearch research = Varsr.research;
 
-    Seq<String> researchedBlocks = new Seq<String>();
+    //used to avoid repeatedyly accesing the research modules in RustingResearch
+    Seq<ResearchableObject> researchable = new Seq<ResearchableObject>();
+
+    Seq<ResearchableObject> researched = new Seq<ResearchableObject>();
     //used in ui
     Seq<ResearchType> researchTypes = new Seq<>();
 
     default void setResearchableBlocks(){
-        Vars.content.blocks().each(c -> {
-            Log.info(c);
-            //used as a temparary variable and in bug checks
-            Researchablec initializedBuild = null;
-            //test for block is researchable
-            if(researchable(c)){
-                Log.info(c.localizedName + " is a researchable block!");
-                researchableBlocks.add(c.name);
-            }
-            else Log.info(c.localizedName + " is not a researchable block!");
+        researched.clear();
+        researchTypes.each(r -> {
+            research.researchMap.get(r).each(b -> {
+                if(researchTypes.size == 1 || !researchable.contains(b.item)) researchable.add(b.item);
+            });
         });
     }
 
-    default boolean researchable(Block build){
-        return researchable(false, build);
+    default boolean canResearch(ResearchableObject build){
+        return researchable.contains(build);
     }
-
-    default boolean researchable(boolean techResearched, Block build){
-        boolean[] isFound = {false};
-        if(build instanceof ResearchableBlock){
-            ResearchableBlock building = (ResearchableBlock) build;
-            //if block is already researched, and it's checking whether block is currently not unlocked, return false;
-            if(techResearched && researchedBlocks.contains(build.name)) return false;
-            //is true if block is compatable with the research types
-            researchTypes.each(e -> {
-                if(!isFound[0] && building.researchTypes.contains(e)) {
-                    isFound[0] = true;
-                }
-            });
-        }
-        return isFound[0];
+    default boolean canResearch(boolean techResearched, Team team, ResearchableObject build){
+        research.tmpResearchModule = research.getResearchModule(team, build);
+        return techResearched && research.tmpResearchModule.needsResearching && !research.tmpResearchModule.teamMap.get(team).researched && canResearch(build);
     };
 }

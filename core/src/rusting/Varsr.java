@@ -9,6 +9,7 @@ import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.Blocks;
 import mindustry.gen.Building;
+import mindustry.type.ItemStack;
 import mindustry.world.Tile;
 import mindustry.world.meta.BuildVisibility;
 import rusting.content.RustingBlocks;
@@ -20,6 +21,7 @@ import rusting.interfaces.PulseInstantTransportation;
 import rusting.ui.RustingUI;
 import rusting.world.blocks.pulse.distribution.PulseCanal.PulseCanalBuild;
 import rusting.world.format.holder.FormatHolder;
+import rusting.world.research.RustingResearch;
 
 import static rusting.world.blocks.pulse.distribution.PulseCanal.asCanal;
 
@@ -37,6 +39,7 @@ public class Varsr implements Loadable {
     public static ItemScoreHolder itemScorer;
     public static Rusting rusted;
     public static RustedContentLoader content = new RustedContentLoader();
+    public static RustingResearch research = new RustingResearch();
     public static String username;
     public static String defaultUsername;
     public static boolean debug = false;
@@ -45,6 +48,9 @@ public class Varsr implements Loadable {
 
         itemScorer.setupItems();
         content.init();
+
+        research.setupMap();
+
         if(username.equals(defaultUsername)) Varsr.ui.welcome.show();
 
     }
@@ -57,6 +63,9 @@ public class Varsr implements Loadable {
         debug = Core.settings.getBool("settings.er.debug", false);
 
         ui = new RustingUI();
+
+        ui.init();
+
         formats = new FormatHolder();
         itemScorer = new ItemScoreHolder();
         rusted = null;
@@ -87,9 +96,8 @@ public class Varsr implements Loadable {
 
         formats.load();
 
-        if(debug) Varsr.debug();
+        Log.info("Loaded Varsr");
 
-        Log.info("Loaded Varsf");
     }
 
     public static void debug(){
@@ -132,6 +140,16 @@ public class Varsr implements Loadable {
         }
         return buildingSeq;
     };
+
+    public static void logStack(ItemStack[] stack){
+        logStack("", stack);
+    }
+
+    public static void logStack(String name, ItemStack[] stack){
+        for (int i = 0; i < stack.length; i++) {
+            name += stack[i].item + " " + stack[0].amount + "|";
+        };
+    }
 
     private static Seq<Building> findConnectedCanals(Seq<Building> build, float maxDst){
         build.each(b -> {

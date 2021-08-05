@@ -14,6 +14,8 @@ import mindustry.ui.Cicon;
 import mindustry.world.Tile;
 import mindustry.world.blocks.storage.CoreBlock.CoreBuild;
 import rusting.Varsr;
+import rusting.interfaces.ResearchCenterc;
+import rusting.interfaces.ResearchableObject;
 import rusting.ui.dialog.CustomBaseDialog;
 import rusting.world.blocks.pulse.PulseBlock;
 import rusting.world.blocks.pulse.utility.PulseResearchBlock.PulseResearchBuild;
@@ -38,7 +40,7 @@ public class UnlockDialog extends CustomBaseDialog {
         cont.margin(30);
         unlockIcon.set(content.icon(Cicon.tiny));
         unlockImage = new Image(unlockIcon).setScaling(Scaling.fit);
-        ItemStack[] rCost = ((PulseBlock) content).centerResearchRequirements;
+        ItemStack[] rCost = ((PulseBlock) content).researchModule.centerResearchRequirements;
         Table itemsCost = new Table();
 
         itemsCost.table(table -> {
@@ -62,15 +64,15 @@ public class UnlockDialog extends CustomBaseDialog {
         pane(table -> {
             table.center();
             table.button("Unlock?", () -> {
-                if(tile.build instanceof PulseResearchBuild && content instanceof PulseBlock){
+                if(tile.build instanceof ResearchCenterc && content instanceof ResearchableObject){
                     PulseResearchBuild building = (PulseResearchBuild) tile.build;
                     CoreBuild coreBlock = building.team.core();
                     boolean canResearch = false;
                     if(Vars.state.rules.infiniteResources || coreBlock.items.has(rCost, 1)){
-                        for(int i = 0; i < ((PulseBlock) content).centerResearchRequirements.length; i++){
-                            coreBlock.items.remove(((PulseBlock) content).centerResearchRequirements[i]);
+                        for(int i = 0; i < ((ResearchableObject) content).researchModule.centerResearchRequirements.length; i++){
+                            coreBlock.items.remove(((ResearchableObject) content).researchModule.centerResearchRequirements[i]);
                         }
-                        building.configure(content.localizedName);
+                        building.configure(content.name);
                         Sounds.unlock.at(player.x, player.y);
                     }
                 }

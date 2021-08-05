@@ -11,6 +11,7 @@ import rusting.type.Capsule;
 public class RustedContentLoader {
 
     private final Seq<ContentList> contentLists = Seq.with(
+            new RustingResearchTypes(),
             new RustingStatusEffects(),
             new RustingLiquids(),
             new RustingItems(),
@@ -27,6 +28,7 @@ public class RustedContentLoader {
     public Seq<ERContentType> ContentTypes = Seq.with(
             new ERContentType("unused"),
             new ERContentType("capsule"),
+            new ERContentType("researchType"),
             new ERContentType("logicFormat")
     );
 
@@ -81,6 +83,10 @@ public class RustedContentLoader {
 
     public Seq<Capsule> capsules(){
         return getBy(getContentType("capsule"));
+    }
+
+    public Seq<ResearchType> researchTypes(){
+        return getBy(getContentType("researchType"));
     }
 
     public void handleContent(MappableERContent content){

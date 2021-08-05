@@ -3,11 +3,11 @@ public class ERContentType {
 
 
     public int ordinal = 0;
-    private static float nextFreeOrdinal = 0;
+    private static int nextFreeOrdinal = 0;
 
     public ERContentType(String name){
         this.name = name;
-        this.ordinal = 0;
+        this.ordinal = nextFreeOrdinal;
         nextFreeOrdinal++;
     }
 
@@ -16,5 +16,9 @@ public class ERContentType {
 
     public String name(){
         return name;
+    }
+
+    public String toString(){
+        return "ERContentType#" + ordinal;
     }
 }
