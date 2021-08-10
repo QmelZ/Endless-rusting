@@ -2,6 +2,7 @@ package rusting.ui;
 
 import arc.ApplicationListener;
 import arc.assets.Loadable;
+import rusting.ui.dialog.ingame.WelcomingDialog;
 import rusting.ui.dialog.research.*;
 
 public class RustingUI implements ApplicationListener, Loadable {

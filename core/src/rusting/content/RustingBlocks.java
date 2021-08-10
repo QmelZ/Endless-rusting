@@ -46,7 +46,9 @@ public class RustingBlocks implements ContentList{
         capsuleCenterTest,
         //environment
         //liquids
-        melainLiquae,
+        melainLiquae, coroLiquae, classemLiquae,
+        //sunken metal floor
+        sunkenMetalFloor, sunkenMetalFloor2, sunkenMetalFloor3,
         //floor
         //pailean
         paileanStolnen, paileanPathen, paileanWallen, paileanBarreren,
@@ -114,7 +116,7 @@ public class RustingBlocks implements ContentList{
         //bomerang related turrets
         refract, diffract, reflect,
         //region unit
-        fraeFactory, absentReconstructor, dwindlingReconstructor,
+        fraeFactory, antiquaeGuardianBuilder, absentReconstructor, dwindlingReconstructor,
         //logic
         fraeLog;
 
@@ -138,6 +140,61 @@ public class RustingBlocks implements ContentList{
             emitLight = true;
             lightColor = new Color(Palr.pulseChargeStart).a(0.15f);
             lightRadius = 16;
+        }};
+
+        coroLiquae = new Floor("coro-liquae"){{
+            speedMultiplier = 0.86f;
+            variants = 0;
+            status = StatusEffects.corroded;
+            statusDuration = 1250;
+            liquidDrop = Liquids.water;
+            isLiquid = true;
+            cacheLayer = CacheLayer.water;
+            albedo = 0.35f;
+        }};
+
+        classemLiquae = new Floor("classem-liquae"){{
+            speedMultiplier = 1.16f;
+            variants = 0;
+            status = StatusEffects.wet;
+            statusDuration = 1250;
+            liquidDrop = Liquids.water;
+            isLiquid = true;
+            cacheLayer = CacheLayer.water;
+            albedo = 0.25f;
+        }};
+
+        sunkenMetalFloor = new Floor("sunken-metal-floor"){{
+            speedMultiplier = 0.85f;
+            variants = 0;
+            status = StatusEffects.wet;
+            statusDuration = 90f;
+            liquidDrop = Liquids.water;
+            isLiquid = true;
+            cacheLayer = CacheLayer.water;
+            albedo = 0.5f;
+        }};
+
+        sunkenMetalFloor2 = new Floor("sunken-metal-floor2"){{
+            speedMultiplier = 0.85f;
+            variants = 0;
+            status = StatusEffects.wet;
+            statusDuration = 90f;
+            liquidDrop = Liquids.water;
+            isLiquid = true;
+            cacheLayer = CacheLayer.water;
+            albedo = 0.5f;
+        }};
+
+        sunkenMetalFloor3 = new Floor("sunken-metal-floor3"){{
+            speedMultiplier = 0.85f;
+            variants = 0;
+            status = StatusEffects.wet;
+            statusDuration = 90f;
+            liquidDrop = Liquids.water;
+            isLiquid = true;
+            cacheLayer = CacheLayer.water;
+            albedo = 0.5f;
         }};
 
         paileanStolnen = new Floor("pailean-stolnen"){{
@@ -265,7 +322,7 @@ public class RustingBlocks implements ContentList{
         }};
 
         desalinationMixer = new GenericCrafter("desalination-mixer"){{
-            requirements(Category.crafting, with());
+            requirements(Category.crafting, with(Items.lead, 65, Items.graphite, 15, Items.silicon, 35, Items.sand, 85));
             craftEffect = Fxr.salty;
             outputItem = new ItemStack(RustingItems.halsinte, 3);
             craftTime = 125;
@@ -616,6 +673,24 @@ public class RustingBlocks implements ContentList{
             );
         }};
 
+        antiquaeGuardianBuilder = new PulseUnitFactory("antiquae-guardian-builder"){{
+            requirements(Category.units, with(Items.copper, 75, Items.lead, 60, Items.coal, 35, Items.titanium, 25));
+            centerResearchRequirements(false, with(Items.copper, 145,  Items.lead, 145, Items.graphite, 55, Items.titanium, 85, Items.pyratite, 35));
+            consumes.liquid(RustingLiquids.melomae, 0.85f);
+            buildVisibility = BuildVisibility.hidden;
+            liquidCapacity = 85;
+            customConsumes.pulse = 65f;
+            powerLoss = 0.0f;
+            minRequiredPulsePercent = 0.65f;
+            laserOffset = 8f;
+            pulseStorage = 1365;
+            canOverload = false;
+            size = 7;
+            plans.addAll(
+                new UnitPlan(RustingUnits.stingray, 8560, ItemStack.with(Items.lead, 4550, Items.silicon, 1450, Items.titanium, 3500, RustingItems.halsinte, 2500, RustingItems.melonaleum, 750))
+            );
+        }};
+
         enlightenmentReconstructor = new PulseReconstructor("enlightenment-reconstructor") {{
             requirements(Category.units, with(Items.copper, 135, Items.lead, 85, Items.silicon, 45, Items.titanium, 35));
             centerResearchRequirements(with(Items.copper, 450,  Items.lead, 375, Items.silicon, 145, Items.titanium, 135, Items.pyratite, 75, RustingItems.melonaleum, 45));
@@ -855,12 +930,12 @@ public class RustingBlocks implements ContentList{
         }};
 
         triagon = new AutoreloadItemTurret("triagon"){{
-            requirements(Category.turret, with(Items.graphite, 35, Items.metaglass, 25, RustingItems.taconite, 65));
+            requirements(Category.turret, with(Items.graphite, 75, Items.titanium, 45, RustingItems.taconite, 95, RustingItems.bulastelt, 35));
             size = 3;
             health = 275 * size * size;
             ammo(
-                    Items.pyratite, RustingBullets.flamstrikenVortex,
-                    RustingItems.melonaleum, RustingBullets.boltingVortex
+                Items.pyratite, RustingBullets.flamstrikenVortex,
+                RustingItems.melonaleum, RustingBullets.boltingVortex
             );
             shots = 1;
             reloadTime = 325f;
@@ -939,7 +1014,7 @@ public class RustingBlocks implements ContentList{
         }};
 
         diffract = new ItemTurret("diffract"){{
-            requirements(Category.turret, with(Items.copper, 40, Items.graphite, 17));
+            requirements(Category.turret, with(Items.copper, 85,  Items.lead, 70, Items.graphite, 55));
             ammo(
                 Items.graphite, RustingBullets.craeLightGlaive,
                 RustingItems.halsinte, RustingBullets.saltyLightGlaive
@@ -962,7 +1037,7 @@ public class RustingBlocks implements ContentList{
             requirements(Category.turret, with(Items.copper, 40, Items.graphite, 17));
             ammo(
                 Items.graphite, RustingBullets.craeLightGlaiveLeft,
-                RustingItems.melonaleum, RustingBullets.craeLightGlaive
+                RustingItems.halsinte, RustingBullets.saltyLightRoundaboutLeft
             );
 
             health = 1460;
@@ -990,7 +1065,8 @@ public class RustingBlocks implements ContentList{
         fraeFactory = new UnitFactory("frae-factory"){{
             requirements(Category.units, with(Items.copper, 75, RustingItems.taconite, 55, RustingItems.bulastelt, 30));
             plans = Seq.with(
-                new UnitPlan(RustingUnits.marrow, 2345, with(Items.silicon, 35, Items.copper, 15, RustingItems.taconite, 25))
+                new UnitPlan(RustingUnits.marrow, 2345, with(Items.silicon, 35, Items.copper, 15, RustingItems.taconite, 25)),
+                new UnitPlan(RustingUnits.stingray, 60, with())
             );
             size = 3;
             consumes.power(0.85f);

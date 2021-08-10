@@ -11,17 +11,18 @@ public class EffectsAbility extends Ability {
     Effect trailEffect;
     float chance;
     boolean dynamicRotation, drawTrail;
+    float angle;
 
-    public EffectsAbility(Effect trailfx, float Chance, boolean dynamicRotation, boolean drawTrail){
+    public EffectsAbility(Effect trailfx, float chance, float angle, boolean dynamicRotation){
         this.trailEffect = trailfx;
-        this.chance = Chance;
+        this.chance = chance;
         this.dynamicRotation = dynamicRotation;
-        this.drawTrail = drawTrail;
+        this.angle = angle;
     }
 
     @Override
     public void update(Unit unit) {
-        if (drawTrail && Mathf.chance(chance)) trailEffect.at(unit.x, unit.y, dynamicRotation ? unit.rotation : 0, unit);
+        if (Mathf.chance(chance)) trailEffect.at(unit.x, unit.y, dynamicRotation ? unit.rotation : 0 + angle, unit);
     }
 
     @Override

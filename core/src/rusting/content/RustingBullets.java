@@ -5,14 +5,14 @@ import arc.graphics.Color;
 import arc.math.Angles;
 import arc.struct.Seq;
 import arc.util.Time;
+import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.ctype.ContentList;
 import mindustry.entities.Effect;
 import mindustry.entities.Fires;
 import mindustry.entities.bullet.*;
-import mindustry.gen.Bullet;
-import mindustry.gen.Sounds;
+import mindustry.gen.*;
 import mindustry.graphics.Pal;
 import mindustry.world.blocks.defense.turrets.Turret.TurretBuild;
 import rusting.entities.bullet.*;
@@ -21,9 +21,13 @@ import rusting.math.Mathr;
 import static rusting.content.RustingStatusEffects.*;
 
 public class RustingBullets implements ContentList{
+
+    public static Cons<Bullet>
+    homing;
+
     public static BulletType
         //basic bullets
-        fossilShard, cloudyShard, craeShard, raehShard, mhemShard, fraeShard, paveShard, darkShard, spawnerGlass, spawnerGlassFrag, spawnerBulat, spawnerBulatFrag,
+        fossilShard, cloudyShard, craeShard, raehShard, mhemShard, fraeShard, paveShard, pavenShardling, darkShard, stingrayShard, spawnerGlass, spawnerGlassFrag, spawnerBulat, spawnerBulatFrag,
         //artillery
         mhemQuadStorm,
         //liquid
@@ -35,7 +39,7 @@ public class RustingBullets implements ContentList{
         //laser bolt bullets
         paveBolt,
         //essentualy small nukes
-        craeBalistorm,
+        craeBalistorm, craeNukestorm,
         //boomerangs
         craeLightRoundaboutRight, craeLightRoundaboutLeft, saltyLightRoundaboutRight, saltyLightRoundaboutLeft, denseLightRoundaboutLeft, denseLightRoundaboutRight,
         //glaivs
@@ -48,6 +52,26 @@ public class RustingBullets implements ContentList{
 
     @Override
     public void load(){
+
+        homing = bullet -> {
+            Fxr.singingFlame.at(bullet.x, bullet.y, bullet.rotation());
+            if(bullet.fdata() != 1 && bullet.collided.size < 2){
+                Tmp.v1.set(bullet.x, bullet.y);
+                if(bullet.owner instanceof TurretBuild) {
+                    Tmp.v1.set(((TurretBuild) bullet.owner).targetPos.x, ((TurretBuild) bullet.owner).targetPos.y);
+                }
+                else if (bullet.owner instanceof Unitc){
+                    Tmp.v1.set(((Unitc) bullet.owner).aimX(), ((Unitc) bullet.owner).aimY());
+                }
+                bullet.vel.setAngle(Angles.moveToward(bullet.rotation(), bullet.angleTo(Tmp.v1.x, Tmp.v1.y), Time.delta * 261f * bullet.fin()));
+                //stop homing in after reaching cursor
+                if(bullet.within(Tmp.v1.x, Tmp.v1.y, bullet.hitSize)){
+                    bullet.fdata = 1;
+                }
+            }
+            //essentualy goes to owner aim pos if owner has instance of the Turret Build.
+
+        };
 
         horizonInstalt = new InstantBounceBulletType(1, 22, "bullet"){{
             width = 7;
@@ -168,24 +192,8 @@ public class RustingBullets implements ContentList{
 
 
 
-        mhemShard = new BounceBulletType(6, 25, "bullet"){{
-            consUpdate = new Cons<Bullet>() {
-                @Override
-                public void get(Bullet bullet) {
-                    Fxr.singingFlame.at(bullet.x, bullet.y, bullet.rotation());
-                    if(bullet.fdata() != 1 && bullet.collided.size < 2){
-                        if(bullet.owner instanceof TurretBuild) {
-                            bullet.vel.setAngle(Angles.moveToward(bullet.rotation(), bullet.angleTo(((TurretBuild) bullet.owner).targetPos.x, ((TurretBuild) bullet.owner).targetPos.y), Time.delta * 261f * bullet.fin()));
-                            //stop homing in after reaching cursor
-                            if(bullet.within(((TurretBuild) bullet.owner).targetPos.x, ((TurretBuild) bullet.owner).targetPos.y, bullet.hitSize)){
-                                bullet.fdata = 1;
-                            }
-                        }
-                    }
-                    //essentualy goes to owner aim pos if owner has instance of the Turret Build.
-
-                }
-            };
+        mhemShard = new BounceBulletType(6, 22.5f, "bullet"){{
+            consUpdate = homing;
             despawnEffect = Fx.fireSmoke;
             hitEffect = Fx.fire;
             bounceEffect = Fxr.shootMhemFlame;
@@ -227,17 +235,14 @@ public class RustingBullets implements ContentList{
         }};
 
         paveShard = new ConsBulletType(12, 115, "bullet"){{
-            consUpdate = new Cons<Bullet>() {
-                @Override
-                public void get(Bullet bullet){
+            consUpdate = bullet -> {
 
-                    Fxr.singingFlame.at(bullet.x, bullet.y, bullet.rotation() + Mathr.helix(7, 45, bullet.fin()));
-                    Fxr.singingFlame.at(bullet.x, bullet.y, bullet.rotation() - Mathr.helix(7, 45, bullet.fin()));
+                Fxr.singingFlame.at(bullet.x, bullet.y, bullet.rotation() + Mathr.helix(7, 45, bullet.fin()));
+                Fxr.singingFlame.at(bullet.x, bullet.y, bullet.rotation() - Mathr.helix(7, 45, bullet.fin()));
 
-                    if(bullet.collided.size >= 1) {
-                        Fires.create(Vars.world.tileWorld(bullet.x, bullet.y));
-                        Fxr.paveFlame.at(bullet.x, bullet.y, bullet.rotation());
-                    }
+                if(bullet.collided.size >= 1) {
+                    Fires.create(Vars.world.tileWorld(bullet.x, bullet.y));
+                    Fxr.paveFlame.at(bullet.x, bullet.y, bullet.rotation());
                 }
             };
             despawnEffect = Fx.fireSmoke;
@@ -255,12 +260,30 @@ public class RustingBullets implements ContentList{
             hitEffect = Fx.hitFuse;
         }};
 
+        pavenShardling = new BounceBulletType(4, 12.5f, "bullet"){{
+            consUpdate = homing;
+            despawnEffect = Fx.fireSmoke;
+            hitEffect = Fx.fire;
+            bounceEffect = Fxr.shootMhemFlame;
+            incendChance = 1;
+            incendAmount = 10;
+            status = StatusEffects.melting;
+            statusDuration = 150;
+            maxRange = 156;
+            width = 6;
+            height = 8;
+            hitSize = 12;
+            lifetime = 49f;
+            hitEffect = Fx.hitFuse;
+            trailLength = 0;
+            drag = 0.005f;
+            bounciness = 0.95;
+            bounceCap = 2;
+        }};
+
         darkShard = new BounceBulletType(4, 2.5f, "bullet"){{
-            consUpdate = new Cons<Bullet>() {
-                @Override
-                public void get(Bullet bullet) {
-                    if(bullet.fin() % 0.04 < 0.01) Fxr.blackened.at(bullet.x, bullet.y, bullet.rotation());
-                }
+            consUpdate = bullet -> {
+                if(bullet.fin() % 0.04 < 0.01) Fxr.blackened.at(bullet.x, bullet.y, bullet.rotation());
             };
             despawnEffect = Fx.fireSmoke;
             hitEffect = Fx.casing3Double;
@@ -279,6 +302,27 @@ public class RustingBullets implements ContentList{
             homingPower = 0.125f;
             drag = 0.015f;
             bounciness = 0.95;
+        }};
+
+        stingrayShard = new BounceBulletType(8, 28f, "bullet"){{
+            despawnEffect = Fxr.corrodedEffect;
+            bounceEffect = Fx.none;
+            shootEffect = Fx.none;
+            frontColor = Color.white;
+            backColor = Palr.lightstriken;
+            trailColor = Palr.lightstriken;
+            status = guardiansBlight;
+            statusDuration = 160;
+            lightOpacity = 0;
+            width = 7;
+            height = 6;
+            trailLength = 6;
+            trailWidth = 4;
+            lifetime = 15.5f;
+            hitEffect = Fx.hitFuse;
+            drag = 0.015f;
+            bounciness = 0.95;
+            buildingDamageMultiplier = 0.5f;
         }};
 
         spawnerGlassFrag = new BasicBulletType(2.5f, 5, "bullet"){{
@@ -403,7 +447,7 @@ public class RustingBullets implements ContentList{
             statusDuration = 60f * 4f;
         }};
 
-        craeWeaver = new BounceBulletType(3, 14, "bullet"){{
+        craeWeaver = new BounceBulletType(3, 21, "bullet"){{
             width = 15;
             height = 18;
             lifetime = 45;
@@ -445,7 +489,6 @@ public class RustingBullets implements ContentList{
             trailColor = frontColor;
             trailEffect = Fx.shootHeal;
             trailChance = 0.15f;
-            trailLength = 8;
             trailWidth = 5;
             weaveMag = 2;
             weaveScale = 5;
@@ -471,50 +514,74 @@ public class RustingBullets implements ContentList{
             frontColor = Color.white;
         }};
 
-        craeBalistorm = new ConsBulletType(3, 14, "bullet"){{
+        //let bullet = Vars.content.bullets().find(b => b.splashDamage == 175); UnitTypes.gamma.weapons.each(w => w.bullet = bullet);
 
-            consDespawned = new Cons<Bullet>() {
-                @Override
-                public void get(Bullet b) {
-                    Fxr.pulseSmoke.at(b.x, b.y, b.rotation(), new float[]{
-                            80,
-                            12,
-                            0.85f
-                    });
-                    Fxr.pulseExplosion.at(b.x, b.y, b.rotation(), new Float[]{
-                            80f,
-                            12f
-                    });
-                }
-            };
+        craeNukestorm = new BounceBulletType(9, 154, "endless-rusting-mininuke"){{
+            hitShake = 12;
+            hitEffect = Fxr.craeNukeHit;
+            splashDamage = 175;
+            splashDamageRadius = 125;
 
-            consHit = consDespawned;
-
-            splashDamage = 125;
-            splashDamageRadius = 80;
-
-            width = 25;
-            height = 25;
-            lifetime = 460;
-            shrinkX = -0.5f;
-            hitEffect = Fx.none;
-            despawnEffect = Fx.none;
+            width = 9;
+            height = 22;
+            lifetime = 112;
             status = RustingStatusEffects.macotagus;
             statusDuration = 1440;
-            frontColor = Palr.pulseChargeStart;
-            backColor = Palr.pulseBullet;
+            frontColor = Palr.pulseBullet;
+            backColor = Palr.lightstriken;
             trailColor = frontColor;
+            trailEffect = Fxr.craeWeaverShards;
             trailChance = 1f;
             weaveMag = 2;
             weaveScale = 5;
-            homingPower = 0.125f;
-            collidesTiles = false;
-            collides = false;
-            collidesAir = false;
+            pierce = false;
+            pierceBuilding = false;
             scaleVelocity = true;
-            hitShake = 1f;
+            trailLength = 18;
             hitSound = Sounds.explosion;
             knockback = -0.15f;
+            fragBullets = 7;
+            fragVelocityMin = 0.85f;
+            fragBullet = craeWeaver;
+        }};
+
+        craeBalistorm = new BounceBulletType(3, 654, "endless-rusting-mininuke"){{
+
+            consHit = (b) -> {
+                RustingBullets.boltingVortex.create(b.owner, b.team, b.x, b.y, b.rotation());
+            };
+
+            consDespawned = consHit;
+
+            hitShake = 56;
+            hitEffect = Fxr.craeBigNukeHit;
+            splashDamage = 775;
+            splashDamageRadius = 225;
+
+            width = 16;
+            height = 42;
+            lifetime = 336;
+            status = RustingStatusEffects.macotagus;
+            statusDuration = 1440;
+            frontColor = Palr.lightstriken;
+            backColor = Palr.pulseBullet;
+            trailColor = frontColor;
+            trailEffect = Fxr.craeWeaverShards;
+            trailChance = 1f;
+            weaveMag = 2;
+            weaveScale = 5;
+            pierce = false;
+            pierceBuilding = false;
+            scaleVelocity = true;
+            collides = false;
+            trailLength = 18;
+            hitSound = Sounds.explosionbig;
+            knockback = -0.15f;
+            fragBullets = 16;
+            fragVelocityMin = 1.85f;
+            fragVelocityMax = 3.5f;
+            fragBullet = craeShard;
+
         }};
 
         denseLightRoundaboutRight =  new BoomerangBulletType(1, 8, "endless-rusting-boomerang"){{
@@ -688,11 +755,8 @@ public class RustingBullets implements ContentList{
 
             homingPower = 0.025f;
 
-            consUpdate = new Cons<Bullet>() {
-                @Override
-                public void get(Bullet bullet) {
-                    if(bullet.owner instanceof TurretBuild) bullet.vel.setAngle(Angles.moveToward(bullet.rotation(), bullet.angleTo(((TurretBuild) bullet.owner).targetPos.x, ((TurretBuild) bullet.owner).targetPos.y), homingPower * Time.delta * 100f));
-                }
+            consUpdate = bullet -> {
+                if(bullet.owner instanceof TurretBuild) bullet.vel.setAngle(Angles.moveToward(bullet.rotation(), bullet.angleTo(((TurretBuild) bullet.owner).targetPos.x, ((TurretBuild) bullet.owner).targetPos.y), homingPower * Time.delta * 100f));
             };
 
             consHit = new Cons<Bullet>() {
@@ -777,23 +841,17 @@ public class RustingBullets implements ContentList{
 
         saltyLightGlaive = new BoomerangBulletType(3f, 45, "endless-rusting-glave-large"){{
 
-            consDespawned = new Cons<Bullet>() {
-                @Override
-                public void get(Bullet b) {
+            consDespawned = b -> {
 
-                    Sounds.explosion.at(b.x, b.y);
-                    Effect.shake(4, 36, b.x, b.y);
+                Sounds.explosion.at(b.x, b.y);
+                Effect.shake(4, 36, b.x, b.y);
 
-                }
             };
 
-            consHit = new Cons<Bullet>() {
-                @Override
-                public void get(Bullet b) {
+            consHit = b -> {
 
-                    if(b.collided.size == pierceCap) consDespawned.get(b);
+                if(b.collided.size == pierceCap) consDespawned.get(b);
 
-                }
             };
             width = 22;
             height = 22;
@@ -806,6 +864,7 @@ public class RustingBullets implements ContentList{
             drawAlpha = 0.85f;
             spin = 0.25f;
             rotateMag = 0.25f;
+            rotateVisualMag = 0.65f;
             rotScaleMin = 0f;
             rotScaleMax = 0f;
             hitEffect = Fx.smoke;
@@ -916,6 +975,9 @@ public class RustingBullets implements ContentList{
 
         //anyone know where this one is from? ;)
         boltingVortex = new BulletSpawnBulletType(0.099f, 250, "none"){{
+
+            keepVelocity = false;
+
             bullets = Seq.with(
                 new BulletSpawner(){{
                     bullet = craeBolt;
@@ -948,7 +1010,7 @@ public class RustingBullets implements ContentList{
         flamstrikenVortex = new BulletSpawnBulletType(0.15f, 250, "none"){{
             bullets = Seq.with(
                 new BulletSpawner(){{
-                    bullet = mhemShard;
+                    bullet = pavenShardling;
                     manualAiming = false;
                     reloadTime = 10.5f;
                     shootSound = Sounds.flame2;
@@ -957,7 +1019,7 @@ public class RustingBullets implements ContentList{
                     inaccuracy = 360;
                 }},
                 new BulletSpawner(){{
-                    bullet = mhemShard;
+                    bullet = pavenShardling;
                     manualAiming = false;
                     reloadTime = 16.5f;
                     shootSound = Sounds.flame2;

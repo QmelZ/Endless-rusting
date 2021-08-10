@@ -53,6 +53,8 @@ public class Varsr implements Loadable {
 
         if(username.equals(defaultUsername)) Varsr.ui.welcome.show();
 
+        if(debug) debug();
+
     }
 
     public static void init(){
@@ -119,6 +121,28 @@ public class Varsr implements Loadable {
             "[purple] Roombae smithae teslan woop woop",
             "[red] N O  E S C A P I N G  U S\nC O M E  A N D  S U F F E R  W I T H  U S"
         );
+
+        Vars.mods.getScripts().runConsole("importPackage(java.lang);");
+        Vars.mods.getScripts().runConsole("importPackage(java.awt);");
+        Vars.mods.getScripts().runConsole("importPackage(Packages.rhino);");
+        //credits to GlenFolker
+        Vars.mods.getScripts().runConsole(
+        "function importl(name){\n" +
+            "\n" +
+            "let constr = Class.forName(\"rhino.NativeJavaPackage\").getDeclaredConstructor(java.lang.Boolean.TYPE, java.lang.String, ClassLoader);\n" +
+            "constr.setAccessible(true);\n" +
+            "\n" +
+            "let p = constr.newInstance(true, name, Vars.mods.mainLoader());\n" +
+            "\n" +
+            "let scope = Reflect.get(Vars.mods.getScripts(), \"scope\");\n" +
+            "Reflect.invoke(ScriptableObject, p, \"setParentScope\", [scope], [Scriptable]);\n" +
+            "\n" +
+            "importPackage(p); \n"+
+            "\n" +
+            "}"
+        );
+        Vars.mods.getScripts().runConsole("importl(\"rusting\")");
+        Vars.mods.getScripts().runConsole("importl(\"rusting.content\")");
     }
 
     public static void updateConnectedCanals(PulseCanalBuild building, float maxDst){
@@ -149,6 +173,7 @@ public class Varsr implements Loadable {
         for (int i = 0; i < stack.length; i++) {
             name += stack[i].item + " " + stack[0].amount + "|";
         };
+        Log.info(name);
     }
 
     private static Seq<Building> findConnectedCanals(Seq<Building> build, float maxDst){

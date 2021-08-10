@@ -4,12 +4,35 @@ import arc.struct.ObjectMap;
 import mindustry.content.Items;
 import mindustry.game.Team;
 import mindustry.type.ItemStack;
-import rusting.content.RustingBlocks;
 import rusting.interfaces.ResearchableObject;
 
 public class ResearchModule {
 
-    public ResearchableObject item = (ResearchableObject) RustingBlocks.pulseBarrier;
+    public static int nextFreeId = 0;
+
+    public int id = 0;
+
+    public ResearchModule(){
+
+    }
+
+    public ResearchModule(ItemStack[] stacks){
+        this(true, ItemStack.with(), null);
+    }
+
+    public ResearchModule(ItemStack[] stacks, ResearchableObject item){
+        this(true, stacks, item);
+    }
+
+    public ResearchModule(boolean needsResearching, ItemStack[] stacks, ResearchableObject item){
+        centerResearchRequirements = stacks;
+        this.item = item;
+        this.needsResearching = needsResearching;
+        id = nextFreeId;
+        nextFreeId++;
+    }
+
+    public ResearchableObject item = null;
     //self explanatory
     public boolean needsResearching = true;
     //requirements to be researched

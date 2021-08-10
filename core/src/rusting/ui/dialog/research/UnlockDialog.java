@@ -40,7 +40,7 @@ public class UnlockDialog extends CustomBaseDialog {
         cont.margin(30);
         unlockIcon.set(content.icon(Cicon.tiny));
         unlockImage = new Image(unlockIcon).setScaling(Scaling.fit);
-        ItemStack[] rCost = ((PulseBlock) content).researchModule.centerResearchRequirements;
+        ItemStack[] rCost = ((PulseBlock) content).getResearchModule().centerResearchRequirements;
         Table itemsCost = new Table();
 
         itemsCost.table(table -> {
@@ -69,8 +69,8 @@ public class UnlockDialog extends CustomBaseDialog {
                     CoreBuild coreBlock = building.team.core();
                     boolean canResearch = false;
                     if(Vars.state.rules.infiniteResources || coreBlock.items.has(rCost, 1)){
-                        for(int i = 0; i < ((ResearchableObject) content).researchModule.centerResearchRequirements.length; i++){
-                            coreBlock.items.remove(((ResearchableObject) content).researchModule.centerResearchRequirements[i]);
+                        for(int i = 0; i < ((ResearchableObject) content).getResearchModule().centerResearchRequirements.length; i++){
+                            coreBlock.items.remove(((ResearchableObject) content).getResearchModule().centerResearchRequirements[i]);
                         }
                         building.configure(content.name);
                         Sounds.unlock.at(player.x, player.y);

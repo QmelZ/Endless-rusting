@@ -5,7 +5,7 @@ import mindustry.type.SectorPreset;
 
 public class RustingSectorPresets implements ContentList {
     public static SectorPreset
-    incipiensGrounds, plantaePresevereDomae, volenChannels, paileanCorridors, abystrikenCrevasse, crystallineCrags, pulsatingGroves, hangout, preservatory;
+    incipiensGrounds, plantaePresevereDomae, volenChannels, paileanCorridors, abystrikenCrevasse, crystallineCrags, pulsatingGroves, sulphuricSea, hangout, preservatory;
     ;
 
     @Override
@@ -38,7 +38,7 @@ public class RustingSectorPresets implements ContentList {
         }};
 
         crystallineCrags = new SectorPreset("crystalline-crags", RustingPlanets.err, 268){{
-            captureWave = 39;
+            captureWave = 40;
             difficulty = 4;
         }};
 
@@ -46,9 +46,18 @@ public class RustingSectorPresets implements ContentList {
             difficulty = 5;
         }};
 
+        sulphuricSea = new SectorPreset("sulphur-seas", RustingPlanets.err, 0){{
+            difficulty = 8;
+            useAI = false;
+            rules = (rules) -> {
+                rules.tags.put("events.er.stingrayfail", "true");
+            };
+        }};
+
         hangout = new SectorPreset("pure-past-void-future", RustingPlanets.err, 35){{
             difficulty = 0;
             captureWave = 0;
+
         }};
 
         preservatory = new SectorPreset("lush-preservatory", RustingPlanets.err, 110){{

@@ -4,14 +4,15 @@ import arc.func.Prov;
 import arc.graphics.Color;
 import arc.struct.ObjectIntMap;
 import arc.struct.ObjectMap.Entry;
-import mindustry.content.Bullets;
-import mindustry.content.StatusEffects;
+import mindustry.content.*;
+import mindustry.core.Version;
 import mindustry.ctype.ContentList;
 import mindustry.entities.abilities.StatusFieldAbility;
 import mindustry.gen.*;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
+import rusting.ai.types.BossStingrayAI;
 import rusting.ai.types.MultiSupportAI;
 import rusting.entities.abilities.*;
 import rusting.entities.units.*;
@@ -19,6 +20,7 @@ import rusting.entities.units.*;
 public class RustingUnits implements ContentList{
     //Steal from BetaMindy
     private static Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new Entry[]{
+            prov(StingrayUnitEntity.class, StingrayUnitEntity::new),
             prov(CraeUnitEntity.class, CraeUnitEntity::new),
             prov(BaseUnit.class, BaseUnit::new)
     };
@@ -73,6 +75,8 @@ public class RustingUnits implements ContentList{
             fahrenheit;
     public static UnitType
             marrow, metaphys, ribigen, spinascene;
+    public static UnitType
+        stingray;
 
     @Override
     public void load() {
@@ -317,12 +321,12 @@ public class RustingUnits implements ContentList{
                     x = 7.25f;
                     y = 1.25f;
                     recoil = 2;
-                    shots = 2;
-                    spacing = 5;
+                    shots = 3;
+                    spacing = 25;
                     inaccuracy = 3;
-                    bullet = RustingBullets.mhemShard;
+                    bullet = RustingBullets.pavenShardling;
                     shootSound = Sounds.flame2;
-                    reload = 57.5f;
+                    reload = 77.5f;
                 }}
             );
 
@@ -478,6 +482,96 @@ public class RustingUnits implements ContentList{
                     shootCone = 360;
                     rotate = true;
                 }}
+            );
+        }};
+
+        EntityMapping.nameMap.put("guardian-sulphur-stingray", StingrayUnitEntity::new);
+        stingray = new UnitType("guardian-sulphur-stingray"){{
+            health = 8750;
+            armor = 3;
+            rotateSpeed = 3.25f;
+            lightOpacity = 0.35f;
+            lightColor = Palr.pulseBullet;
+            hitSize = 18;
+            drag = 0.05f;
+            accel = 0.055f;
+            speed = 3.75f;
+            flying = true;
+            circleTarget = true;
+            faceTarget = false;
+            omniMovement = false;
+            constructor = StingrayUnitEntity::new;
+            if(Version.number < 7) defaultController = BossStingrayAI::new;
+            abilities.addAll(
+                new RegenerationAbility(0.75f)
+            );
+            weapons.addAll(
+                new Weapon("none"){{
+                    bullet = RustingBullets.saltyLightGlaive;
+                    shootCone = 360;
+                    shots = 5;
+                    shotDelay = 5;
+                    spacing = -15;
+                    reload = 450;
+                    singleTarget = true;
+                    mirror = false;
+                }},
+                new Weapon("none"){{
+                    bullet = RustingBullets.saltyLightGlaive;
+                    shootCone = 360;
+                    shots = 5;
+                    shotDelay = 5;
+                    spacing = 15;
+                    reload = 450;
+                    singleTarget = true;
+                    mirror = false;
+                }},
+                new Weapon("none"){{
+                    bullet = RustingBullets.stingrayShard;
+                    shots = 2;
+                    spacing = 5;
+                    inaccuracy = 2;
+                    shootCone = 360;
+                    x = 11.5f;
+                    y = 5.25f;
+                    reload = 4.65f;
+                    shootSound = Sounds.bang;
+                    singleTarget = true;
+                }},
+                new Weapon("none"){{
+                    bullet = RustingBullets.melomaeShot;
+                    shots = 5;
+                    shotDelay = 4;
+                    shootCone = 360;
+                    x = 17.25f;
+                    y = 4.25f;
+                    reload = 45.65f;
+                    shootSound = Sounds.explosion;
+                    singleTarget = true;
+                }},
+                new Weapon("none") {{
+                    bullet = RustingBullets.mhemShard;
+                    shootCone = 360;
+                    x = 8.75f;
+                    y = -7.5f;
+                    reload = 15;
+                    singleTarget = true;
+                }}
+            );
+            immunities.addAll(
+                StatusEffects.wet,
+                StatusEffects.shocked,
+                StatusEffects.freezing,
+                StatusEffects.blasted,
+                StatusEffects.sporeSlowed,
+                StatusEffects.sapped,
+                StatusEffects.burning,
+                StatusEffects.unmoving,
+                RustingStatusEffects.amberstriken,
+                RustingStatusEffects.umbrafliction,
+                RustingStatusEffects.macrosis,
+                RustingStatusEffects.macotagus,
+                RustingStatusEffects.hailsalilty
             );
         }};
     }

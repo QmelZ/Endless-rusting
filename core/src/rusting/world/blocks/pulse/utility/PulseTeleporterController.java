@@ -1,10 +1,12 @@
 package rusting.world.blocks.pulse.utility;
 
+import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.*;
+import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
@@ -133,6 +135,7 @@ public class PulseTeleporterController extends PulseTeleporterPart {
         public void updateTile() {
             super.updateTile();
             if(chargef() > 0.9f && !multiblockFormed) multiblockFormed = multiblockFormed(tile);
+            if(multiblockFormed && Vars.state.isCampaign()) Core.settings.put("settings.er.teleporterbuilt", true);
         }
     }
 }

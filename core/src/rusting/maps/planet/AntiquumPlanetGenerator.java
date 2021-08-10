@@ -55,7 +55,7 @@ public class AntiquumPlanetGenerator extends SerpuloPlanetGenerator {
         super.generate();
         state.rules.ambientLight = Palr.pulseChargeEnd;
         state.rules.waveTeam = Team.blue;
-        state.rules.infiniteResources = true;
+        state.rules.infiniteResources = false;
     }
 
     @Override

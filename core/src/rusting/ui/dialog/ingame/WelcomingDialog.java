@@ -1,4 +1,4 @@
-package rusting.ui.dialog.research;
+package rusting.ui.dialog.ingame;
 
 import arc.Core;
 import arc.graphics.Color;

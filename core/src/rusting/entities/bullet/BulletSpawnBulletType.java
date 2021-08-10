@@ -43,6 +43,7 @@ public class BulletSpawnBulletType extends ConsBulletType{
 
     public BulletSpawnBulletType(float speed, float damage, String sprite) {
         super(speed, damage, sprite);
+        this.keepVelocity = false;
         this.collides = false;
         this.frontColor = Palr.lightstriken;
         this.backColor = Palr.dustriken;

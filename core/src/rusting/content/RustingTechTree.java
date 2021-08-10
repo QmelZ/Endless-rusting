@@ -13,6 +13,7 @@ import static mindustry.content.SectorPresets.groundZero;
 import static mindustry.game.Objectives.*;
 import static rusting.content.RustingBlocks.*;
 import static rusting.content.RustingSectorPresets.*;
+import static rusting.game.RustedObjectives.SettingLockedObjective;
 
 public class RustingTechTree implements ContentList {
     static TechTree.TechNode context = null;
@@ -89,14 +90,24 @@ public class RustingTechTree implements ContentList {
         });
 
         extendNode(conveyor, () -> {
-            node(terraConveyor, Seq.with(new Research(taconite)), () -> {
+            node(terraConveyor, Seq.with(new Produce(RustingItems.taconite)), () -> {
+                node(terraPulveriser, () -> {
 
+                });
+            });
+        });
+
+        extendNode(copperWall, () -> {
+            node(terraMound, Seq.with(new Produce(RustingItems.taconite)), () -> {
+                node(terraMoundLarge, () -> {
+
+                });
             });
         });
 
         extendNode(graphitePress, () -> {
             node(bulasteltForgery, Seq.with(new SectorComplete(plantaePresevereDomae)), () -> {
-                debugNode(desalinationMixer, Seq.with(new Produce(RustingItems.halsinte)), () -> {
+                node(desalinationMixer, Seq.with(new Produce(RustingItems.halsinte)), () -> {
 
                 });
             });
@@ -143,7 +154,7 @@ public class RustingTechTree implements ContentList {
         extendNode(Items.copper, () -> {
             nodeProduce(RustingItems.taconite, () -> {
 
-                debugNode(RustingItems.halsinte, Seq.with(new Produce(RustingItems.halsinte)), () -> {
+                nodeProduce(RustingItems.halsinte, () -> {
 
                 });
 
@@ -153,15 +164,78 @@ public class RustingTechTree implements ContentList {
             });
         });
 
+        extendNode(Liquids.water, () -> {
+            nodeProduce(RustingLiquids.melomae, Seq.with(new Produce(RustingLiquids.melomae)), () -> {
+
+            });
+        });
+
+        extendNode(coreShard, () -> {
+            node(StatusEffects.wet, Seq.with(new Research(StatusEffects.wet)), () -> {
+                node(StatusEffects.freezing, Seq.with(new Research(StatusEffects.freezing)), () -> {
+
+                });
+                node(StatusEffects.burning, Seq.with(new Research(StatusEffects.burning)), () -> {
+                    node(StatusEffects.melting, Seq.with(new Research(StatusEffects.melting)), () -> {
+
+                    });
+                });
+                node(StatusEffects.tarred, Seq.with(new Research(StatusEffects.tarred)), () -> {
+
+                });
+                node(StatusEffects.corroded, Seq.with(new Research(StatusEffects.corroded)), () -> {
+
+                });
+                node(RustingStatusEffects.macrosis, Seq.with(new Research(RustingStatusEffects.macrosis)), () -> {
+                    node(RustingStatusEffects.macotagus, Seq.with(new Research(RustingStatusEffects.macrosis), new Research(RustingStatusEffects.macrosis)), () -> {
+
+                    });
+                });
+                node(RustingStatusEffects.amberstriken, Seq.with(new Research(RustingStatusEffects.amberstriken)), () -> {
+                    node(RustingStatusEffects.umbrafliction, Seq.with(new Research(RustingStatusEffects.umbrafliction), new Research(RustingStatusEffects.amberstriken)), () -> {
+
+                    });
+                });
+                node(RustingStatusEffects.causticBurning, Seq.with(new Research(RustingStatusEffects.causticBurning)), () -> {
+
+                });
+                node(RustingStatusEffects.shieldShatter, Seq.with(new Research(RustingStatusEffects.shieldShatter)), () -> {
+                    node(RustingStatusEffects.corruptShield, Seq.with(new Research(RustingStatusEffects.shieldShatter), new Research(RustingStatusEffects.corruptShield)), () -> {
+
+                    });
+                });
+                node(RustingStatusEffects.hailsalilty, Seq.with(new Research(RustingStatusEffects.hailsalilty)), () -> {
+
+                });
+                node(RustingStatusEffects.fuesin, Seq.with(new Research(RustingStatusEffects.fuesin)), () -> {
+
+                });
+            });
+        });
+
         extendNode(groundZero,  () -> {
             node(incipiensGrounds, () -> {
-                node(hangout, Seq.with(new SectorComplete(incipiensGrounds), new Produce(Items.titanium)), () -> {
-                    node(preservatory, Seq.with(new SectorComplete(paileanCorridors), new Research(terraConveyor)), () -> {});
-                });
+                    node(preservatory, Seq.with(new SectorComplete(paileanCorridors), new Research(terraConveyor)), () -> {
+                        node(hangout, Seq.with(new SettingLockedObjective("settings.er.teleporterbuilt", "Finish a relic of the old times, the Pulse Teleporter.")), () -> {
+
+                        });
+                    });
 
                 node(plantaePresevereDomae, Seq.with(new SectorComplete(incipiensGrounds), new Research(navalFactory)), () -> {
                     node(volenChannels, Seq.with(new SectorComplete(plantaePresevereDomae), new Research(hail), new Research(lancer), new Research(UnitTypes.horizon), new Produce(Items.pyratite)), () -> {
+                        node(sulphuricSea, Seq.with(new SectorComplete(volenChannels), new SectorComplete(crystallineCrags), new SectorComplete(pulsatingGroves), new Research(triagon), new Research(steamGenerator), new Research(laserDrill), new Objective() {
+                            @Override
+                            public boolean complete() {
+                                return true;//crystallineCrags.unlockedNow();
+                            }
 
+                            @Override
+                            public String display() {
+                                return Varsr.username + ", defeat and destroy the bases listed above, and your final campaign challenge (For now) in the mod awaits.";
+                            }
+                        }), () -> {
+
+                        });
                     });
                 });
 

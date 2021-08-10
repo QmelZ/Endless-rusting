@@ -122,13 +122,13 @@ public class PulseBlock extends Block implements ResearchableBlock {
 
     @Override
     public boolean isHidden(){
-        return (!PulseResearchBlock.researched(this, player.team()) && researchModule.needsResearching) || super.isHidden();
+        return (!PulseResearchBlock.researched(this, player.team()) && getResearchModule().needsResearching) || super.isHidden();
     }
 
     @Override
     public boolean canPlaceOn(Tile tile, Team team){
         //must have been researched, but for now checks if research center exists
-        if(tile == null || (researchModule.needsResearching && !PulseResearchBlock.researched(this, team))) return false;
+        if(tile == null || (getResearchModule().needsResearching && !PulseResearchBlock.researched(this, team))) return false;
         return super.canPlaceOn(tile, team);
     }
 
@@ -144,7 +144,7 @@ public class PulseBlock extends Block implements ResearchableBlock {
                 Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, projectileRange(), chargeColourEnd);
                 Draw.reset();
             }
-            if(!canPlaceOn(tile, player.team()) && researchModule.needsResearching){
+            if(!canPlaceOn(tile, player.team()) && getResearchModule().needsResearching){
                 drawPlaceText(Core.bundle.get(validCenter(player.team()) ? "bar.requitesresearching" : "bar.dosnthavecenter"), x, y, valid);
             }
         }

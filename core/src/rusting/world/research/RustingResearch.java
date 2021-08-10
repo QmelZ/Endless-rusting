@@ -3,16 +3,19 @@ package rusting.world.research;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Log;
-import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.gen.Groups;
 import rusting.Varsr;
 import rusting.ctype.ResearchType;
-import rusting.interfaces.*;
+import rusting.interfaces.ResearchCenterc;
+import rusting.interfaces.ResearchableObject;
 import rusting.world.modules.ResearchModule;
 import rusting.world.modules.TeamResearchModule;
 
 public class RustingResearch {
+
+    private ResearchableObject object;
+    private ResearchModule module;
 
     public ResearchCenterc tmpCenter;
     public TeamResearchModule tmpTeamModule, returnTeamModule = null;
@@ -23,22 +26,33 @@ public class RustingResearch {
     public void setupMap(){
         Varsr.content.researchTypes().each(r -> {
             researchMap.put(r, new Seq());
-            Log.info(r.name);
+        });
+
+        /*
+        Vars.content.each(b -> {
+            if(b instanceof ResearchableObject) {
+                object = (ResearchableObject) b;
+                object.researchTypes.each(researchType -> {
+                    module = object.getResearchModule();
+                    object.researchModule.research = new ResearchModule(module.needsResearching, module.centerResearchRequirements, object);
+
+                    researchMap.get(researchType).add(object.getResearchModule());
+                });
+            }
         });
 
         Vars.content.each(b -> {
             if(b instanceof ResearchableObject) {
-                ((ResearchableObject) b).researchTypes.each(researchType -> {
-                    researchMap.get(researchType).add(new ResearchModule(){{
-                        item = (ResearchableObject)b;
-                    }});
-                    Log.info(b);
-                });
+                object = (ResearchableObject) b;
+                Log.info(object.getResearchModule().item);
             }
         });
+
+         */
     }
 
     public void setupGameResearch(){
+
         Groups.build.each(b -> {
             if(!(b instanceof ResearchCenterc)) return;
             tmpCenter = asResearchCenter(b);

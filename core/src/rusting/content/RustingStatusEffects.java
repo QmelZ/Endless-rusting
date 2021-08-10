@@ -23,7 +23,7 @@ import rusting.type.statusEffect.*;
 
 public class RustingStatusEffects implements ContentList {
     public static StatusEffect
-            weather, fuesin, amberstriken, umbrafliction, macrosis, macotagus, hailsalilty, causticBurning, shieldShatter, corruptShield, fragmentaein;
+            weather, fuesin, amberstriken, umbrafliction, macrosis, macotagus, hailsalilty, causticBurning, shieldShatter, corruptShield, fragmentaein, guardiansBlight;
     public static Cons
             corruptShieldCons;
 
@@ -197,6 +197,13 @@ public class RustingStatusEffects implements ContentList {
                     unit.unapply(amberstriken);
                 }));
             });
+        }};
+
+        //a guardian effect that deals percentile damage to the unit, equivalent to type.health/10000/healthMultiplier * delta;  Will react with a lot of the basegame status effects, and even some of ER's effects.
+        guardiansBlight = new ConsStatusEffect("guardians-blight"){{
+            updateCons = unit -> {
+                unit.damagePierce(unit.type.health/10000/unit.healthMultiplier() * Time.delta);
+            };
         }};
 
         //you know I had to

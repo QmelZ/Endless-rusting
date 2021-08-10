@@ -74,7 +74,7 @@ public class PulseResearchBlock extends PulseBlock {
     }
 
     public static boolean researched(UnlockableContent content, Team team){
-            return getCenterTeam(team) != null && getCenterTeam(team).researchedBlocks.contains(content.localizedName) || content instanceof PulseBlock && !((PulseBlock) content).researchModule.needsResearching || state.rules.infiniteResources;
+            return getCenterTeam(team) != null && getCenterTeam(team).researchedBlocks.contains(content.localizedName) || content instanceof PulseBlock && !((PulseBlock) content).getResearchModule().needsResearching || state.rules.infiniteResources;
     }
 
     public static boolean researched(UnlockableContent content, PulseResearchBuild building){

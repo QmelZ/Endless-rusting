@@ -1,6 +1,7 @@
 package rusting.entities.abilities;
 
 import arc.Core;
+import arc.util.Time;
 import mindustry.entities.abilities.Ability;
 import mindustry.gen.Unit;
 
@@ -14,7 +15,7 @@ public class RegenerationAbility extends Ability {
 
     @Override
     public void update(Unit unit) {
-        unit.health += health;
+        unit.heal(health * Time.delta);
         unit.clampHealth();
     }
 
