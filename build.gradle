@@ -7,8 +7,8 @@ group pGroup
 sourceCompatibility = 1.8
 
 sourceSets.main {
-    java.srcDir("src/")
-    resources.srcDir("assets/")
+    java.srcDir("core/src/")
+    resources.srcDir("core/assets/")
 }
 
 repositories {
@@ -19,7 +19,7 @@ repositories {
 dependencies {
     implementation "com.github.Anuken.Mindustry:core:$pMindustryVersion"
     implementation "com.github.Anuken.Mindustry:annotations:$pMindustryVersion"
-    //implementation "com.github.Anuken.Arc:arc-core:5a9d95001fc988df2681616ebc33152b9c88ea92"
+    implementation "com.github.Anuken.Arc:arc-core:$pArcVersion"
 }
 
 jar {
@@ -55,7 +55,7 @@ task dexify(type: Jar) {
     archiveName "dexed-$pArtifactFilename"
 
     final File jarArtifact = new File(tasks.jar.archiveFile.get().asFile.parent, pArtifactFilename),
-               dexedArtifact = new File(tasks.dexify.getTemporaryDir(), "dexed.jar")
+               dexedArtifact = new File(tasks.dexify.getTemporaryDir(), "Dexed.jar")
     doFirst {
         exec {
             workingDir dexedArtifact.parent
