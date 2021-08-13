@@ -335,7 +335,7 @@ public class RustingUnits implements ContentList{
         EntityMapping.nameMap.put("ribigen", BaseUnit::new);
         ribigen = new UnitType("ribigen"){{
             hitSize = 13;
-            health = 940;
+            health = 1140;
             armor = 10;
             speed = 0.35f;
             accel = 0.35f;
@@ -406,7 +406,7 @@ public class RustingUnits implements ContentList{
         EntityMapping.nameMap.put("spinascene", BaseUnit::new);
         spinascene = new UnitType("spinascene"){{
             hitSize = 24;
-            health = 8950;
+            health = 9760;
             armor = 13;
             speed = 0.25f;
             accel = 0.35f;

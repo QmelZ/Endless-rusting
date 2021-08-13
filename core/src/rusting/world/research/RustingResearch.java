@@ -3,8 +3,8 @@ package rusting.world.research;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Log;
+import mindustry.Vars;
 import mindustry.game.Team;
-import mindustry.gen.Groups;
 import rusting.Varsr;
 import rusting.ctype.ResearchType;
 import rusting.interfaces.ResearchCenterc;
@@ -23,19 +23,20 @@ public class RustingResearch {
 
     public ObjectMap<ResearchType, Seq<ResearchModule>> researchMap = new ObjectMap<ResearchType, Seq<ResearchModule>>();
 
+    public class hahano{
+        public ObjectMap<ResearchType, ObjectMap<Team, Seq<ResearchableObject>>> webedoinaliltrollin = ObjectMap.of();
+    }
+
     public void setupMap(){
         Varsr.content.researchTypes().each(r -> {
             researchMap.put(r, new Seq());
         });
 
-        /*
         Vars.content.each(b -> {
             if(b instanceof ResearchableObject) {
                 object = (ResearchableObject) b;
-                object.researchTypes.each(researchType -> {
-                    module = object.getResearchModule();
-                    object.researchModule.research = new ResearchModule(module.needsResearching, module.centerResearchRequirements, object);
-
+                object.getResearchModule().item = object;
+                object.researchTypes().each(researchType -> {
                     researchMap.get(researchType).add(object.getResearchModule());
                 });
             }
@@ -47,11 +48,28 @@ public class RustingResearch {
                 Log.info(object.getResearchModule().item);
             }
         });
-
-         */
     }
 
+    public void saveGameResearch(){
+        //Vars.state.rules.tags.put("tags.er.researchedBlocks", JsonIO.json.toJson(Varsr.formats));
+        Log.info("goodbye...");
+    };
+
     public void setupGameResearch(){
+
+        Log.info("hello!");
+
+        //String map = Vars.state.rules.tags.get("tags.er.researchedBlocks", "");
+
+        /*
+        ObjectMap<ResearchType, ObjectMap<Team, Seq<ResearchableObject>>> bloinkmapi = null;
+        String map = Vars.state.rules.tags.get("tags.er.researchedBlocks", "");
+
+        try {
+            bloinkmapi = JsonIO.json.fromJson(ObjectMap.class, ResearchType.class, Seq.class, ResearchableObject.class, map);
+        }
+
+        if(bloinkmapi == null)
 
         Groups.build.each(b -> {
             if(!(b instanceof ResearchCenterc)) return;
@@ -62,11 +80,13 @@ public class RustingResearch {
                 Log.info(object);
             });
         });
+
+         */
     }
 
     public ResearchModule getResearchModule(Team team, ResearchableObject object){
         tmpResearchModule = null;
-        object.researchTypes.each(r -> {
+        object.researchTypes().each(r -> {
             researchMap.get(r).each(module -> {
                 if(module.item == object) tmpResearchModule = module;
             });
@@ -76,10 +96,12 @@ public class RustingResearch {
 
     public TeamResearchModule getTeamModule(Team team, ResearchableObject object){
         returnTeamModule = null;
-        object.researchTypes.each(r -> {
+        object.researchTypes().each(r -> {
             researchMap.get(r).each(module -> {
                 tmpTeamModule = module.teamMap.get(team);
                 if(module.item == object) returnTeamModule = tmpTeamModule;
+                //failsafe
+                else if(tmpTeamModule == null) module.teamMap.put(team, new TeamResearchModule());
             });
         });
         return returnTeamModule;

@@ -38,11 +38,6 @@ public class EndlessRusting extends Mod{
             Varsr.content.init();
         });
 
-        Events.on(EventType.WorldLoadEvent.class, e -> {
-                    Varsr.research.setupGameResearch();
-                }
-        );
-
         Events.on(EventType.UnitCreateEvent.class,
             e -> {
                 if(e.unit.type == RustingUnits.stingray && Vars.state.rules.tags.getBool("events.er.stingrayfail")){

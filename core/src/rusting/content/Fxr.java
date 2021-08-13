@@ -7,6 +7,7 @@ import arc.math.Mathf;
 import arc.math.geom.Position;
 import arc.util.Time;
 import arc.util.Tmp;
+import mindustry.content.Items;
 import mindustry.entities.Effect;
 import mindustry.game.Team;
 import mindustry.gen.Bullet;
@@ -53,6 +54,24 @@ public class Fxr{
 
             randLenVectors(e.id, 3, 2f + e.fin() * 8f, (x, y) -> {
                 Fill.square(e.x + x, e.y + y, 0.2f + e.fout() * 1.3f);
+            });
+        }),
+
+        shootLongThorFlame = new Effect(123f, 80f, e -> {
+            color(Pal.lightTrail, Pal.spore, Color.gray, e.finpow());
+            Draw.alpha(e.fout() * 0.25f + 0.75f);
+
+            randLenVectors(e.id, 15, e.finpow() * 172f, e.rotation, 10f, (x, y) -> {
+                Fill.circle(e.x + x, e.y + y + Math.max(e.finpow() - 0.9f, 0)/9 * 10 * 9 * Tmp.v1.set(x, y).len()/172 * 9, e.fout() * 2.6f);
+            });
+        }),
+
+        shootLongPyraFlame = new Effect(123f, 80f, e -> {
+            color(Pal.lightTrail, Pal.darkPyraFlame, Color.gray, e.finpow());
+            Draw.alpha(e.fout() * 0.25f + 0.75f);
+
+            randLenVectors(e.id, 15, e.finpow() * 172f, e.rotation, 10f, (x, y) -> {
+                Fill.circle(e.x + x, e.y + y + Math.max(e.finpow() - 0.9f, 0)/9 * 10 * 9 * Tmp.v1.set(x, y).len()/172 * 9, e.fout() * 2.6f);
             });
         }),
 
@@ -406,58 +425,103 @@ public class Fxr{
     }),
 
 
-        //modified flak explosion
-        instaltSummonerExplosion = new Effect(45, e -> {
-            color(Pal.bulletYellowBack);
+    //modified flak explosion
+    instaltSummonerExplosion = new Effect(45, e -> {
+        color(Pal.bulletYellowBack);
 
-            e.scaled(15, i -> {
-                stroke(3f * i.fout());
-                Lines.circle(e.x, e.y, 5f + i.fin() * 25f);
+        e.scaled(15, i -> {
+            stroke(3f * i.fout());
+            Lines.circle(e.x, e.y, 5f + i.fin() * 25f);
 
+        });
+
+        e.scaled(6, i -> {
+            stroke(4f * i.fout());
+            Lines.circle(e.x, e.y, 3f + i.fin() * 35f);
+        });
+
+        color(Color.gray);
+
+        randLenVectors(e.id, 7, 2f + 33f * e.finpow(), (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, e.fout() * 4.5f + 0.55f);
+        });
+
+        color(Pal.bulletYellow);
+        stroke(e.fout());
+
+        randLenVectors(e.id + 1, 6, 1f + 23f * e.finpow(), (x, y) -> {
+            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 1f + e.fout() * 5f);
+        });
+    }),
+
+    earthpoundShockwave = new Effect(225, 150, e -> {
+        for (int i = 0; i < 5; i++) {
+            int[] l = {i};
+            Draw.z(Layer.groundUnit + 1);
+            e.scaled(65 + 30 * (i + 1)/5 * (i + 1)/5 * 5, h -> {
+                Tmp.v1.trns(e.rotation, h.finpow() * (60 + (4 - l[0] + 1) * 18));
+                Draw.color(Palr.lightstriken, Palr.dustriken, h.fin());
+                Lines.stroke((3 + (5 - l[0]) * 0.25f) * h.fout() * h.fout());
+                Lines.swirl(e.x + Tmp.v1.x, e.y + Tmp.v1.y, 2 + 39 * h.finpow(), (115 +55 * h.fout())/360, e.rotation - 57.5f - 27.5f * h.fout());
             });
-
-            e.scaled(6, i -> {
-                stroke(4f * i.fout());
-                Lines.circle(e.x, e.y, 3f + i.fin() * 35f);
-            });
-
-            color(Color.gray);
-
-            randLenVectors(e.id, 7, 2f + 33f * e.finpow(), (x, y) -> {
-                Fill.circle(e.x + x, e.y + y, e.fout() * 4.5f + 0.55f);
-            });
-
-            color(Pal.bulletYellow);
-            stroke(e.fout());
-
-            randLenVectors(e.id + 1, 6, 1f + 23f * e.finpow(), (x, y) -> {
-                lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 1f + e.fout() * 5f);
-            });
-        }),
-
-        earthpoundShockwave = new Effect(225, 150, e -> {
-            for (int i = 0; i < 5; i++) {
-                int[] l = {i};
-                Draw.z(Layer.groundUnit + 1);
-                e.scaled(65 + 30 * (i + 1)/5 * (i + 1)/5 * 5, h -> {
-                    Tmp.v1.trns(e.rotation, h.finpow() * (60 + (4 - l[0] + 1) * 18));
-                    Draw.color(Palr.lightstriken, Palr.dustriken, h.fin());
-                    Lines.stroke((3 + (5 - l[0]) * 0.25f) * h.fout() * h.fout());
-                    Lines.swirl(e.x + Tmp.v1.x, e.y + Tmp.v1.y, 2 + 39 * h.finpow(), (115 +55 * h.fout())/360, e.rotation - 57.5f - 27.5f * h.fout());
-                });
-            }
-            e.scaled(35, h -> {
-                Angles.randLenVectors(e.id, 4, 15, (ex, ey) -> {
-                    color(Pal.orangeSpark, Color.gray, h.fin());
-                    Lines.stroke(h.fslope() * 5);
-                    Lines.circle(e.x + ex, e.y + ey, e.fout() * 2);
-                    Angles.randLenVectors(e.id + 1, 3, 1, (x, y) -> {
-                        color(Pal.plasticSmoke, Pal.bulletYellow, h.fin());
-                        Lines.stroke(0.5f);
-                        Lines.lineAngle(e.x + x + ex, e.y + y + ey, Mathf.angle(x, y), h.finpow() * 3.5f);
-                    });
+        }
+        e.scaled(35, h -> {
+            Angles.randLenVectors(e.id, 4, 15, (ex, ey) -> {
+                color(Pal.orangeSpark, Color.gray, h.fin());
+                Lines.stroke(h.fslope() * 5);
+                Lines.circle(e.x + ex, e.y + ey, e.fout() * 2);
+                Angles.randLenVectors(e.id + 1, 3, 1, (x, y) -> {
+                    color(Pal.plasticSmoke, Pal.bulletYellow, h.fin());
+                    Lines.stroke(0.5f);
+                    Lines.lineAngle(e.x + x + ex, e.y + y + ey, Mathf.angle(x, y), h.finpow() * 3.5f);
                 });
             });
         });
+    }),
 
+    skyractureShot = new Effect(25, e -> {
+        Draw.alpha(0.75f * e.fout());
+        Draw.color(Palr.pulseBullet, Items.titanium.color, e.fout());
+        Lines.stroke(1.25f * e.fout());
+        Lines.circle(e.x, e.y, e.finpow() * 16);
+        Lines.stroke(3 * e.fout());
+        Lines.circle(e.x, e.y, e.finpow() * 6);
+        for (int i = 0; i < 9; i++) {
+            Tmp.v1.trns(i * 40 + e.rotation, e.finpow() * 3 + e.fin() * 3);
+            Fill.square(e.x + Tmp.v1.x, e.y + Tmp.v1.y, e.fout() * 3.35f, i * 40);
+        }
+    }),
+
+    skyfractureDespawn = new Effect(15, e -> {
+        Draw.alpha(e.finpow());
+        Draw.color(Palr.pulseBullet, Items.titanium.color, e.fout());
+        Lines.stroke(1.25f * e.finpow());
+        Lines.circle(e.x, e.y, (1 - e.fslope() * e.fslope()) * 12);
+        for (int i = 0; i < 9; i++) {
+            Tmp.v1.trns(i * 40 + e.rotation, e.fout() * 6);
+            Fill.square(e.x + Tmp.v1.x, e.y + Tmp.v1.y, e.fout() * 1.35f, i * 40);
+        }
+    }),
+
+    skyractureTrail = new Effect(22, e -> {
+        Draw.color(Palr.pulseBullet, Items.titanium.color, e.fout());
+        Draw.alpha(0.25f * e.fout());
+        Fill.circle(e.x, e.y, e.finpow() * 8);
+        Draw.alpha(0.75f * e.fout());
+        randLenVectors(e.id, 2, e.finpow() * 5, e.rotation, 360, (x, y) -> {
+            Tmp.v1.trns(120 + Mathf.angle(x, y), e.finpow() * 3 + e.fin() * 3);
+            Fill.square(e.x + Tmp.v1.x, e.y + Tmp.v1.y - e.finpow() * 9, e.fout() * 1.35f, e.fout() * 360);
+        });
+    }),
+
+    skyractureBurst = new Effect(35, e -> {
+        randLenVectors(e.id, 3, e.finpow() * 95, e.rotation, 360, (x, y) -> {
+            Draw.color(Palr.pulseBullet, Items.titanium.color, (x + y)/23 % 1);
+            Fill.square(e.x + x, e.y + y - e.fin() * 24, e.fout() * 3.35f, e.fout() * 360);
+        });
+        randLenVectors(e.id, 5, e.finpow() * 125, e.rotation, 360, (x, y) -> {
+            Draw.color(Palr.pulseBullet, Items.titanium.color, (x + y)/39 % 1);
+            Fill.square(e.x + x, e.y + y - e.fin() * 36, e.fout() * 2.35f, e.fout() * 360);
+        });
+    });
 }

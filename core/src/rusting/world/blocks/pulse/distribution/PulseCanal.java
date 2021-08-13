@@ -181,7 +181,7 @@ public class PulseCanal extends PulseBlock {
             Draw.z(Layer.blockOver + 0.1f);
 
             Draw.color(Palr.pulseBullet, Color.sky, Color.white, Math.abs(1 - cycle));
-            Draw.rect(topRegion, x, y, rotation * 90 - 90);
+            Draw.rect(topRegion, x, y, rotation * 90);
         }
     }
 }

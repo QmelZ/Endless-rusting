@@ -113,6 +113,8 @@ public class RustingBlocks implements ContentList{
         spraien,
         //platonic elements represented by four turrets.
         octain, triagon, cuin,
+        //turrets relating almost directly to Pixelcraf with their name but change things up a bit. Classified under elemental in the turret's sprite folder
+        horaNoctis, holocaust,
         //bomerang related turrets
         refract, diffract, reflect,
         //region unit
@@ -309,7 +311,7 @@ public class RustingBlocks implements ContentList{
 
         //region crafting
         bulasteltForgery = new GenericCrafter("bulastelt-forgery"){{
-            requirements(Category.crafting, with(Items.coal, 6, RustingItems.taconite, 7, RustingItems.bulastelt, 5));
+            requirements(Category.crafting, with(Items.lead, 35, Items.coal, 25, RustingItems.taconite, 65));
             craftEffect = Fx.smeltsmoke;
             outputItem = new ItemStack(RustingItems.bulastelt, 6);
             craftTime = 425f;
@@ -387,7 +389,7 @@ public class RustingBlocks implements ContentList{
                 }},
                 new ItemModule(){{
                     item = Items.sand;
-                    floors = Seq.with(Blocks.sand.asFloor(), Blocks.darksand.asFloor(), Blocks.sandWater.asFloor());
+                    floors = Seq.with(Blocks.sand.asFloor(), Blocks.darksand.asFloor(), Blocks.sandWater.asFloor(), Blocks.darksandWater.asFloor());
                 }},
                 new ItemModule(){{
                     item = Items.coal;
@@ -673,6 +675,7 @@ public class RustingBlocks implements ContentList{
             );
         }};
 
+        //not for player use, however accessible through custom games
         antiquaeGuardianBuilder = new PulseUnitFactory("antiquae-guardian-builder"){{
             requirements(Category.units, with(Items.copper, 75, Items.lead, 60, Items.coal, 35, Items.titanium, 25));
             centerResearchRequirements(false, with(Items.copper, 145,  Items.lead, 145, Items.graphite, 55, Items.titanium, 85, Items.pyratite, 35));
@@ -687,7 +690,7 @@ public class RustingBlocks implements ContentList{
             canOverload = false;
             size = 7;
             plans.addAll(
-                new UnitPlan(RustingUnits.stingray, 8560, ItemStack.with(Items.lead, 4550, Items.silicon, 1450, Items.titanium, 3500, RustingItems.halsinte, 2500, RustingItems.melonaleum, 750))
+                new UnitPlan(RustingUnits.stingray, 77040, ItemStack.with(Items.lead, 4550, Items.silicon, 1450, Items.titanium, 3500, RustingItems.halsinte, 2500, RustingItems.melonaleum, 750))
             );
         }};
 
@@ -966,6 +969,41 @@ public class RustingBlocks implements ContentList{
             coolantMultiplier = 0.85f;
             shootType = Bullets.artilleryIncendiary;
             shootEffect = Fx.flakExplosion;
+        }};
+
+        horaNoctis = new AutoreloadItemTurret("hora-noctis"){{
+            requirements(Category.turret, with());
+            size = 2;
+            health = 225 * size * size;
+            shootLength = -35;
+            range = 265;
+            spread = 2;
+            inaccuracy = 4;
+            xRand = 8;
+            shots = 3;
+            burstSpacing = 6;
+            reloadTime = 42;
+            ammo(
+                Items.titanium, RustingBullets.lightfractureTitanim,
+                RustingItems.bulastelt, RustingBullets.lightfractureBulat
+            );
+        }};
+
+        holocaust = new AutoreloadItemTurret("holocaust"){{
+            requirements(Category.turret, with());
+            size = 2;
+            health = 225 * size * size;
+            range = 152;
+            shootLength = 7;
+            spread = 2;
+            inaccuracy = 4;
+            xRand = 5;
+            shots = 2;
+            reloadTime = 4.75f;
+            ammo(
+                Items.pyratite, RustingBullets.longPyraFlame,
+                Items.thorium, RustingBullets.longThorFlame
+            );
         }};
 
         spraien = new PumpLiquidTurret("spraien"){{

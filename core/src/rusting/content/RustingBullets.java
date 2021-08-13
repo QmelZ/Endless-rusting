@@ -29,7 +29,7 @@ public class RustingBullets implements ContentList{
         //basic bullets
         fossilShard, cloudyShard, craeShard, raehShard, mhemShard, fraeShard, paveShard, pavenShardling, darkShard, stingrayShard, spawnerGlass, spawnerGlassFrag, spawnerBulat, spawnerBulatFrag,
         //artillery
-        mhemQuadStorm,
+        mhemQuadStorm, lightfractureTitanim, lightfractureBulat,
         //liquid
         melomaeShot, heavyMelomaeShot,
         //missile/weaving bullets
@@ -47,7 +47,9 @@ public class RustingBullets implements ContentList{
         //instant bullets
         horizonInstalt, nummingInstalt, timelessInstalt,
         //bullet spawning bullets
-        nummingVortex, cloudyVortex, boltingVortex, flamstrikenVortex
+        nummingVortex, cloudyVortex, boltingVortex, flamstrikenVortex,
+        //flames
+        longThorFlame, longPyraFlame
         ;
 
     @Override
@@ -108,7 +110,7 @@ public class RustingBullets implements ContentList{
             bounceCap = 4;
         }};
 
-        timelessInstalt = new InstantBounceBulletType(1, 15, "bullet"){{
+        timelessInstalt = new InstantBounceBulletType(1, 38, "bullet"){{
             width = 7;
             height = 8;
             lifetime = 192;
@@ -363,13 +365,11 @@ public class RustingBullets implements ContentList{
             width = 5f;
             height = 12f;
             shrinkY = 1f;
-            lifetime = 125f;
+            lifetime = 65f;
             knockback = -1;
             homingPower = 0.25f;
             splashDamage = 5;
             splashDamageRadius = 15;
-            frontColor = Palr.lightstriken;
-            backColor = Palr.pulseBullet;
             backColor = Color.sky;
             frontColor = Pal.plastaniumBack;
             despawnEffect = Fx.plasticburn;
@@ -425,6 +425,46 @@ public class RustingBullets implements ContentList{
             shrinkY = 0.63f;
 
             drag = 0.13f;
+        }};
+
+        lightfractureTitanim = new RandspriteBulletType(7.5f, 37, "endless-rusting-lightsword", 4){{
+            hitEffect = Fx.hitFuse;
+            knockback = 0.15f;
+            pierce = true;
+            pierceBuilding = true;
+            pierceCap = 3;
+            lifetime = 40;
+            width = 11;
+            height = 16f;
+            shrinkY = 0;
+            frontColor = Items.titanium.color;
+            backColor = Color.cyan;
+            trailChance = 0.15f;
+            trailEffect = Fxr.skyractureTrail;
+            shootEffect = Fxr.skyractureShot;
+            hitEffect = Fxr.skyractureBurst;
+            despawnEffect = Fxr.skyfractureDespawn;
+            ammoMultiplier = 6;
+        }};
+
+        lightfractureBulat = new RandspriteBulletType(6.6f, 28, "endless-rusting-lightsword", 4){{
+            hitEffect = Fx.hitFuse;
+            knockback = 1.35f;
+            lifetime = 45;
+            width = 11;
+            height = 16f;
+            shrinkY = 0;
+            backColor = Pal.plastaniumFront;
+            frontColor = Pal.plasticSmoke;
+            trailChance = 0.1f;
+            trailEffect = Fx.plasticburn;
+            shootEffect = Fx.plasticExplosion;
+            hitEffect = Fx.none;
+            hitEffect = Fx.none;
+            fragBullet = spawnerBulatFrag;
+            fragBullets = 2;
+            shootEffect = Fx.plasticburn;
+            ammoMultiplier = 9;
         }};
 
         melomaeShot = new LiquidBulletType(RustingLiquids.melomae){{
@@ -516,14 +556,17 @@ public class RustingBullets implements ContentList{
 
         //let bullet = Vars.content.bullets().find(b => b.splashDamage == 175); UnitTypes.gamma.weapons.each(w => w.bullet = bullet);
 
-        craeNukestorm = new BounceBulletType(9, 154, "endless-rusting-mininuke"){{
+        craeNukestorm = new BounceBulletType(9, 154, "endless-rusting-glave-large"){{
             hitShake = 12;
             hitEffect = Fxr.craeNukeHit;
             splashDamage = 175;
             splashDamageRadius = 125;
 
-            width = 9;
-            height = 22;
+            shrinkX = 0;
+            shrinkY = 0;
+            spin = 19;
+            width = 35;
+            height = 35;
             lifetime = 112;
             status = RustingStatusEffects.macotagus;
             statusDuration = 1440;
@@ -532,12 +575,12 @@ public class RustingBullets implements ContentList{
             trailColor = frontColor;
             trailEffect = Fxr.craeWeaverShards;
             trailChance = 1f;
-            weaveMag = 2;
             weaveScale = 5;
             pierce = false;
             pierceBuilding = false;
             scaleVelocity = true;
-            trailLength = 18;
+            trailLength = 12;
+            trailWidth = 8;
             hitSound = Sounds.explosion;
             knockback = -0.15f;
             fragBullets = 7;
@@ -545,7 +588,7 @@ public class RustingBullets implements ContentList{
             fragBullet = craeWeaver;
         }};
 
-        craeBalistorm = new BounceBulletType(3, 654, "endless-rusting-mininuke"){{
+        craeBalistorm = new BounceBulletType(3, 654, "endless-rusting-glave-large"){{
 
             consHit = (b) -> {
                 RustingBullets.boltingVortex.create(b.owner, b.team, b.x, b.y, b.rotation());
@@ -553,13 +596,16 @@ public class RustingBullets implements ContentList{
 
             consDespawned = consHit;
 
+            spin = 18;
             hitShake = 56;
             hitEffect = Fxr.craeBigNukeHit;
             splashDamage = 775;
             splashDamageRadius = 225;
 
-            width = 16;
-            height = 42;
+            shrinkX = 0;
+            shrinkY = 0;
+            width = 45;
+            height = 45;
             lifetime = 336;
             status = RustingStatusEffects.macotagus;
             statusDuration = 1440;
@@ -568,13 +614,13 @@ public class RustingBullets implements ContentList{
             trailColor = frontColor;
             trailEffect = Fxr.craeWeaverShards;
             trailChance = 1f;
-            weaveMag = 2;
             weaveScale = 5;
             pierce = false;
             pierceBuilding = false;
             scaleVelocity = true;
             collides = false;
-            trailLength = 18;
+            trailLength = 9;
+            trailWidth = 12;
             hitSound = Sounds.explosionbig;
             knockback = -0.15f;
             fragBullets = 16;
@@ -974,7 +1020,7 @@ public class RustingBullets implements ContentList{
         }};
 
         //anyone know where this one is from? ;)
-        boltingVortex = new BulletSpawnBulletType(0.099f, 250, "none"){{
+        boltingVortex = new BulletSpawnBulletType(0.099f, 560, "none"){{
 
             keepVelocity = false;
 
@@ -1044,6 +1090,34 @@ public class RustingBullets implements ContentList{
             scaleDrawOut = 9;
             drawSize = 6;
 
+        }};
+
+        longThorFlame = new BulletType(4.35f, 47.5f){{
+            ammoMultiplier = 6f;
+            hitSize = 9f;
+            lifetime = 35f;
+            pierce = true;
+            pierceBuilding = true;
+            statusDuration = 60f * 6;
+            shootEffect = Fxr.shootLongThorFlame;
+            hitEffect = Fx.hitFlameSmall;
+            despawnEffect = Fx.none;
+            status = StatusEffects.corroded;
+            hittable = false;
+        }};
+
+        longPyraFlame = new BulletType(4.35f, 47.5f){{
+            ammoMultiplier = 6f;
+            hitSize = 9f;
+            lifetime = 35f;
+            pierce = true;
+            pierceBuilding = true;
+            statusDuration = 60f * 6;
+            shootEffect = Fxr.shootLongPyraFlame;
+            hitEffect = Fx.hitFlameSmall;
+            despawnEffect = Fx.none;
+            status = StatusEffects.melting;
+            hittable = false;
         }};
     }
 }

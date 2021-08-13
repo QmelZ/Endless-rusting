@@ -5,6 +5,7 @@ import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.math.Angles;
 import arc.math.Mathf;
+import arc.struct.Seq;
 import arc.util.*;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -23,13 +24,19 @@ import mindustry.world.meta.Stat;
 import rusting.content.*;
 import rusting.core.holder.CustomConsumerModule;
 import rusting.core.holder.CustomStatHolder;
+import rusting.ctype.ResearchType;
 import rusting.interfaces.PulseBlockc;
 import rusting.interfaces.ResearchableBlock;
 import rusting.world.blocks.pulse.utility.PulseResearchBlock;
+import rusting.world.modules.ResearchModule;
 
 import static mindustry.Vars.*;
 
 public class PulseBlock extends Block implements ResearchableBlock {
+    //research types for the block
+    public Seq<ResearchType> researchTypes = new Seq<ResearchType>();
+    //research module with more specific information
+    public ResearchModule researchModule = new ResearchModule();
 
     private boolean tmpBool = false;
 
@@ -119,6 +126,16 @@ public class PulseBlock extends Block implements ResearchableBlock {
         ));
     }
 
+
+    @Override
+    public Seq<ResearchType> researchTypes() {
+        return researchTypes;
+    }
+
+    @Override
+    public ResearchModule getResearchModule() {
+        return researchModule;
+    }
 
     @Override
     public boolean isHidden(){

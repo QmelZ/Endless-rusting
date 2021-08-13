@@ -10,6 +10,7 @@ import arc.util.*;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
+import mindustry.core.Version;
 import mindustry.ctype.ContentList;
 import mindustry.entities.Units;
 import mindustry.game.EventType.Trigger;
@@ -43,6 +44,7 @@ public class RustingStatusEffects implements ContentList {
         //the statement above me is a lie
         fuesin = new StatusEffect("fuesin"){{
             init(() -> {
+                if(Version.number > 6) return;
                 affinity(macrosis, ((unit, time, newTime, result) -> {
                     unit.damagePierce(transitionDamage);
                     unit.apply(macotagus, time * 3);
@@ -66,6 +68,7 @@ public class RustingStatusEffects implements ContentList {
             transitionDamage = 10f;
             effect = Fx.plasticburn;
             init(() -> {
+                if(Version.number > 6) return;
                 affinity(StatusEffects.burning, ((unit, time, newTime, result) -> {
                     unit.damagePierce(transitionDamage);
                     unit.apply(umbrafliction, time * 3);
@@ -89,6 +92,7 @@ public class RustingStatusEffects implements ContentList {
         hailsalilty = new StatusEffect("hailsalilty"){{
             effect = Fxr.salty;
             init(() -> {
+                if(Version.number > 6) return;
                 affinity(StatusEffects.wet, ((unit, time, newTime, result) -> {
                     unit.damagePierce(transitionDamage);
                     unit.apply(StatusEffects.corroded, time * 3);
@@ -182,6 +186,7 @@ public class RustingStatusEffects implements ContentList {
             transitionDamage = 15;
             effect = Fx.bubble;
             init(() -> {
+                if(Version.number > 6) return;
                 affinity(amberstriken, ((unit, time, newTime, result) -> {
                     unit.damagePierce(transitionDamage);
                     unit.damage(amberstriken.transitionDamage);

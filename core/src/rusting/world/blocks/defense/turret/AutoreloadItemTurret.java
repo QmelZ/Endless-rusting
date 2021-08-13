@@ -10,6 +10,13 @@ public class AutoreloadItemTurret extends ItemTurret {
         super(name);
     }
 
+    @Override
+    public void init() {
+        float shotLeng = shootLength;
+        super.init();
+        shootLength = shotLeng;
+    }
+
     public class AutoreloadItemTurretBuild extends ItemTurretBuild{
         @Override
         public void update() {

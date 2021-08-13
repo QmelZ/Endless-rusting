@@ -1,6 +1,7 @@
 package rusting;
 
 import arc.Core;
+import arc.Events;
 import arc.assets.Loadable;
 import arc.struct.Queue;
 import arc.struct.Seq;
@@ -8,6 +9,7 @@ import arc.util.Log;
 import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.Blocks;
+import mindustry.game.EventType;
 import mindustry.gen.Building;
 import mindustry.type.ItemStack;
 import mindustry.world.Tile;
@@ -98,6 +100,28 @@ public class Varsr implements Loadable {
 
         formats.load();
 
+        /*
+        Events.on(EventType.StateChangeEvent.class, e => {
+        if(Vars.state.isEditor()) {
+            if(e.from == GameState.State.menu && e.to == GameState.State.playing) {
+                begin();
+            } else if(e.to == GameState.State.menu) {
+                end();
+            }
+        }
+        });
+
+         */
+
+        Events.on(EventType.SaveLoadEvent.class, e -> {
+            research.setupGameResearch();
+        });
+
+        Events.on(EventType.WorldLoadEvent.class, e -> {
+                    if(Vars.state.isMenu() == false) research.setupGameResearch();
+                }
+        );
+
         Log.info("Loaded Varsr");
 
     }
@@ -123,7 +147,7 @@ public class Varsr implements Loadable {
         );
 
         Vars.mods.getScripts().runConsole("importPackage(java.lang);");
-        Vars.mods.getScripts().runConsole("importPackage(java.awt);");
+        //Vars.mods.getScripts().runConsole("importPackage(java.awt);");
         Vars.mods.getScripts().runConsole("importPackage(Packages.rhino);");
         //credits to GlenFolker
         Vars.mods.getScripts().runConsole(
@@ -190,5 +214,13 @@ public class Varsr implements Loadable {
             });
         });
         return build;
+    }
+
+    public void stateChangeBegin() {
+
+    }
+
+    public void stateChangeEnd() {
+
     }
 }

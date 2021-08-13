@@ -17,4 +17,6 @@ public class ConsStatusEffect extends StatusEffect {
         super.update(unit, time);
         if(updateCons != null) updateCons.get(unit);
     }
+
+
 }

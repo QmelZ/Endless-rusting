@@ -3,6 +3,7 @@ package rusting.world.blocks.pulse.utility;
 import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.math.Mathf;
+import arc.math.geom.Point2;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.*;
@@ -102,6 +103,12 @@ public class PulseTeleporterController extends PulseTeleporterPart {
         boolean multiblockFormed = false;
         Seq<Integer> connections = new Seq();
         Seq<Building> multiblockParts = new Seq();
+        float progress = 0;
+        //set whenever a schematic is being teleported in or untis and blocks (If posible) are being teleported
+        int toProgress = 100;
+        private Point2 point2;
+        private float tmpDst = 0;
+        private int index = 0;
 
         @Override
         public Object config() {
@@ -136,6 +143,25 @@ public class PulseTeleporterController extends PulseTeleporterPart {
             super.updateTile();
             if(chargef() > 0.9f && !multiblockFormed) multiblockFormed = multiblockFormed(tile);
             if(multiblockFormed && Vars.state.isCampaign()) Core.settings.put("settings.er.teleporterbuilt", true);
+        }
+
+        public void teleportUnits(){
+            if(connections.size == 0) return;
+            tmpDst = range();
+            //search for nearest teleporter
+            connections.each(i -> {
+                Tmp.v1.set(Point2.unpack(i).x, Point2.unpack(i).y);
+                if(Tmp.v1.len() < tmpDst) index = connections.indexOf(i);
+            });
+            point2 = Point2.unpack(connections.get(index));
+            tmpBuild = Vars.world.buildWorld(point2.x, point2.y);
+            if(tmpBuild instanceof PulseTeleporterControllerBuild){
+
+            }
+            else{
+                connections.remove(index);
+                return;
+            }
         }
     }
 }

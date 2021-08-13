@@ -1,7 +1,6 @@
 package rusting.interfaces;
 
 import arc.struct.Seq;
-import arc.util.Log;
 import mindustry.Vars;
 import mindustry.ctype.UnlockableContent;
 import mindustry.game.Team;
@@ -9,15 +8,12 @@ import mindustry.type.ItemStack;
 import rusting.Varsr;
 import rusting.ctype.ResearchType;
 import rusting.world.modules.ResearchModule;
-import rusting.world.modules.ResearchModuleHolder;
 
 public interface ResearchableObject {
-    //research types for the block
-    Seq<ResearchType> researchTypes = new Seq<ResearchType>();
-    //research module with more specific information
-    ResearchModuleHolder researchModule = new ResearchModuleHolder();
-    //whether object is unlocked by default in custom games
-    boolean customUnlockable = true;
+
+    default Seq<ResearchType> researchTypes(){
+        return null;
+    }
 
     default void centerResearchRequirements(ItemStack[] stack){
         centerResearchRequirements(true, true, stack);
@@ -27,20 +23,17 @@ public interface ResearchableObject {
         centerResearchRequirements(true, requiresResearching, stack);
     }
 
-    default void resetResearchModule(){
-        researchModule.research = new ResearchModule(true, ItemStack.with(), this);
-        Log.info("reset module");
-    }
-
+    //backwards compatibility with my own code.
+    // I can't believe I've come to this and I haven't even hit rock bottom yet.
+    // When do I get to keep my stats?
     default ResearchModule getResearchModule(){
-        return researchModule.research;
+        return null;
     }
 
     default void centerResearchRequirements(boolean reset, boolean requiresResearching, ItemStack[] stack){
-        if(reset) resetResearchModule();
-        getResearchModule().centerResearchRequirements = stack;
+        if(getResearchModule() == null) return;
         getResearchModule().needsResearching = requiresResearching;
-        getResearchModule().item = this;
+        getResearchModule().centerResearchRequirements = stack;
         String[] string = {""};
         if(this instanceof UnlockableContent){
             string[0] += ((UnlockableContent) this).localizedName + "'s stack contains: ";
@@ -49,6 +42,11 @@ public interface ResearchableObject {
     }
 
     default boolean researched(Team team){
-        return customUnlockable && Vars.state.rules.infiniteResources || Varsr.research.getTeamModule(team, this).researched;
+        return getResearchModule().needsResearching && Vars.state.rules.infiniteResources || Varsr.research.getTeamModule(team, this).researched;
+    }
+
+    class TempResearchModule{
+        public boolean requiresResearching = true;
+        public ItemStack[] cost = ItemStack.with();
     }
 }
