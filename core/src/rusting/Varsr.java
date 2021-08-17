@@ -167,6 +167,7 @@ public class Varsr implements Loadable {
         );
         Vars.mods.getScripts().runConsole("importl(\"rusting\")");
         Vars.mods.getScripts().runConsole("importl(\"rusting.content\")");
+        Vars.mods.getScripts().runConsole("importl(\"rusting.ctype\")");
     }
 
     public static void updateConnectedCanals(PulseCanalBuild building, float maxDst){

@@ -1,12 +1,12 @@
 package rusting.type.statusEffect;
 
-import arc.func.Cons;
+import arc.func.Cons2;
 import mindustry.gen.Unit;
 import mindustry.type.StatusEffect;
 
 public class ConsStatusEffect extends StatusEffect {
 
-    public Cons<Unit> updateCons;
+    public Cons2<Unit, Float> updateCons;
 
     public ConsStatusEffect(String name) {
         super(name);
@@ -15,7 +15,7 @@ public class ConsStatusEffect extends StatusEffect {
     @Override
     public void update(Unit unit, float time) {
         super.update(unit, time);
-        if(updateCons != null) updateCons.get(unit);
+        if(updateCons != null) updateCons.get(unit, time);
     }
 
 

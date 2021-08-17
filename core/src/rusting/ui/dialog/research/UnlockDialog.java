@@ -14,7 +14,6 @@ import mindustry.ui.Cicon;
 import mindustry.world.Tile;
 import mindustry.world.blocks.storage.CoreBlock.CoreBuild;
 import rusting.Varsr;
-import rusting.interfaces.ResearchCenterc;
 import rusting.interfaces.ResearchableObject;
 import rusting.ui.dialog.CustomBaseDialog;
 import rusting.world.blocks.pulse.PulseBlock;
@@ -64,15 +63,22 @@ public class UnlockDialog extends CustomBaseDialog {
         pane(table -> {
             table.center();
             table.button("Unlock?", () -> {
-                if(tile.build instanceof ResearchCenterc && content instanceof ResearchableObject){
+                if(content instanceof ResearchableObject){
                     PulseResearchBuild building = (PulseResearchBuild) tile.build;
                     CoreBuild coreBlock = building.team.core();
                     boolean canResearch = false;
+
+                    //if it's infinite resources or the core has the resources available, continue
                     if(Vars.state.rules.infiniteResources || coreBlock.items.has(rCost, 1)){
+
+                        //remove items from core
                         for(int i = 0; i < ((ResearchableObject) content).getResearchModule().centerResearchRequirements.length; i++){
                             coreBlock.items.remove(((ResearchableObject) content).getResearchModule().centerResearchRequirements[i]);
                         }
-                        building.configure(content.name);
+
+                        //research the block
+                        building.configure(((ResearchableObject) content).getResearchModule().id);
+                        Varsr.research.unlock(building.team, (ResearchableObject) content);
                         Sounds.unlock.at(player.x, player.y);
                     }
                 }

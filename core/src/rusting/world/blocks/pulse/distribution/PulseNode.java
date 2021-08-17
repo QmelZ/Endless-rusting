@@ -216,10 +216,10 @@ public class PulseNode extends PulseBlock {
             connections.each(l -> {
                 Building j = world.build(l);
                 //need to double check, jic, because I've experienced crashes while a generator was pumping out energy
-                if(pulseEnergy < 0 || j == null) return;
+                if(chargef() <= 0 || j == null) return;
                 if(index[0] > connectionsPotential) connections.remove(l);
-                float energyTransmitted = Math.min(pulseEnergy, energyTransmission);
-                if(((PulseBlockBuild)j).receivePulse(energyTransmitted, this)) pulseEnergy -= energyTransmitted;
+                float energyTransmitted = Math.min(pulseModule.pulse, energyTransmission);
+                if(((PulseBlockBuild)j).receivePulse(energyTransmitted, this)) removePulse(energyTransmitted);
                 index[0]++;
             });
         }

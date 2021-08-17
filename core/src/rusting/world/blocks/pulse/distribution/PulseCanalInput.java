@@ -81,7 +81,7 @@ public class PulseCanalInput extends PulseBlock {
                 reload = 0;
                 Tmp.v1.trns(rotation * 90, 8);
                 tmpBuilding = Vars.world.buildWorld(x + Tmp.v1.x, y + Tmp.v1.y);
-                if(tmpBuilding instanceof PulseInstantTransportation && tmpBuilding instanceof PulseCanalBuild && pulseEnergy >= energyTransmission){
+                if(tmpBuilding instanceof PulseInstantTransportation && tmpBuilding instanceof PulseCanalBuild && pulseModule.pulse >= energyTransmission){
                     if(((PulseCanalBuild) tmpBuilding).receivePulse(energyTransmission, this)) {
                         removePulse(energyTransmission);
                     }

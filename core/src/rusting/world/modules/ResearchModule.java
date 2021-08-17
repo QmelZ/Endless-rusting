@@ -39,4 +39,9 @@ public class ResearchModule {
     public ItemStack[] centerResearchRequirements = ItemStack.with(Items.copper, 1);
     //map of modules for each team
     public ObjectMap<Team, TeamResearchModule> teamMap = ObjectMap.of();
+
+    public TeamResearchModule getModule(Team team){
+        if(!teamMap.containsKey(team)) teamMap.put(team, new TeamResearchModule());
+        return teamMap.get(team);
+    };
 }

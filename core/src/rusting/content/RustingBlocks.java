@@ -98,7 +98,7 @@ public class RustingBlocks implements ContentList{
         //endregion storage
         //turrets
         //environment/turrets
-        archangel,
+        archangel, pulseMotar,
         //landmines
         pulseLandmine,
         //units
@@ -642,6 +642,29 @@ public class RustingBlocks implements ContentList{
             canOverload = true;
         }};
 
+        pulseMotar = new PulsePulsar("pulse-motar"){{
+            requirements(Category.effect, with(Items.copper, 300, Items.lead, 115, Items.metaglass, 50, Items.titanium, 45));
+            centerResearchRequirements(with(Items.copper, 350,  Items.coal, 95, Items.graphite, 55, Items.titanium, 225));
+            flags = EnumSet.of(BlockFlag.turret);
+            size = 3;
+            health = 135 * size * size;
+            projectile = RustingBullets.craeQuadStorm;
+            shots = 2;
+            bursts = 9;
+            burstSpacing = 5;
+            inaccuracy = 6;
+            projectileChanceModifier = 0;
+            range = 31;
+            reloadTime = 85;
+            customConsumes.pulse = 15;
+            cruxInfiniteConsume = true;
+            pulseStorage = 70;
+            overloadCapacity = 30;
+            powerLoss = 0;
+            minRequiredPulsePercent = 0;
+            canOverload = true;
+        }};
+
         //region landmines
         pulseLandmine = new PulseLandmine("pulse-landmine") {{
             requirements(Category.effect, with(Items.lead, 15, Items.silicon, 10, RustingItems.melonaleum, 5));
@@ -707,7 +730,7 @@ public class RustingBlocks implements ContentList{
             size = 3;
             upgrades.add(
                 new UnitType[]{RustingUnits.duono, RustingUnits.duoly},
-                new UnitType[]{RustingUnits.marrow, RustingUnits.metaphys}
+                new UnitType[]{RustingUnits.fahrenheit, RustingUnits.celsius}
             );
             constructTime = 720;
         }};

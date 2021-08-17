@@ -4,7 +4,8 @@ import rusting.Varsr;
 
 public abstract class MappableERContent extends ERContent{
 
-    public String name;
+    public final String name;
+    public String localizedName;
 
     public MappableERContent(String name){
         this.name = name;

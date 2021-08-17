@@ -40,11 +40,11 @@ public class ConductivePulseBlock extends PulseBlock {
 
         public void addPulseAdjacent(){
             proximity().each(l -> {
-                if (pulseEnergy > 0 && l instanceof PulseBlockBuild) {
-                    float energyTransmitted = Math.min(pulseEnergy, energyTransmission);
+                if (pulseModule.pulse > 0 && l instanceof PulseBlockBuild) {
+                    float energyTransmitted = Math.min(pulseModule.pulse, energyTransmission);
                     if (((PulseBlockBuild) l).canRecievePulse(energyTransmitted) && ((PulseBlockBuild) l).chargef() < chargef()) {
                         ((PulseBlockBuild) l).receivePulse(energyTransmitted, this);
-                        pulseEnergy -= energyTransmitted;
+                        removePulse(energyTransmitted);
                     }
                 }
             });

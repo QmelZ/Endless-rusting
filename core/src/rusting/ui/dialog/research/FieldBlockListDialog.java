@@ -9,17 +9,19 @@ import arc.scene.event.HandCursorListener;
 import arc.scene.ui.Image;
 import arc.scene.ui.Tooltip;
 import arc.struct.Seq;
-import arc.util.*;
+import arc.util.Scaling;
+import arc.util.Time;
 import mindustry.Vars;
 import mindustry.ctype.UnlockableContent;
 import mindustry.gen.Building;
 import mindustry.graphics.Pal;
 import mindustry.ui.Cicon;
 import mindustry.ui.Fonts;
-import mindustry.world.Block;
 import mindustry.world.Tile;
 import rusting.Varsr;
 import rusting.content.Palr;
+import rusting.ctype.ResearchType;
+import rusting.interfaces.ResearchableObject;
 import rusting.ui.dialog.CustomBaseDialog;
 import rusting.world.blocks.pulse.utility.PulseResearchBlock;
 
@@ -28,7 +30,7 @@ import static mindustry.Vars.player;
 
 public class FieldBlockListDialog extends CustomBaseDialog {
 
-    public Seq<Block> blocks = new Seq<Block>();
+    public Seq<ResearchableObject> researchable = new Seq<ResearchableObject>();
     public Seq<String> databaseQuotes = new Seq<String>();
 
     public FieldBlockListDialog(){
@@ -40,6 +42,14 @@ public class FieldBlockListDialog extends CustomBaseDialog {
         if(tile.build instanceof Building && tile.build.block instanceof PulseResearchBlock) makeList(((PulseResearchBlock) tile.build.block).fieldNames, ((PulseResearchBlock) tile.build.block).threshold);
     }
 
+    public void makeList(Seq<ResearchType> researchTypes){
+        researchTypes.each(type -> {
+            Varsr.research.researchMap.get(type).each(m -> {
+
+            });
+        });
+    }
+
     public void refresh(Tile tile){
         if(isShown()) {
             hide();
@@ -49,7 +59,7 @@ public class FieldBlockListDialog extends CustomBaseDialog {
     }
 
     public void makeList(Seq<String> fieldNames, int threshold) {
-        blocks.clear();
+        researchable.clear();
         Vars.content.blocks().each(b -> {
             int fields = 0;
             for (String field : fieldNames) {
@@ -59,7 +69,7 @@ public class FieldBlockListDialog extends CustomBaseDialog {
                 } catch (NoSuchFieldException ignored) {}
             }
 
-            if (fields >= 1 && fields >= threshold) blocks.add(b);
+            if (fields >= 1 && fields >= threshold && b instanceof ResearchableObject) researchable.add((ResearchableObject) b);
         });
     }
 
@@ -87,11 +97,11 @@ public class FieldBlockListDialog extends CustomBaseDialog {
 
                 list.left();
 
-                blocks.each(type -> {
-
+                researchable.each(type -> {
+                    if(!(type instanceof UnlockableContent)) return;
                     UnlockableContent unlock = (UnlockableContent) type;
-                    if(!unlocked(unlock)) return;
-                    final boolean isResearched = PulseResearchBlock.researched(unlock, player.team());
+                    if (!unlocked(unlock)) return;
+                    final boolean isResearched = Varsr.research.researched(player.team(), type, type.researchTypes());
                     Image image = new Image(unlock.icon(Cicon.medium)).setScaling(Scaling.fit);
                     Color imageCol = isResearched ? Color.white : Pal.darkerGray;
                     list.add(image).size(8 * 12).pad(3);
@@ -104,16 +114,12 @@ public class FieldBlockListDialog extends CustomBaseDialog {
 
                     boolean finalIsResearched = isResearched;
                     image.clicked(() -> {
-                        if(isResearched){
+                        if (isResearched) {
                             if (Core.input.keyDown(KeyCode.shiftLeft) && Fonts.getUnicode(unlock.name) != 0) {
                                 Core.app.setClipboardText((char) Fonts.getUnicode(unlock.name) + "");
                                 Vars.ui.showInfoFade("@copied");
-                            }
-
-                            else Varsr.ui.blockEntry.show(unlock);
-                        }
-
-                        else if(unlocked(unlock)) Varsr.ui.unlock.show(unlock);
+                            } else Varsr.ui.blockEntry.show(unlock);
+                        } else if (unlocked(unlock)) Varsr.ui.unlock.show(unlock);
                     });
                     boolean finalIsResearched1 = isResearched;
                     image.addListener(new Tooltip(t -> t.background(arc.Core.atlas.drawable("button")).add((finalIsResearched1 ? "The " : "Unlock the ") + unlock.localizedName + (finalIsResearched1 ? "" : "?"))));

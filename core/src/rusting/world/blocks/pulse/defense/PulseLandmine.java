@@ -69,7 +69,7 @@ public class PulseLandmine extends PulseBlock {
         @Override
         public void placed() {
             super.placed();
-            pulseEnergy = pulseStorage;
+            addPulse(pulseStorage);
         }
 
         @Override
@@ -77,7 +77,7 @@ public class PulseLandmine extends PulseBlock {
             super.update();
             if(allConsValid()){
                 //Most likely never going to be 1, so get max amount of charges that it can store
-                if(pulseEnergy >= maxPulseRequired){
+                if(pulseModule.pulse >= maxPulseRequired){
                     state = 3;
                 }
                 else state = 2;
@@ -122,7 +122,7 @@ public class PulseLandmine extends PulseBlock {
         @Override
         //don't draw team
         public void drawTeam() {
-            return;
+
         }
 
         @Override

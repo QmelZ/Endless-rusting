@@ -19,8 +19,8 @@ public class StingrayUnitEntity extends AntiquimGuardianUnitEntity{
     private static float tmpFloat, tmpFloat2;
     public float shieldCharge = 0;
     public float addableShieldCharge = 0;
+    public float currentDamageTT = 0;
 
-    @Override
     public void damage(float amount) {
         if(iframes <= 0) {
             super.damage(Math.min(amount, 2000 - shieldCharge));

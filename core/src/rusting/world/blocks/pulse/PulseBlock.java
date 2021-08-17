@@ -21,6 +21,7 @@ import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Stat;
+import rusting.Varsr;
 import rusting.content.*;
 import rusting.core.holder.CustomConsumerModule;
 import rusting.core.holder.CustomStatHolder;
@@ -28,6 +29,7 @@ import rusting.ctype.ResearchType;
 import rusting.interfaces.PulseBlockc;
 import rusting.interfaces.ResearchableBlock;
 import rusting.world.blocks.pulse.utility.PulseResearchBlock;
+import rusting.world.modules.PulseModule;
 import rusting.world.modules.ResearchModule;
 
 import static mindustry.Vars.*;
@@ -139,13 +141,13 @@ public class PulseBlock extends Block implements ResearchableBlock {
 
     @Override
     public boolean isHidden(){
-        return (!PulseResearchBlock.researched(this, player.team()) && getResearchModule().needsResearching) || super.isHidden();
+        return !Varsr.research.researched(player.team(), this, researchTypes) || super.isHidden();
     }
 
     @Override
     public boolean canPlaceOn(Tile tile, Team team){
         //must have been researched, but for now checks if research center exists
-        if(tile == null || (getResearchModule().needsResearching && !PulseResearchBlock.researched(this, team))) return false;
+        if(tile == null || !Varsr.research.researched(player.team(), this, researchTypes)) return false;
         return super.canPlaceOn(tile, team);
     }
 
@@ -203,10 +205,16 @@ public class PulseBlock extends Block implements ResearchableBlock {
 
     public class PulseBlockBuild extends Building implements PulseBlockc, Ranged {
 
-        public float pulseEnergy = 0;
         public float falloff = resistance;
         public float xOffset = 0, yOffset = 0, alphaDraw = 0;
         public float shake = 0;
+
+        public PulseModule pulseModule = new PulseModule();
+
+        @Override
+        public PulseModule pulseModule() {
+            return PulseBlockc.super.pulseModule();
+        }
 
         @Override
         public float range() {
@@ -226,11 +234,11 @@ public class PulseBlock extends Block implements ResearchableBlock {
         }
 
         public void customConsume(){
-            pulseEnergy -= customConsumes.pulse;
+            pulseModule.pulse -= customConsumes.pulse;
         }
 
         public boolean customConsumeValid(){
-            return (pulseEnergy >= customConsumes.pulse) || (!state.rules.pvp && (team == Team.derelict || team == state.rules.waveTeam && cruxInfiniteConsume));
+            return (pulseModule.pulse >= customConsumes.pulse) || (!state.rules.pvp && (team == Team.derelict || team == state.rules.waveTeam && cruxInfiniteConsume));
         }
 
         public boolean allConsValid(){
@@ -242,7 +250,7 @@ public class PulseBlock extends Block implements ResearchableBlock {
         }
 
         public boolean canRecievePulse(float pulse, Building build){
-            return pulse + pulseEnergy < pulseStorage + (canOverload ? overloadCapacity : 0);
+            return pulse + pulseModule.pulse < pulseStorage + (canOverload ? overloadCapacity : 0);
         }
 
         public boolean connectableTo(){
@@ -262,7 +270,7 @@ public class PulseBlock extends Block implements ResearchableBlock {
         public void addPulse(float pulse, @Nullable Building building){
             float storage = pulseStorage + (canOverload ? overloadCapacity : 0);
             float resistAmount = (building != this ? falloff : 0);
-            pulseEnergy += Math.max(pulse - resistAmount, 0);
+            pulseModule.pulse += Math.max(pulse - resistAmount, 0);
             normalizePulse();
         }
 
@@ -272,13 +280,13 @@ public class PulseBlock extends Block implements ResearchableBlock {
 
         public void removePulse(float pulse, @Nullable Building building){
             float storage = pulseStorage + (canOverload ? overloadCapacity : 0);
-            pulseEnergy -= pulse;
+            pulseModule.pulse -= pulse;
             normalizePulse();
         }
 
         public void normalizePulse(){
             float storage = pulseStorage + (canOverload ? overloadCapacity : 0);
-            pulseEnergy = Math.max(Math.min(pulseEnergy, storage), 0);
+            pulseModule.pulse = Math.max(Math.min(pulseModule.pulse, storage), 0);
         }
 
         public void overloadEffect(){
@@ -287,15 +295,15 @@ public class PulseBlock extends Block implements ResearchableBlock {
         }
 
         public boolean overloaded(){
-            return pulseEnergy > pulseStorage && canOverload;
+            return pulseModule.pulse > pulseStorage && canOverload;
         }
 
         public float overloadChargef(){
-            return (pulseEnergy - pulseStorage)/overloadCapacity;
+            return (pulseModule.pulse - pulseStorage)/overloadCapacity;
         }
 
         public float chargef(boolean overloadaccount){
-            return pulseEnergy/(pulseStorage + (canOverload && overloadaccount ? overloadCapacity : 0));
+            return pulseModule.pulse/(pulseStorage + (canOverload && overloadaccount ? overloadCapacity : 0));
         }
 
         public float chargef(){
@@ -311,7 +319,7 @@ public class PulseBlock extends Block implements ResearchableBlock {
                 alphaDraw = Mathf.absin(Time.time/100, chargef());
             }
             else shake++;
-            pulseEnergy = Math.max(pulseEnergy - powerLoss, 0);
+            pulseModule.pulse = Math.max(pulseModule.pulse - powerLoss, 0);
             if(overloaded()) overloadEffect();
 
         }
@@ -354,13 +362,13 @@ public class PulseBlock extends Block implements ResearchableBlock {
         @Override
         public void write(Writes w){
             super.write(w);
-            w.f(pulseEnergy);
+            w.f(pulseModule.pulse);
         }
 
         @Override
         public void read(Reads read, byte revision){
             super.read(read, revision);
-            pulseEnergy = read.f();
+            pulseModule.pulse = read.f();
         }
     }
 }

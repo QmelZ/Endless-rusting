@@ -3,6 +3,7 @@ package rusting.world.blocks.pulse.utility;
 import arc.Core;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
@@ -19,7 +20,7 @@ import rusting.world.blocks.pulse.PulseBlock;
 import static mindustry.Vars.player;
 import static mindustry.Vars.state;
 
-public class PulseResearchBlock extends PulseBlock {
+public class PulseResearchBlock extends PulseBlock implements ResearchCenter{
 
     public int threshold = 2;
     public Seq<Block> blocks = new Seq();
@@ -30,15 +31,9 @@ public class PulseResearchBlock extends PulseBlock {
         configurable = true;
         destructible = false;
 
-        config(String.class, (PulseResearchBuild entity, String contentName) -> {
-            if(!entity.researchedBlocks.contains(contentName)){
-                entity.researchedBlocks.add(contentName);
-                Vars.content.each(e -> {
-                    if (e instanceof UnlockableContent) {
-                        if (((UnlockableContent) e).name == contentName) entity.researched.add((ResearchableObject) e);
-                    }
-                });
-            };
+        config(int.class, (PulseResearchBuild entity, Integer id) -> {
+            Varsr.research.unlock(entity.team, id);
+            Log.info("HAI!");
         });
 
     }
@@ -89,14 +84,13 @@ public class PulseResearchBlock extends PulseBlock {
         Varsr.ui.blocklist.show(tile);
     }
 
-    public class PulseResearchBuild extends PulseBlockBuild implements ResearchCenterc {
+    public class PulseResearchBuild extends PulseBlockBuild{
         public Seq<String> researchedBlocks = new Seq<>();
 
         @Override
         public void created() {
             super.created();
             Researchablec.researchTypes.add(RustingResearchTypes.pulse);
-            setResearchableBlocks();
         }
 
         public void buildConfiguration(Table table){
@@ -120,7 +114,6 @@ public class PulseResearchBlock extends PulseBlock {
 
         @Override
         public void read(Reads r, byte revision) {
-            setResearchableBlocks();
             super.read(r, revision);
             //might mess up any classes which extend off this, only keep temporarily or have one block
             double index = r.d();

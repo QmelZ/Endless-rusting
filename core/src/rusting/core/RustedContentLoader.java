@@ -21,6 +21,7 @@ public class RustedContentLoader {
             new RustingWeathers(),
             new RustingPlanets(),
             new RustingCapsules(),
+            new RustingAchievements(),
             new RustingSectorPresets(),
             new RustingTechTree()
     );
@@ -29,6 +30,7 @@ public class RustedContentLoader {
             new ERContentType("unused"),
             new ERContentType("capsule"),
             new ERContentType("researchType"),
+            new ERContentType("unlockableAchievement"),
             new ERContentType("logicFormat")
     );
 
@@ -87,6 +89,10 @@ public class RustedContentLoader {
 
     public Seq<ResearchType> researchTypes(){
         return getBy(getContentType("researchType"));
+    }
+
+    public Seq<UnlockableAchievement> achievements(){
+        return getBy(getContentType("unlockableAchievement"));
     }
 
     public void handleContent(MappableERContent content){

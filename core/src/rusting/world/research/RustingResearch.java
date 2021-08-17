@@ -5,9 +5,10 @@ import arc.struct.Seq;
 import arc.util.Log;
 import mindustry.Vars;
 import mindustry.game.Team;
+import mindustry.io.JsonIO;
 import rusting.Varsr;
 import rusting.ctype.ResearchType;
-import rusting.interfaces.ResearchCenterc;
+import rusting.interfaces.ResearchCenter;
 import rusting.interfaces.ResearchableObject;
 import rusting.world.modules.ResearchModule;
 import rusting.world.modules.TeamResearchModule;
@@ -17,15 +18,16 @@ public class RustingResearch {
     private ResearchableObject object;
     private ResearchModule module;
 
-    public ResearchCenterc tmpCenter;
+    public ResearchCenter tmpCenter;
     public TeamResearchModule tmpTeamModule, returnTeamModule = null;
     public ResearchModule tmpResearchModule;
+    private boolean returnBool = false;
+    private boolean mapSetup = false;
 
     public ObjectMap<ResearchType, Seq<ResearchModule>> researchMap = new ObjectMap<ResearchType, Seq<ResearchModule>>();
 
-    public class hahano{
-        public ObjectMap<ResearchType, ObjectMap<Team, Seq<ResearchableObject>>> webedoinaliltrollin = ObjectMap.of();
-    }
+    public ObjectMap<Team, Seq<ResearchableObject>> tmpMap = ObjectMap.of();
+    public ObjectMap tmpMap2 = ObjectMap.of();
 
     public void setupMap(){
         Varsr.content.researchTypes().each(r -> {
@@ -48,10 +50,59 @@ public class RustingResearch {
                 Log.info(object.getResearchModule().item);
             }
         });
+        mapSetup = true;
+    }
+
+    public boolean researched(Team team, ResearchableObject object, ResearchType type){
+        if(!mapSetup) return false;
+        if(Vars.state.rules.infiniteResources) return true;
+
+        tmpResearchModule = researchMap.get(type).find(m -> m == object.getResearchModule());
+        returnTeamModule = tmpResearchModule.getModule(team);
+        return returnTeamModule.researched || !tmpResearchModule.needsResearching;
+    }
+
+    public boolean researched(Team team, ResearchableObject object, Seq<ResearchType> type){
+        if(!mapSetup) return false;
+
+        returnBool = false;
+
+        type.each(t -> {
+            if(!returnBool) returnBool = researched(team, object, t);
+        });
+
+        return returnBool;
+    }
+
+    public void unlock(Team team, ResearchableObject object){
+        object.getResearchModule().getModule(team).researched = true;
+        saveGameResearch();
+    }
+
+    public void unlock(Team team, int id){
+        tmpResearchModule = null;
+        researchMap.each((type, modules) -> {
+            if(tmpResearchModule != null) return;
+            tmpResearchModule = modules.find(m -> m.id == id);
+        });
+        if(tmpResearchModule != null && tmpResearchModule.item instanceof ResearchableObject) unlock(team, tmpResearchModule.item);
     }
 
     public void saveGameResearch(){
-        //Vars.state.rules.tags.put("tags.er.researchedBlocks", JsonIO.json.toJson(Varsr.formats));
+        tmpMap = ObjectMap.of();
+        Log.info("made new map");
+        researchMap.each((researchType, researchModules) -> {
+            researchModules.each(m -> {
+                m.teamMap.each((team, teamResearchModule) -> {
+                    if(!tmpMap.containsKey(team)) tmpMap.put(team, Seq.with());
+                    if(teamResearchModule.researched) tmpMap.get(team).add(m.item);
+                });
+            });
+        });
+        Log.info("done forming map");
+        Log.info(tmpMap);
+        Log.info(JsonIO.json.toJson(tmpMap));
+        Vars.state.rules.tags.put("tags.er.researchedBlocks", JsonIO.json.toJson(tmpMap));
         Log.info("goodbye...");
     };
 
@@ -59,29 +110,28 @@ public class RustingResearch {
 
         Log.info("hello!");
 
-        //String map = Vars.state.rules.tags.get("tags.er.researchedBlocks", "");
-
-        /*
-        ObjectMap<ResearchType, ObjectMap<Team, Seq<ResearchableObject>>> bloinkmapi = null;
-        String map = Vars.state.rules.tags.get("tags.er.researchedBlocks", "");
-
-        try {
-            bloinkmapi = JsonIO.json.fromJson(ObjectMap.class, ResearchType.class, Seq.class, ResearchableObject.class, map);
-        }
-
-        if(bloinkmapi == null)
-
-        Groups.build.each(b -> {
-            if(!(b instanceof ResearchCenterc)) return;
-            tmpCenter = asResearchCenter(b);
-            tmpCenter.setResearchableBlocks();
-            tmpCenter.researched.each(object -> {
-                getTeamModule(b.team, object).researched = true;
-                Log.info(object);
-            });
+        //clean out map's team modules, ignore the ResearchType
+        researchMap.each((researchType, researchModules) -> {
+            researchModules.each(m -> m.teamMap.clear());
         });
 
-         */
+        //Get the research map from the previous game. If none are found, return.
+        String map = Vars.state.rules.tags.get("tags.er.researchedBlocks", "");
+        if(map.equals("")) return;
+
+        tmpMap = ObjectMap.of();
+        tmpMap2 = null;
+
+        try {
+            tmpMap2 = JsonIO.json.fromJson(ObjectMap.class, map);
+            tmpMap2.each((team, seq) -> {
+                //tmpMap.put();
+            });
+            Log.info(tmpMap);
+        }
+        catch (Error e){
+            Log.err(e);
+        }
     }
 
     public ResearchModule getResearchModule(Team team, ResearchableObject object){
@@ -107,7 +157,7 @@ public class RustingResearch {
         return returnTeamModule;
     }
 
-    private ResearchCenterc asResearchCenter(Object o){
-        return (ResearchCenterc) o;
+    private ResearchCenter asResearchCenter(Object o){
+        return (ResearchCenter) o;
     }
 }
