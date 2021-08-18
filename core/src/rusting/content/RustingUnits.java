@@ -4,6 +4,7 @@ import arc.func.Prov;
 import arc.graphics.Color;
 import arc.struct.ObjectIntMap;
 import arc.struct.ObjectMap.Entry;
+import mindustry.ai.types.MinerAI;
 import mindustry.content.*;
 import mindustry.core.Version;
 import mindustry.ctype.ContentList;
@@ -82,7 +83,7 @@ public class RustingUnits implements ContentList{
         stingray;
     //Acrimynal's drone army
     public static AcriUnitType
-            observantly;
+            observantly, kindling;
 
     @Override
     public void load() {
@@ -630,6 +631,7 @@ public class RustingUnits implements ContentList{
             armor = 10;
             rotateSpeed = 3.5f;
             hitSize = 19;
+            itemCapacity = 14;
 
             constructor = AcriUnitEntity::new;
 
@@ -660,7 +662,7 @@ public class RustingUnits implements ContentList{
                 new Weapon("none"){{
                     bullet = new LaserBulletType(25){{
                         recoil = 5;
-                        length = 246;
+                        length = 166;
                     }};
                     shots = 3;
                     x = 0;
@@ -671,6 +673,31 @@ public class RustingUnits implements ContentList{
                     soundPitchMax = 0.35f;
                     soundPitchMin = 0.25f;
                 }}
+            );
+        }};
+
+        EntityMapping.nameMap.put("kindling", AcriUnitEntity::new);
+        kindling = new AcriUnitType("kindling"){{
+            flying = true;
+
+            accel = 0.025f;
+            drag = 0.001f;
+            speed = 2.35f;
+            rotateSpeed = 4.5f;
+            itemCapacity = 75;
+            mineTier = 3;
+            mineSpeed = 6.5f;
+            health = 635f;
+            armor = 13;
+            hitSize = 14;
+            defaultController = MinerAI::new;
+            constructor = AcriUnitEntity::new;
+            abilities.addAll(
+                new HealthEqualizerAbility(){{
+                    mountName = "none";
+                    mirror = false;
+                }},
+                new RegenerationAbility(0.95f)
             );
         }};
     }

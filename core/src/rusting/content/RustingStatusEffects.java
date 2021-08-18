@@ -8,8 +8,7 @@ import arc.struct.FloatSeq;
 import arc.struct.Seq;
 import arc.util.*;
 import mindustry.Vars;
-import mindustry.content.Fx;
-import mindustry.content.StatusEffects;
+import mindustry.content.*;
 import mindustry.core.Version;
 import mindustry.ctype.ContentList;
 import mindustry.entities.Units;
@@ -215,7 +214,7 @@ public class RustingStatusEffects implements ContentList {
             });
 
             updateCons = (unit, time) -> {
-                if(unit.shield() > 0) unit.damage(Mathf.clamp(unit.shield(), 25/60, unit.shield()));
+                if(unit.shield() > 0) unit.damage(Mathf.clamp(unit.shield(), 25/60, unit.shield()) * Time.delta);
             };
         }};
 

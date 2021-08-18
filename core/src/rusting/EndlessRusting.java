@@ -50,10 +50,17 @@ public class EndlessRusting extends Mod{
                     }
                     if(e.spawner.team != Vars.state.rules.defaultTeam) {
                         CoreBuild coreBlock = Vars.state.teams.closestCore(0, 1400, Vars.state.rules.defaultTeam);
-                        if (coreBlock != null) for (int i = 0; i < 4; i++) {
-                            Tmp.v1.trns(i * 90, 55).add(coreBlock.x, coreBlock.y);
-                            RustingUnits.observantly.spawn(Vars.state.rules.defaultTeam, Tmp.v1.x, Tmp.v1.y);
-                            if (!Vars.headless) Call.spawnEffect(Tmp.v1.x, Tmp.v1.y, 25, RustingUnits.observantly);
+                        if (coreBlock != null) {
+                            for (int i = 0; i < 4; i++) {
+                                Tmp.v1.trns(i * 90, 55).add(coreBlock.x, coreBlock.y);
+                                RustingUnits.observantly.spawn(Vars.state.rules.defaultTeam, 0, Vars.world.height());
+                                if (!Vars.headless) Call.spawnEffect(Tmp.v1.x, Tmp.v1.y, 25, RustingUnits.observantly);
+                            }
+                            for (int i = 0; i < 8; i++) {
+                                Tmp.v1.trns(i * 45, 55).add(0, Vars.world.height());
+                                RustingUnits.kindling.spawn(Vars.state.rules.defaultTeam, Tmp.v1.x, Tmp.v1.y);
+                                if (!Vars.headless) Call.spawnEffect(Tmp.v1.x, Tmp.v1.y, 25, RustingUnits.kindling);
+                            }
                         }
                     }
                 }
@@ -100,7 +107,7 @@ public class EndlessRusting extends Mod{
         immunityUnits = Seq.with(RustingUnits.stingray);
         Vars.content.statusEffects().each(s -> {
             //chek for NaN damage
-            if(!s.name.contains("endless-rusting") && !s.name.contains("pixelcraft") && (s.damage == s.damage && s.damage >= 1 || s.speedMultiplier <= 0.85f || s.healthMultiplier < 0.85f || s.damageMultiplier < 0.85f)) immunityUnits.each(unit -> unit.immunities.add(s));
+            if(!s.name.contains("endless-rusting") && !s.name.contains("pixelcraft") && (s.disarm == true || s.damage == s.damage && s.damage >= 1 || s.speedMultiplier <= 0.85f || s.healthMultiplier < 0.85f || s.damageMultiplier < 0.85f)) immunityUnits.each(unit -> unit.immunities.add(s));
 
         });
         RustingUnits.stingray.immunities.remove(StatusEffects.melting);

@@ -134,6 +134,7 @@ public class Varsr implements Loadable {
         RustingBlocks.pulseTeleporterCorner.buildVisibility = BuildVisibility.shown;
         RustingBlocks.pulseCanal.buildVisibility = BuildVisibility.shown;
         RustingBlocks.pulseTeleporterInputTerminal.buildVisibility = BuildVisibility.shown;
+        RustingBlocks.pulseMotar.buildVisibility = BuildVisibility.shown;
         defaultRandomQuotes = Seq.with(
             "[cyan] Welcome back " + username,
             "[sky] This is my message to my master\n" +

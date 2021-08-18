@@ -643,7 +643,7 @@ public class RustingBlocks implements ContentList{
         }};
 
         pulseMotar = new PulsePulsar("pulse-motar"){{
-            requirements(Category.effect, with(Items.copper, 300, Items.lead, 115, Items.metaglass, 50, Items.titanium, 45));
+            //requirements(Category.effect, with(Items.copper, 300, Items.lead, 115, Items.metaglass, 50, Items.titanium, 45));
             centerResearchRequirements(with(Items.copper, 350,  Items.coal, 95, Items.graphite, 55, Items.titanium, 225));
             flags = EnumSet.of(BlockFlag.turret);
             size = 3;
@@ -712,6 +712,7 @@ public class RustingBlocks implements ContentList{
             pulseStorage = 1365;
             canOverload = false;
             size = 7;
+            cruxInfiniteConsume = true;
             plans.addAll(
                 new UnitPlan(RustingUnits.stingray, 77040, ItemStack.with(Items.lead, 4550, Items.silicon, 1450, Items.titanium, 3500, RustingItems.halsinte, 2500, RustingItems.melonaleum, 750))
             );

@@ -26,8 +26,9 @@ public class RustingResearch {
 
     public ObjectMap<ResearchType, Seq<ResearchModule>> researchMap = new ObjectMap<ResearchType, Seq<ResearchModule>>();
 
-    public ObjectMap<Team, Seq<ResearchableObject>> tmpMap = ObjectMap.of();
+    public ObjectMap<Integer, Seq<Integer>> tmpMap = ObjectMap.of();
     public ObjectMap tmpMap2 = ObjectMap.of();
+    public Team tmpTeam = Team.derelict;
 
     public void setupMap(){
         Varsr.content.researchTypes().each(r -> {
@@ -88,14 +89,24 @@ public class RustingResearch {
         if(tmpResearchModule != null && tmpResearchModule.item instanceof ResearchableObject) unlock(team, tmpResearchModule.item);
     }
 
+    public ResearchModule getByid(int id){
+        tmpResearchModule = null;
+        researchMap.each((type, modules) -> {
+            modules.each(m -> {
+                if(tmpResearchModule == null && m.id == id) tmpResearchModule = m;
+            });
+        });
+        return tmpResearchModule;
+    }
+
     public void saveGameResearch(){
         tmpMap = ObjectMap.of();
         Log.info("made new map");
         researchMap.each((researchType, researchModules) -> {
             researchModules.each(m -> {
                 m.teamMap.each((team, teamResearchModule) -> {
-                    if(!tmpMap.containsKey(team)) tmpMap.put(team, Seq.with());
-                    if(teamResearchModule.researched) tmpMap.get(team).add(m.item);
+                    if(!tmpMap.containsKey(team.id)) tmpMap.put(team.id, Seq.with());
+                    if(teamResearchModule.researched) tmpMap.get(team.id).add(m.id);
                 });
             });
         });
@@ -123,11 +134,21 @@ public class RustingResearch {
         tmpMap2 = null;
 
         try {
+            returnBool = true;
             tmpMap2 = JsonIO.json.fromJson(ObjectMap.class, map);
-            tmpMap2.each((team, seq) -> {
-                //tmpMap.put();
+            tmpMap2.each((teamid, seq) -> {
+                if(returnBool == false) return;
+                tmpMap.put(Integer.valueOf((String) teamid), (Seq<Integer>) seq);
             });
+            if(returnBool == false) return;
             Log.info(tmpMap);
+            tmpMap.each((teamid, moduleids) -> {
+                moduleids.each(i -> {
+                    getByid(i).teamMap.put(Team.get(teamid), new TeamResearchModule(){{
+                        researched = true;
+                    }});
+                });
+            });
         }
         catch (Error e){
             Log.err(e);
