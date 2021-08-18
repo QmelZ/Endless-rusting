@@ -435,8 +435,6 @@ public class RustingBullets implements ContentList{
 
         craeQuadStorm = new ConsBulletType(0.85f, 3.5f, "large-bomb"){{
 
-            scaleVelocity = true;
-            collides = false;
             hitShake = 1f;
             frontColor = Palr.pulseBullet;
             backColor = Color.sky;

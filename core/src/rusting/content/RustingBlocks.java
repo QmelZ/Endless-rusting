@@ -645,6 +645,7 @@ public class RustingBlocks implements ContentList{
         pulseMotar = new PulsePulsar("pulse-motar"){{
             //requirements(Category.effect, with(Items.copper, 300, Items.lead, 115, Items.metaglass, 50, Items.titanium, 45));
             centerResearchRequirements(with(Items.copper, 350,  Items.coal, 95, Items.graphite, 55, Items.titanium, 225));
+            buildVisibility = BuildVisibility.hidden;
             flags = EnumSet.of(BlockFlag.turret);
             size = 3;
             health = 135 * size * size;
