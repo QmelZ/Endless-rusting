@@ -36,8 +36,8 @@ public class PulseSiphon extends PulseNode {
 
         public void syphonPulseAdjacent() {
             proximity().each(l -> {
-                if (l instanceof PulseBlockBuild && ((PulseBlockBuild) l).pulseEnergy > 0) {
-                    float energyTransmitted = Math.min(((PulseBlockBuild) l).pulseEnergy, siphonAmount);
+                if (l instanceof PulseBlockBuild && ((PulseBlockBuild) l).chargef() > 0) {
+                    float energyTransmitted = Math.min(((PulseBlockBuild) l).pulseModule.pulse, siphonAmount);
                     if (canRecievePulse(energyTransmitted) && ((PulseBlockBuild) l).chargef() > chargef()) {
                         ((PulseBlockBuild) l).removePulse(energyTransmitted, this);
                         addPulse(energyTransmitted);

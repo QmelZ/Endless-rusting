@@ -3,16 +3,19 @@ package rusting;
 import arc.Core;
 import arc.Events;
 import arc.graphics.Color;
+import arc.input.KeyCode;
 import arc.math.Mathf;
 import arc.struct.Seq;
 import arc.util.*;
 import mindustry.Vars;
 import mindustry.content.StatusEffects;
 import mindustry.game.EventType;
+import mindustry.game.EventType.Trigger;
 import mindustry.game.Team;
 import mindustry.gen.Call;
 import mindustry.mod.Mod;
 import mindustry.type.UnitType;
+import mindustry.world.blocks.storage.CoreBlock.CoreBuild;
 import rusting.content.*;
 import rusting.graphics.Drawr;
 
@@ -40,24 +43,54 @@ public class EndlessRusting extends Mod{
 
         Events.on(EventType.UnitCreateEvent.class,
             e -> {
-                if(e.unit.type == RustingUnits.stingray && Vars.state.rules.tags.getBool("events.er.stingrayfail")){
-                    for (int j = 0; j < 7; j++) {
-                        for (int i = 0; i < 6; i++) {
-                            Time.run(i * 65 + Mathf.random(85), () -> {
-                                Tmp.v2.trns(e.spawner.rotation * 90, 350).add(e.spawner.x + 64 - Mathf.random(128), e.spawner.y + 128 - Mathf.random(128));
-                                Tmp.v1.trns(25, RustingBullets.craeNukestorm.range() * 3).add(5 - Mathf.random(10), 5 - Mathf.random(10));
-                                Call.createBullet(RustingBullets.craeNukestorm, Team.blue, Tmp.v2.x + Tmp.v1.x, Tmp.v2.y + Tmp.v1.y, Tmp.v1.add(Tmp.v2).angleTo(Tmp.v2.x, Tmp.v2.y), RustingBullets.craeNukestorm.damage, 1, 3);
-                            });
+
+                if(e.unit.type == RustingUnits.stingray && ((Vars.state.rules.tags.getBool("events.er.stingrayfail") && e.spawner.team == Vars.state.rules.waveTeam) || !Core.settings.getBool("settings.er.stingrayloyal") && e.spawner.team == Vars.state.rules.defaultTeam && !Varsr.debug)){
+                    if(!Vars.headless) {
+                        callNukestorm(7, 6, e.spawner.team == Vars.state.rules.defaultTeam ? true : false, e.spawner.rotation * 90, e.spawner.x, e.spawner.y, 25);
+                    }
+                    if(e.spawner.team != Vars.state.rules.defaultTeam) {
+                        CoreBuild coreBlock = Vars.state.teams.closestCore(0, 1400, Vars.state.rules.defaultTeam);
+                        if (coreBlock != null) {
+                            for (int i = 0; i < 4; i++) {
+                                Tmp.v1.trns(i * 90, 55).add(coreBlock.x, coreBlock.y);
+                                RustingUnits.observantly.spawn(Vars.state.rules.defaultTeam, 0, Vars.world.height());
+                                if (!Vars.headless) Call.spawnEffect(Tmp.v1.x, Tmp.v1.y, 25, RustingUnits.observantly);
+                            }
+                            for (int i = 0; i < 8; i++) {
+                                Tmp.v1.trns(i * 45, 55).add(0, Vars.world.height());
+                                RustingUnits.kindling.spawn(Vars.state.rules.defaultTeam, Tmp.v1.x, Tmp.v1.y);
+                                if (!Vars.headless) Call.spawnEffect(Tmp.v1.x, Tmp.v1.y, 25, RustingUnits.kindling);
+                            }
                         }
-                        Time.run(j * 145 + Mathf.random(195), () -> {
-                            Tmp.v2.trns(e.spawner.rotation * 90, 350).add(e.spawner.x + 64 - Mathf.random(128), e.spawner.y + 128 - Mathf.random(128));
-                            Tmp.v1.trns(25, RustingBullets.craeBalistorm.range() * 3).add(5 - Mathf.random(10), 5 - Mathf.random(10));
-                            Call.createBullet(RustingBullets.craeBalistorm, Team.blue, Tmp.v2.x + Tmp.v1.x, Tmp.v2.y + Tmp.v1.y, Tmp.v1.add(Tmp.v2).angleTo(Tmp.v2.x, Tmp.v2.y), RustingBullets.craeBalistorm.damage, 1, 3);
-                        });
                     }
                 }
             }
         );
+
+        Events.on(Trigger.update.getClass(), e -> {
+            if(Core.input.keyDown(KeyCode.f1)) Varsr.ui.achievements.show();
+        });
+    }
+
+    private void callNukestorm(int groups, int missiles, boolean useSpawnerPos, float rotation, float x, float y, float anglefromSky){
+        for (int j = 0; j < groups; j++) {
+            for (int i = 0; i < missiles; i++) {
+                Time.run(i * 65 + Mathf.random(85), () -> {
+                    Tmp.v2.set(0, 0);
+                    if(!useSpawnerPos) Tmp.v2.trns(rotation, 350).add( 64 - Mathf.random(128), 128 - Mathf.random(128));
+                    Tmp.v2.add(x, y);
+                    Tmp.v1.trns(anglefromSky, RustingBullets.craeNukestorm.range() * 3).add(5 - Mathf.random(10), 5 - Mathf.random(10));
+                    Call.createBullet(RustingBullets.craeNukestorm, Team.blue, Tmp.v2.x + Tmp.v1.x, Tmp.v2.y + Tmp.v1.y, Tmp.v1.add(Tmp.v2).angleTo(Tmp.v2.x, Tmp.v2.y), RustingBullets.craeNukestorm.damage, 1, 3);
+                });
+            }
+            Time.run(j * 145 + Mathf.random(195), () -> {
+                Tmp.v2.set(0, 0);
+                if(!useSpawnerPos) Tmp.v2.trns(rotation, 350).add( 64 - Mathf.random(128), 128 - Mathf.random(128));
+                Tmp.v2.add(x, y);
+                Tmp.v1.trns(anglefromSky, RustingBullets.craeBalistorm.range() * 3).add(5 - Mathf.random(10), 5 - Mathf.random(10));
+                Call.createBullet(RustingBullets.craeBalistorm, Team.blue, Tmp.v2.x + Tmp.v1.x, Tmp.v2.y + Tmp.v1.y, Tmp.v1.add(Tmp.v2).angleTo(Tmp.v2.x, Tmp.v2.y), RustingBullets.craeBalistorm.damage, 1, 3);
+            });
+        }
     }
 
     @Override
@@ -74,7 +107,7 @@ public class EndlessRusting extends Mod{
         immunityUnits = Seq.with(RustingUnits.stingray);
         Vars.content.statusEffects().each(s -> {
             //chek for NaN damage
-            if(!s.name.contains("endless-rusting") && (s.damage == s.damage && s.damage >= 1 || s.speedMultiplier <= 0.85f)) immunityUnits.each(unit -> unit.immunities.add(s));
+            if(!s.name.contains("endless-rusting") && !s.name.contains("pixelcraft") && (s.disarm == true || s.damage == s.damage && s.damage >= 1 || s.speedMultiplier <= 0.85f || s.healthMultiplier < 0.85f || s.damageMultiplier < 0.85f)) immunityUnits.each(unit -> unit.immunities.add(s));
 
         });
         RustingUnits.stingray.immunities.remove(StatusEffects.melting);

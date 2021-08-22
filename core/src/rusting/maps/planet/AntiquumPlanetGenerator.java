@@ -1,6 +1,7 @@
 package rusting.maps.planet;
 
 import arc.struct.ObjectMap;
+import arc.util.async.Threads;
 import mindustry.content.Blocks;
 import mindustry.game.Team;
 import mindustry.maps.generators.BaseGenerator;
@@ -51,6 +52,7 @@ public class AntiquumPlanetGenerator extends SerpuloPlanetGenerator {
 
     @Override
     protected void generate(){
+        Threads.throwAppException(new Throwable("You're not permitted here! \n (Strong forces prevent you from tinkering with the old world. Perhaps it would be better to stay on the path?)"));
 
         super.generate();
         state.rules.ambientLight = Palr.pulseChargeEnd;

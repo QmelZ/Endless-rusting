@@ -9,6 +9,7 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
+import rusting.content.RustingAchievements;
 import rusting.world.blocks.pulse.PulseBlock;
 
 public class PulseParticleSpawner extends PulseBlock {
@@ -70,6 +71,7 @@ public class PulseParticleSpawner extends PulseBlock {
                 final int i = l;
                 buttons.button(String.valueOf(i), () -> {
                     configure(i);
+                    if(!RustingAchievements.powerfulLight.unlocked()) RustingAchievements.powerfulLight.unlock();
                 }).size(44);
             }
             table.add(buttons);

@@ -13,12 +13,11 @@ import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.MultiPacker;
-import mindustry.type.weather.ParticleWeather;
 import rusting.EndlessRusting;
 import rusting.content.RustingStatusEffects;
 import rusting.graphics.Drawr;
 
-public class BulletParticleWeather extends ParticleWeather {
+public class BulletParticleWeather extends BaseParticleWeather {
     //Bullet which the weather can create.
     public BulletType particleBullet;
     //whether or not to generate a random number instead of using chanceSpawn. Can be useful for making more dynamic weather.
@@ -40,11 +39,6 @@ public class BulletParticleWeather extends ParticleWeather {
         drawParticles = false;
         status = RustingStatusEffects.weather;
         statusDuration = 125000;
-    }
-
-    @Override
-    public boolean isHidden(){
-        return false;
     }
 
     @Override public void load(){

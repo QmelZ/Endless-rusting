@@ -8,12 +8,22 @@ import rusting.interfaces.ResearchableObject;
 
 public class ResearchModule {
 
+    private ResearchModule tmpResearchModule;
+
     public static int nextFreeId = 0;
 
     public int id = 0;
 
-    public ResearchModule(){
+    public ResearchableObject item = null;
+    //self explanatory
+    public boolean needsResearching = true;
+    //requirements to be researched
+    public ItemStack[] centerResearchRequirements = ItemStack.with(Items.copper, 1);
+    //map of modules for each team
+    public ObjectMap<Team, TeamResearchModule> teamMap = ObjectMap.of();
 
+    public ResearchModule(){
+        //ensure id is only given when creating a proper research module
     }
 
     public ResearchModule(ItemStack[] stacks){
@@ -32,11 +42,8 @@ public class ResearchModule {
         nextFreeId++;
     }
 
-    public ResearchableObject item = null;
-    //self explanatory
-    public boolean needsResearching = true;
-    //requirements to be researched
-    public ItemStack[] centerResearchRequirements = ItemStack.with(Items.copper, 1);
-    //map of modules for each team
-    public ObjectMap<Team, TeamResearchModule> teamMap = ObjectMap.of();
+    public TeamResearchModule getModule(Team team){
+        if(!teamMap.containsKey(team)) teamMap.put(team, new TeamResearchModule());
+        return teamMap.get(team);
+    };
 }

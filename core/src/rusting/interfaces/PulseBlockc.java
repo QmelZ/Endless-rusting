@@ -8,13 +8,6 @@ import rusting.world.modules.PulseModule;
 
 public abstract interface PulseBlockc extends Buildingc, Researchablec{
 
-    float pulseEnergy = 0;
-    float falloff = 0;
-    float xOffset = 0, yOffset = 0, alphaDraw = 0;
-    float shake = 0;
-
-    PulseModule pulseModule = new PulseModule();
-
     default void setupValues(){
         researchTypes.add(RustingResearchTypes.pulse);
     }
@@ -42,7 +35,7 @@ public abstract interface PulseBlockc extends Buildingc, Researchablec{
     }
 
     default boolean receivePulse(float pulse, Building source){;
-        pulseModule.pulse += pulse;
+        pulseModule().pulse += pulse;
         return true;
     }
 
@@ -51,7 +44,7 @@ public abstract interface PulseBlockc extends Buildingc, Researchablec{
     }
 
     default void addPulse(float pulse, @Nullable Building building){
-        pulseModule.pulse += pulse;
+        pulseModule().pulse += pulse;
     }
 
     default void removePulse(float pulse){
@@ -59,7 +52,7 @@ public abstract interface PulseBlockc extends Buildingc, Researchablec{
     }
 
     default void removePulse(float pulse, @Nullable Building building){
-        pulseModule.pulse -= pulse;
+        pulseModule().pulse -= pulse;
     }
 
     default void normalizePulse(){}
@@ -80,6 +73,10 @@ public abstract interface PulseBlockc extends Buildingc, Researchablec{
 
     default float chargef(){
         return chargef(true);
+    }
+
+    default PulseModule pulseModule(){
+        return null;
     }
 
 }

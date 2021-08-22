@@ -4,5 +4,6 @@ package rusting.world.modules;
 public class PulseModule {
 
     public float pulse = 0;
+    public float falloff = 0;
 
 }

@@ -2,6 +2,7 @@ package rusting.ctype;
 
 import arc.Core;
 import arc.graphics.g2d.TextureRegion;
+import arc.scene.ui.Image;
 import arc.util.Nullable;
 import mindustry.Vars;
 
@@ -19,6 +20,8 @@ public abstract class UnlockableERContent extends MappableERContent{
     /** Special logic icon ID. */
     public int iconId = 0;
     /** Icon of the content to use in UI. */
+    public Image uiImage;
+    /** Icon of the content to use in UI. */
     public TextureRegion uiIcon;
     /** Icon of the full content. Unscaled.*/
     public TextureRegion fullIcon;
@@ -27,9 +30,9 @@ public abstract class UnlockableERContent extends MappableERContent{
 
     public UnlockableERContent(String name){
         super(name);
-        this.localizedName = Core.bundle.get(getContentType() + "." + this.name + ".name", this.name);
-        this.description = Core.bundle.getOrNull(getContentType() + "." + this.name + ".description");
-        this.details = Core.bundle.getOrNull(getContentType() + "." + this.name + ".details");
+        this.localizedName = Core.bundle.get(getContentType().name + "." + this.name + ".name", this.name);
+        this.description = Core.bundle.getOrNull(getContentType().name + "." + this.name + ".description");
+        this.details = Core.bundle.getOrNull(getContentType().name + "." + this.name + ".details");
         this.unlocked = Core.settings != null && Core.settings.getBool(this.name + "-unlocked", alwaysUnlocked);
     }
 
@@ -43,6 +46,7 @@ public abstract class UnlockableERContent extends MappableERContent{
                             Core.atlas.find(name + "1")))));
 
         uiIcon = Core.atlas.find(getContentType().name() + "-" + name + "-ui", fullIcon);
+        uiImage = new Image(uiIcon);
     }
 
     //unlock the piece of content

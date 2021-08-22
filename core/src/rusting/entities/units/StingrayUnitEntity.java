@@ -9,6 +9,8 @@ import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.entities.Units;
+import mindustry.gen.Bullet;
+import mindustry.gen.Hitboxc;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Trail;
 import rusting.content.*;
@@ -19,8 +21,8 @@ public class StingrayUnitEntity extends AntiquimGuardianUnitEntity{
     private static float tmpFloat, tmpFloat2;
     public float shieldCharge = 0;
     public float addableShieldCharge = 0;
+    public float currentDamageTT = 0;
 
-    @Override
     public void damage(float amount) {
         if(iframes <= 0) {
             super.damage(Math.min(amount, 2000 - shieldCharge));
@@ -37,6 +39,21 @@ public class StingrayUnitEntity extends AntiquimGuardianUnitEntity{
     }
 
     @Override
+    public void collision(Hitboxc other, float x, float y) {
+        super.collision(other, x, y);
+        if(other instanceof Bullet) {
+            Bullet b = (Bullet) other;
+            if(b.damage > 235 && iframes > 0){
+                if(b.type.pierce = true && b.type.pierceCap > 0 && b.collided.size < b.type.pierceCap){
+                    b.team = team;
+                    b.rotation(angleTo(b));
+                }
+                else b.type.create(this, team, x, y, angleTo(b) + 180);
+            }
+        }
+    }
+
+    @Override
     public void update() {
         super.update();
         Tmp.v1.set(trailPos.get(0)).rotate(rotation - 90);
@@ -44,13 +61,14 @@ public class StingrayUnitEntity extends AntiquimGuardianUnitEntity{
         Tmp.v1.set(trailPos.get(1)).rotate(rotation - 90);
         trailSeq.get(1).update(x + Tmp.v1.x, y + Tmp.v1.y);
         if(shieldCharge >= 2000) {
+            shieldCharge += addableShieldCharge;
             addableShieldCharge = 1250;
             shieldCharge = 0;
-            tmpFloat2 = 48;
+            tmpFloat2 = 120;
             Fxr.stingrayShieldPop.at(x, y, rotation, this);
             Units.nearby(x - tmpFloat2/2, y - tmpFloat2/2, tmpFloat2, tmpFloat2, u -> {
                 if(dst(u) <= tmpFloat2){
-                    u.impulse(Tmp.v1.trns(angleTo(u), (tmpFloat2 - dst(u))/tmpFloat2 * 25));
+                    u.impulse(Tmp.v1.trns(angleTo(u), (tmpFloat2 - dst(u))/tmpFloat2 * 250));
                 }
             });
         }

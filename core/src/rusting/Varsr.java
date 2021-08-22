@@ -3,6 +3,7 @@ package rusting;
 import arc.Core;
 import arc.Events;
 import arc.assets.Loadable;
+import arc.math.Mathf;
 import arc.struct.Queue;
 import arc.struct.Seq;
 import arc.util.Log;
@@ -10,6 +11,7 @@ import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.Blocks;
 import mindustry.game.EventType;
+import mindustry.game.EventType.Trigger;
 import mindustry.gen.Building;
 import mindustry.type.ItemStack;
 import mindustry.world.Tile;
@@ -45,6 +47,7 @@ public class Varsr implements Loadable {
     public static String username;
     public static String defaultUsername;
     public static boolean debug = false;
+    public static float lerpedPlayerElevation = 0;
 
     public static void setup(){
 
@@ -122,6 +125,10 @@ public class Varsr implements Loadable {
                 }
         );
 
+        Events.on(Trigger.update.getClass(), e -> {
+            if(!Vars.state.isPaused() && Vars.player.unit() != null) lerpedPlayerElevation = Mathf.lerp(lerpedPlayerElevation, Vars.player.unit().elevation, 0.1f);
+        });
+
         Log.info("Loaded Varsr");
 
     }
@@ -134,6 +141,7 @@ public class Varsr implements Loadable {
         RustingBlocks.pulseTeleporterCorner.buildVisibility = BuildVisibility.shown;
         RustingBlocks.pulseCanal.buildVisibility = BuildVisibility.shown;
         RustingBlocks.pulseTeleporterInputTerminal.buildVisibility = BuildVisibility.shown;
+        RustingBlocks.pulseMotar.buildVisibility = BuildVisibility.shown;
         defaultRandomQuotes = Seq.with(
             "[cyan] Welcome back " + username,
             "[sky] This is my message to my master\n" +
@@ -167,13 +175,17 @@ public class Varsr implements Loadable {
         );
         Vars.mods.getScripts().runConsole("importl(\"rusting\")");
         Vars.mods.getScripts().runConsole("importl(\"rusting.content\")");
+        Vars.mods.getScripts().runConsole("importl(\"rusting.ctype\")");
     }
 
     public static void updateConnectedCanals(PulseCanalBuild building, float maxDst){
         buildingSeq = connectedCanals(building, maxDst);
+        Log.info(buildingSeq);
         buildingSeq.each(b -> {
             if(b instanceof PulseCanalBuild) {
-                ((PulseCanalBuild) b).connected.add((PulseInstantTransportation) b);
+                buildingSeq.each(b2 -> {
+                    if(b2 instanceof PulseCanalBuild) ((PulseCanalBuild) b).connected.add((PulseInstantTransportation) b2);
+                });
                 ((PulseCanalBuild) b).setupEnding();
             }
         });

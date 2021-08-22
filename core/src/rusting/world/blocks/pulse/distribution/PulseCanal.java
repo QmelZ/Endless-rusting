@@ -6,6 +6,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.Queue;
+import arc.struct.Seq;
 import arc.util.*;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
@@ -13,8 +14,8 @@ import mindustry.graphics.Layer;
 import mindustry.world.Tile;
 import rusting.Varsr;
 import rusting.content.Palr;
+import rusting.interfaces.*;
 import rusting.interfaces.PulseCanalInput;
-import rusting.interfaces.PulseCornerpiece;
 import rusting.world.blocks.pulse.PulseBlock;
 import rusting.world.blocks.pulse.utility.PulseTeleporterController.PulseTeleporterControllerBuild;
 
@@ -46,7 +47,7 @@ public class PulseCanal extends PulseBlock {
         Draw.rect(region, req.drawx(), req.drawy());
         Draw.z(Layer.blockOver + 0.1f);
 
-        Draw.rect(topRegion, req.drawx(), req.drawy(), req.rotation * 90 - 90);
+        Draw.rect(topRegion, req.drawx(), req.drawy(), req.rotation * 90);
     }
 
     public static PulseCanalBuild asCanal(Building build){
@@ -78,6 +79,8 @@ public class PulseCanal extends PulseBlock {
 
     public class PulseCanalBuild extends PulseBlockBuild implements rusting.interfaces.PulseCanal {
 
+        public Seq<PulseInstantTransportation> connected = new Seq<PulseInstantTransportation>();
+
         public Tile canalEnding = tile;
         //if it's the starting canal
         public boolean starting = false;
@@ -85,6 +88,11 @@ public class PulseCanal extends PulseBlock {
         public float pulseBurstTime = 0;
         //variable used to cycle through the colours. resets at 100
         public float cycle = 0;
+
+        @Override
+        public Seq<PulseInstantTransportation> connected() {
+            return connected;
+        }
 
         @Override
         public void onProximityAdded(){
@@ -133,7 +141,7 @@ public class PulseCanal extends PulseBlock {
         public boolean canRecievePulse(float amount) {
             return canalEnding != tile &&
                     canalEnding.build instanceof PulseBlockBuild &&
-                    ((PulseBlockBuild) canalEnding.build).canRecievePulse(amount);
+                    ((PulseBlockBuild) canalEnding.build).canRecievePulse(amount, this);
         }
 
         public float trueRotation(){

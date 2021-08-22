@@ -24,6 +24,7 @@ public class RustedSettingAdder {
 
         addGraphicSetting("settings.er.drawtrails");
         addGraphicSetting("settings.er.advancedeffects");
+        addGraphicSetting("settings.er.weatherblinding");
 
         Core.settings.put("uiscalechanged", tmp);
 

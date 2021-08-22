@@ -4,10 +4,13 @@ import arc.func.Prov;
 import arc.graphics.Color;
 import arc.struct.ObjectIntMap;
 import arc.struct.ObjectMap.Entry;
+import mindustry.ai.types.MinerAI;
 import mindustry.content.*;
 import mindustry.core.Version;
 import mindustry.ctype.ContentList;
 import mindustry.entities.abilities.StatusFieldAbility;
+import mindustry.entities.bullet.BombBulletType;
+import mindustry.entities.bullet.LaserBulletType;
 import mindustry.gen.*;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
@@ -22,6 +25,7 @@ public class RustingUnits implements ContentList{
     private static Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new Entry[]{
             prov(StingrayUnitEntity.class, StingrayUnitEntity::new),
             prov(CraeUnitEntity.class, CraeUnitEntity::new),
+            prov(AcriUnitEntity.class, AcriUnitEntity::new),
             prov(BaseUnit.class, BaseUnit::new)
     };
 
@@ -71,12 +75,15 @@ public class RustingUnits implements ContentList{
     }
 
     public static CraeUnitType
-            duono, duoly, duanga,
-            fahrenheit;
+            duono, duoly, duanga;
     public static UnitType
-            marrow, metaphys, ribigen, spinascene;
+            marrow, metaphys, ribigen, spinascene,
+            fahrenheit, celsius;
     public static UnitType
         stingray;
+    //Acrimynal's drone army
+    public static AcriUnitType
+            observantly, kindling;
 
     @Override
     public void load() {
@@ -213,8 +220,8 @@ public class RustingUnits implements ContentList{
         }};
 
 
-        EntityMapping.nameMap.put("fahrenheit", CraeUnitEntity::new);
-        fahrenheit = new CraeUnitType("fahrenheit"){{
+        EntityMapping.nameMap.put("fahrenheit", BaseUnit::new);
+        fahrenheit = new UnitType("fahrenheit"){{
 
             flying = false;
             hitSize = 5;
@@ -223,23 +230,61 @@ public class RustingUnits implements ContentList{
             accel = 0.045f;
             drag = 0.025f;
 
-            pulseStorage = 25;
-
-            projectileDeathSpawnInterval = 6;
-
-            constructor = CraeUnitEntity::new;
-
-            abilities.add(
-                    new UpkeeperFieldAbility(4.35f, 135, 45, 4f)
-            );
+            constructor = BaseUnit::new;
             weapons.add(
                 new Weapon("none") {{
                     x = 0;
                     y = 0;
+                    shootCone = 360;
                     mirror = false;
-                    bullet = RustingBullets.paveBolt;
-                    reload = 120;
+                    bullet = new BombBulletType(0f, 0f, "clear"){{
+                        hitEffect = Fx.pulverize;
+                        lifetime = 10f;
+                        speed = 1.3f;
+                        splashDamageRadius = 58f;
+                        instantDisappear = true;
+                        splashDamage = 45f;
+                        killShooter = true;
+                        hittable = false;
+                        collidesAir = true;
+                        fragBullets = 13;
+                        fragBullet = RustingBullets.craeBoltKill;
+                    }};
                 }}
+            );
+        }};
+
+        EntityMapping.nameMap.put("celsius", BaseUnit::new);
+        celsius = new UnitType("celsius"){{
+
+            flying = false;
+            hitSize = 9;
+            health = 110;
+            speed = 1.2f;
+            accel = 0.045f;
+            drag = 0.025f;
+
+            constructor = BaseUnit::new;
+            weapons.add(
+                    new Weapon("none") {{
+                        x = 0;
+                        y = 0;
+                        shootCone = 360;
+                        mirror = false;
+                        bullet = new BombBulletType(0f, 0f, "clear"){{
+                            hitEffect = Fx.pulverize;
+                            lifetime = 10f;
+                            speed = 1.3f;
+                            splashDamageRadius = 58f;
+                            instantDisappear = true;
+                            splashDamage = 45f;
+                            killShooter = true;
+                            hittable = false;
+                            collidesAir = true;
+                            fragBullets = 13;
+                            fragBullet = RustingBullets.craeBoltKill;
+                        }};
+                    }}
             );
         }};
 
@@ -572,6 +617,87 @@ public class RustingUnits implements ContentList{
                 RustingStatusEffects.macrosis,
                 RustingStatusEffects.macotagus,
                 RustingStatusEffects.hailsalilty
+            );
+        }};
+
+        EntityMapping.nameMap.put("observantly", AcriUnitEntity::new);
+        observantly = new AcriUnitType("observantly"){{
+
+            flying = true;
+            drag = 0.025f;
+            accel = 0.0525f;
+            speed = 1.75f;
+            health = 850f;
+            armor = 10;
+            rotateSpeed = 3.5f;
+            hitSize = 19;
+            itemCapacity = 14;
+
+            constructor = AcriUnitEntity::new;
+
+
+            weapons.addAll(
+                new Weapon("none"){{
+                    bullet = RustingBullets.melomaeShot;
+                    shots = 15;
+                    x = 0;
+                    y = 0;
+                    spacing = 72;
+                    reload = 125;
+                    shotDelay = 5;
+                    shootCone = 360;
+                    shootSound = Sounds.none;
+                }},
+                new Weapon("none"){{
+                    bullet = RustingBullets.melomaeShot;
+                    shots = 15;
+                    x = 0;
+                    y = 0;
+                    spacing = -72;
+                    reload = 125;
+                    shotDelay = 5;
+                    shootCone = 360;
+                    shootSound = Sounds.none;
+                }},
+                new Weapon("none"){{
+                    bullet = new LaserBulletType(25){{
+                        recoil = 5;
+                        length = 166;
+                    }};
+                    shots = 3;
+                    x = 0;
+                    y = 0;
+                    spacing = 3;
+                    reload = 135;
+                    shootSound = Sounds.laser;
+                    soundPitchMax = 0.35f;
+                    soundPitchMin = 0.25f;
+                }}
+            );
+        }};
+
+        EntityMapping.nameMap.put("kindling", AcriUnitEntity::new);
+        kindling = new AcriUnitType("kindling"){{
+            flying = true;
+
+            accel = 0.025f;
+            drag = 0.001f;
+            speed = 2.35f;
+            rotateSpeed = 4.5f;
+            itemCapacity = 75;
+            mineTier = 3;
+            mineSpeed = 6.5f;
+            health = 635f;
+            armor = 13;
+            hitSize = 14;
+            defaultController = MinerAI::new;
+            constructor = AcriUnitEntity::new;
+            abilities.addAll(
+                new HealthEqualizerAbility(){{
+                    mountName = "none";
+                    mirror = false;
+                }},
+                new RegenerationAbility(0.95f)
             );
         }};
     }
