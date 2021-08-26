@@ -2,10 +2,22 @@
 # Endless Rusting
 
 ## About
-Endless Rusting was origionaly made because I wanted to try learn java, but now I'm continuing to work on it because I'm finding it fun. The mod is about fleshing out the lore of PTER, and adding new mechanics which fit with vanilla.
+Endless Rusting was origionaly made because I wanted to try learn java, but now I'm continuing to work on it because I'm finding it fun. The mod is about fleshing out the lore of PTER, and adding new mechanics which try fit with vanilla.
 
 ## V7 Compatability
-I've got plans for full v7 compatability, though I'm not sure whats to come. Units are now compatable, and so is the dialog, but I've got to wait and see if everything works for the next BE build.
+I've got v7 compatability mostly finished, though soon enough I'm going to shift to v7. Sorting out dependancies shoudn't be to painfull... right?
+
+## Credits
+[TMC]Roomba#8215 For playtesting the mod as well as contributing some of the sprites.
+QmelZ the Void#0526 For helping me with the programming
+cl0cks#0039 for helping me come up with ideas
+Bluphenyx#0001 for contributing Archangel's sprite and concept
+
+And you for playing vistiting the reppo and making this a reality! c:
+
+## Discord
+[![Discord](https://img.shields.io/discord/704355237246402721.svg?logo=discord&logoColor=white&logoWidth=20&labelColor=7289DA&label=Discord)] (https://discord.gg/sVtXYnJB)
+The Server for Endless Rusting, Pixelcraft and Horition
 
 ## Compiling
 
@@ -72,7 +84,7 @@ Status effects that have special efefcts like no other! Find out mroe about them
 ## Wheres Pixelcraft's regular update scedule gone?
 https://github.com/Sh1penfire/pixelcraft/commit/cc091a76ba10fc6732157c3c245ce4fb13752975
 
-## Maps in cannonical order
+## Maps in cannonical order (Outdated, theres more maps and older maps have been revamped)
 
 ### Incipiens Grounds
 ![image](https://user-images.githubusercontent.com/73347888/124106971-17960280-daa8-11eb-8c83-d8ac050c75f5.png)
