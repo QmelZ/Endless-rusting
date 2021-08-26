@@ -16,7 +16,7 @@ Bluphenyx#0001 for contributing Archangel's sprite and concept
 And you for playing vistiting the reppo and making this a reality! c:
 
 ## Discord
-[![Discord](https://img.shields.io/discord/704355237246402721.svg?logo=discord&logoColor=white&logoWidth=20&labelColor=7289DA&label=Discord)] (https://discord.gg/sVtXYnJB)
+[![Discord](https://img.shields.io/discord/704355237246402721.svg?logo=discord&logoColor=white&logoWidth=20&labelColor=7289DA&label=Discord)](https://discord.gg/sVtXYnJB)
 The Server for Endless Rusting, Pixelcraft and Horition
 
 ## Compiling
