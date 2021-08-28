@@ -162,7 +162,7 @@ public class RustingStatusEffects implements ContentList {
             effectChance = 0.15f;
             updateCons = (unit, time) -> {
                 float rotation = unit.rotation - 180;
-                unit.impulse(Tmp.v1.trns(rotation, Time.delta * (unit.isPlayer() ? unit.type.accel * 37 * (2 - speedMultiplier) : unit.type.speed * 3 + unit.type.drag * 16)));
+                unit.impulse(Tmp.v1.trns(rotation, Time.delta * (unit.isPlayer() ? unit.type.accel * 37 * (2 - speedMultiplier) : unit.type.speed * 5 + unit.type.drag * 16)));
             };
         }};
 

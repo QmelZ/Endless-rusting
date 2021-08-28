@@ -1,5 +1,7 @@
 package rusting.interfaces;
 
+import arc.Core;
+import arc.graphics.g2d.TextureRegion;
 import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.ctype.UnlockableContent;
@@ -13,6 +15,10 @@ public interface ResearchableObject {
 
     default Seq<ResearchType> researchTypes(){
         return null;
+    }
+
+    default TextureRegion researchUIcon(){
+        return Core.atlas.find("");
     }
 
     default void centerResearchRequirements(ItemStack[] stack){
@@ -45,8 +51,7 @@ public interface ResearchableObject {
         return getResearchModule().needsResearching && Vars.state.rules.infiniteResources || Varsr.research.getTeamModule(team, this).researched;
     }
 
-    class TempResearchModule{
-        public boolean requiresResearching = true;
-        public ItemStack[] cost = ItemStack.with();
+    default void hideFromUI(){
+        getResearchModule().isHidden = true;
     }
 }

@@ -3,6 +3,7 @@ package rusting;
 import arc.Core;
 import arc.Events;
 import arc.assets.Loadable;
+import arc.func.Cons;
 import arc.math.Mathf;
 import arc.struct.Queue;
 import arc.struct.Seq;
@@ -10,16 +11,20 @@ import arc.util.Log;
 import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.Blocks;
+import mindustry.content.StatusEffects;
+import mindustry.core.GameState;
 import mindustry.game.EventType;
 import mindustry.game.EventType.Trigger;
 import mindustry.gen.Building;
 import mindustry.type.ItemStack;
 import mindustry.world.Tile;
 import mindustry.world.meta.BuildVisibility;
-import rusting.content.RustingBlocks;
+import rusting.content.RustingAchievements;
+import rusting.content.RustingStatusEffects;
 import rusting.core.RustedContentLoader;
 import rusting.core.Rusting;
 import rusting.core.holder.ItemScoreHolder;
+import rusting.game.RustingEvents.AchievementUnlockEvent;
 import rusting.interfaces.PulseCanalInput;
 import rusting.interfaces.PulseInstantTransportation;
 import rusting.ui.RustingUI;
@@ -27,6 +32,7 @@ import rusting.world.blocks.pulse.distribution.PulseCanal.PulseCanalBuild;
 import rusting.world.format.holder.FormatHolder;
 import rusting.world.research.RustingResearch;
 
+import static mindustry.Vars.state;
 import static rusting.world.blocks.pulse.distribution.PulseCanal.asCanal;
 
 public class Varsr implements Loadable {
@@ -103,18 +109,40 @@ public class Varsr implements Loadable {
 
         formats.load();
 
-        /*
-        Events.on(EventType.StateChangeEvent.class, e => {
+
+        Events.on(EventType.StateChangeEvent.class, e -> {
         if(Vars.state.isEditor()) {
             if(e.from == GameState.State.menu && e.to == GameState.State.playing) {
-                begin();
+                //begin();
             } else if(e.to == GameState.State.menu) {
-                end();
+                //end();
             }
-        }
+        }});
+
+        Cons cursedBoatman = new Cons<Object>() {
+            @Override
+            public void get(Object object) {
+                if((Vars.state.isCampaign() && state.rules.sector.id == 268) &&
+                Vars.player.unit().hasEffect(RustingStatusEffects.macrosis) &&
+                Vars.player.unit().hasEffect(RustingStatusEffects.macotagus) &&
+                Vars.player.unit().hasEffect(RustingStatusEffects.balancedPulsation) &&
+                Vars.player.unit().hasEffect(StatusEffects.wet) &&
+                Vars.player.unit().hasEffect(StatusEffects.freezing) &&
+                Vars.player.unit().hasEffect(StatusEffects.tarred)
+                ){
+                    RustingAchievements.theBoatmansCursedBoatman.unlock();
+                    Events.fire(new AchievementUnlockEvent(RustingAchievements.theBoatmansCursedBoatman));
+                    RustingAchievements.theBoatmansCursedBoatman.locked();
+                }
+            }
+        };
+
+        Events.on(Trigger.update.getClass(), cursedBoatman);
+
+        Events.on(AchievementUnlockEvent.class, e -> {
+            if(e.achievement == RustingAchievements.theBoatmansCursedBoatman) Events.remove(Trigger.update.getClass(), cursedBoatman);
         });
 
-         */
 
         Events.on(EventType.SaveLoadEvent.class, e -> {
             research.setupGameResearch();
@@ -122,6 +150,7 @@ public class Varsr implements Loadable {
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
                     if(Vars.state.isMenu() == false) research.setupGameResearch();
+                    else if(Varsr.debug) RustingAchievements.GTFO.unlock();
                 }
         );
 
@@ -134,6 +163,10 @@ public class Varsr implements Loadable {
     }
 
     public static void debug(){
+        Vars.content.blocks().each(b -> {
+            if(b.name.contains("endless-rusting") && b.buildVisibility == BuildVisibility.hidden && b.synthetic()) b.buildVisibility = BuildVisibility.shown;
+        });
+        /*
         RustingBlocks.pafleaver.buildVisibility = BuildVisibility.shown;
         RustingBlocks.cuin.buildVisibility = BuildVisibility.shown;
         RustingBlocks.desalinationMixer.buildVisibility = BuildVisibility.shown;
@@ -142,6 +175,9 @@ public class Varsr implements Loadable {
         RustingBlocks.pulseCanal.buildVisibility = BuildVisibility.shown;
         RustingBlocks.pulseTeleporterInputTerminal.buildVisibility = BuildVisibility.shown;
         RustingBlocks.pulseMotar.buildVisibility = BuildVisibility.shown;
+        RustingBlocks.horaNoctis.buildVisibility = BuildVisibility.hidden;
+        RustingBlocks.holocaust.buildVisibility = BuildVisibility.hidden;
+        */
         defaultRandomQuotes = Seq.with(
             "[cyan] Welcome back " + username,
             "[sky] This is my message to my master\n" +

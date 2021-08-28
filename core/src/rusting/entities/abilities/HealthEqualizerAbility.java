@@ -26,13 +26,18 @@ public class HealthEqualizerAbility extends MountAbility{
 
         super.update(unit);
 
+        //increase reload while ally is valid and angle repair points towards unit
         if(validate(ally, unit) && ally.damaged()){
             angle(ally.angleTo(unit.x, unit.y) + 90);
             timer = Math.min(timer + Time.delta, reload);
             timeSinceHeal = 0;
         }
         else {
+            //don't retarget if it hasn't been long enough
+
             if(ret >= retargetTime) {
+
+                //retarget, or invalidate target
                 ret = 0;
                 Unit TempUnit = findAlly(unit);
                 if(TempUnit != null) ally = TempUnit;
@@ -41,8 +46,11 @@ public class HealthEqualizerAbility extends MountAbility{
             if(timeSinceHeal >= 360) angle(angle() + 1);
             else timeSinceHeal++;
         }
+
+        //retarget time increased
         ret = Math.min(ret + Time.delta, retargetTime);
 
+        //actualy "fire" the mount, causing the unit to take damage equivalent to how much it's heal it's targeted ally
         if (timer >= reload) {
             //don't kill the unit while healing
             if (ally != null && ally.healthf() < unit.healthf() && Math.min(ally.maxHealth - ally.health, health) < unit.health) {

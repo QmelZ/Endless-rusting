@@ -141,19 +141,21 @@ public class RustingBullets implements ContentList{
             bounciness = 0.6;
         }};
 
-        cloudyShard = new BasicBulletType(1.5f, 3, "bullet"){{
+        cloudyShard = new BasicBulletType(6.5f, 3, "bullet"){{
             splashDamage = 6;
             splashDamageRadius = 22;
-            width = 9;
-            height = 9;
-            lifetime = 54;
+            width = 6;
+            height = 12;
+            lifetime = 18;
             hitEffect = Fx.plasticburn;
             despawnEffect = Fx.plasticburn;
+            trailColor = Color.white;
             status = StatusEffects.corroded;
             frontColor = Color.white;
             backColor = Pal.gray;
+            trailChance = 0.25f;
             knockback = 1.85f;
-            homingPower = 0.005f;
+            homingPower = 0.15f;
         }};
 
         craeShard = new BounceBulletType(4, 5, "bullet"){{
@@ -433,13 +435,16 @@ public class RustingBullets implements ContentList{
             drag = 0.13f;
         }};
 
-        craeQuadStorm = new ConsBulletType(0.85f, 3.5f, "large-bomb"){{
+        craeQuadStorm = new ConsBulletType(1.7f, 15.5f, "large-bomb"){{
 
             hitShake = 1f;
             frontColor = Palr.pulseBullet;
             backColor = Color.sky;
+            trailColor = Palr.pulseChargeStart;
+            hitSound = Sounds.explosion;
+            hitSoundVolume = 0.35f;
             knockback = 4.5f;
-            lifetime = 123f;
+            lifetime = 67f;
             width = height = 11f;
             splashDamageRadius = 65f * 0.75f;
             splashDamage = 99f;
@@ -448,6 +453,8 @@ public class RustingBullets implements ContentList{
             hitEffect = Fxr.pulseExplosion;
             trailChance = 0.15f;
             spin = 2f;
+            absorbable = false;
+            reflectable = false;
 
             shrinkX = shrinkY = -2f;
         }};
@@ -493,6 +500,10 @@ public class RustingBullets implements ContentList{
         }};
 
         melomaeShot = new LiquidBulletType(RustingLiquids.melomae){{
+            pierce = true;
+            reflectable = false;
+            absorbable = false;
+            hittable = false;
             damage = 3;
             homingPower = 0.075f;
             knockback = 0.7f;
@@ -500,6 +511,10 @@ public class RustingBullets implements ContentList{
         }};
 
         heavyMelomaeShot = new LiquidBulletType(RustingLiquids.melomae){{
+            pierce = true;
+            reflectable = false;
+            absorbable = false;
+            hittable = false;
             damage = 9.3f;
             homingPower = 0.075f;
             lifetime = 49f;
@@ -538,10 +553,10 @@ public class RustingBullets implements ContentList{
         }};
 
         //duplicated bullet, only to be used for duoplys
-        paveWeaver = new BounceBulletType(5, 7, "bullet"){{
+        paveWeaver = new BounceBulletType(5, 11, "bullet"){{
             width = 15;
             height = 18;
-            lifetime = 35;
+            lifetime = 42;
             healPercent = 1f;
             shrinkX = 1;
             trailLength = 8;
@@ -559,7 +574,7 @@ public class RustingBullets implements ContentList{
             weaveScale = 5;
             homingPower = 0.325f;
             knockback = 0.25f;
-            bounciness = 0.8;
+            bounciness = 0.57;
         }};
 
         craeBolt = new LightningBulletType(){{
@@ -579,7 +594,7 @@ public class RustingBullets implements ContentList{
             killShooter = true;
         }};
 
-        paveBolt = new LaserBoltBulletType(5.2f, 8){{
+        paveBolt = new LaserBoltBulletType(5.2f, 16){{
             recoil = 1.25f;
             lifetime = 15f;
             healPercent = 2f;
@@ -1035,7 +1050,7 @@ public class RustingBullets implements ContentList{
             frontColor = Palr.lightstriken;
             backColor = Palr.dustriken;
             despawnEffect = Fx.sparkShoot;
-            lifetime = 405f;
+            lifetime = 315f;
             width = height = 11f;
             splashDamageRadius = 35f * 0.75f;
             splashDamage = 33f;

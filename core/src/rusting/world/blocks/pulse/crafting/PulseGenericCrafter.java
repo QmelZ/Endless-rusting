@@ -10,9 +10,9 @@ import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.gen.Sounds;
 import mindustry.type.*;
-import mindustry.world.draw.DrawBlock;
-import mindustry.world.meta.BlockFlag;
+import mindustry.world.meta.*;
 import rusting.world.blocks.pulse.PulseBlock;
+import rusting.world.draw.DrawPulseBlock;
 
 public class PulseGenericCrafter extends PulseBlock {
     public @Nullable
@@ -26,7 +26,7 @@ public class PulseGenericCrafter extends PulseBlock {
     public float updateEffectChance = 0.04f;
     public float warmupSpeed = 0.019f;
 
-    public DrawBlock drawer = new DrawBlock();
+    public DrawPulseBlock drawer = new DrawPulseBlock();
 
     public PulseGenericCrafter(String name){
         super(name);
@@ -48,8 +48,22 @@ public class PulseGenericCrafter extends PulseBlock {
 
     @Override
     public void init(){
-        outputsLiquid = outputLiquid != null;
+       outputsLiquid = outputLiquid != null;
         super.init();
+    }
+
+    @Override
+    public void setStats() {
+        super.setStats();
+        stats.add(Stat.productionTime, craftTime / 60f, StatUnit.seconds);
+
+        if(outputItem != null){
+            stats.add(Stat.output, outputItem);
+        }
+
+        if(outputLiquid != null){
+            stats.add(Stat.output, outputLiquid.liquid, outputLiquid.amount * (60f / craftTime), true);
+        }
     }
 
     @Override
@@ -62,7 +76,7 @@ public class PulseGenericCrafter extends PulseBlock {
         return outputItem != null;
     }
 
-    public class GenericCrafterBuild extends PulseBlockBuild{
+    public class PulseGenericCrafterBuild extends PulseBlockBuild{
         public float progress;
         public float totalProgress;
         public float warmup;
@@ -70,6 +84,11 @@ public class PulseGenericCrafter extends PulseBlock {
         @Override
         public void drawLight(){
             super.drawLight();
+        }
+
+        @Override
+        public void draw() {
+            drawer.draw(this);
         }
 
         @Override

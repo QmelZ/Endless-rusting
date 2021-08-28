@@ -166,7 +166,7 @@ public class MultiSupportAI extends FlyingAI {
                 }
             }
             else if(unit.hasWeapons() && !invalid(target)){
-                moveTo(target, Math.max(unit.type.range/2 - 20 * unit.healthf(), unit.hitSize/2), 20f);
+                moveTo(target, Math.max(unit.type.range/(1 + 1 * unit.healthf()), unit.hitSize/2), 20f);
                 unit.lookAt(target);
             }
         }

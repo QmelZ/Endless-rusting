@@ -14,6 +14,8 @@ public class ResearchModule {
 
     public int id = 0;
 
+    public boolean isHidden = false;
+
     public ResearchableObject item = null;
     //self explanatory
     public boolean needsResearching = true;

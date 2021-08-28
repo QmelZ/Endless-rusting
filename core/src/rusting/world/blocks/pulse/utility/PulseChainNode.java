@@ -44,8 +44,8 @@ public class PulseChainNode extends PulseNode {
             healFract(healPercent/600);
         }
 
-        public void affectChainConnected(){
-            affectChainConnected(connections, healPercent * pulseEfficiency(), overdrivePercent * pulseEfficiency());
+        public void affectChained(){
+            affectChained(connections, healPercent * pulseEfficiency(), overdrivePercent * pulseEfficiency());
             clearMendedSeq();
         }
 
@@ -53,23 +53,37 @@ public class PulseChainNode extends PulseNode {
             mended.clear();
         }
 
-        public void affectChainConnected(Seq<Integer> connectedTargets, float healingPercent, float overdrivePercent){
+        public void affectChained(Seq<Integer> connectedTargets, float healingPercent, float overdrivePercent){
+
+            //average out remaining healing to the blocks
             float trueHealingPercent = healPercent / Math.max(1, connectedTargets.size);
             connectedTargets.each(l -> {
+
+                //get the building
                 Building j = Vars.world.build(l);
+
+                //if healing percent is 0 or block has already been healed, return
                 if (trueHealingPercent <= 0 || mended.contains(j)) return;
+
+                //prevent block from being healed twice
                 mended.add(j);
+
+                //heal and overdrive
                 j.healFract(Math.min(trueHealingPercent, healingPercentCap) / 100);
                 j.applyBoost(overdrivePercent, pulseReloadTime + 1f);
+
+                //play the effect
                 if (j.healthf() != 1) Fx.healBlockFull.at(j.x, j.y, j.block.size, chargeColourEnd);
                 else Fx.healBlock.at(j.x, j.y, j.block.size, chargeColourStart);
-                if (j instanceof PulseNodeBuild && ((PulseNode) j.block).connectionsPotential > 0 && trueHealingPercent > 0) affectChainConnected(((PulseNodeBuild) j).connections, Math.max(trueHealingPercent - healPercentFalloff, 0), overdrivePercent);
+
+                //if the block is a node, and healing percent isn't 0, repeat the cycle
+                if (j instanceof PulseNodeBuild && ((PulseNode) j.block).connectionsPotential > 0 && trueHealingPercent > 0) affectChained(((PulseNodeBuild) j).connections, Math.max(trueHealingPercent - healPercentFalloff, 0), overdrivePercent);
             });
         }
 
         @Override
         public void interactConnected(){
-            if(!canOverload || !requiresOverload || overloaded()) affectChainConnected();
+            if(!canOverload || !requiresOverload || overloaded()) affectChained();
             super.interactConnected();
         }
     }

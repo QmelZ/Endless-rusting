@@ -1,6 +1,7 @@
 package rusting.content;
 
 import mindustry.ctype.ContentList;
+import rusting.ctype.SectorBasedAchievement;
 import rusting.ctype.UnlockableAchievement;
 
 import static rusting.EndlessRusting.modname;
@@ -15,7 +16,7 @@ public class RustingAchievements implements ContentList {
 
     @Override
     public void load() {
-        shardlingSteps = new UnlockableAchievement( modname + "-shardling-steps") {{
+        shardlingSteps = new SectorBasedAchievement( modname + "-shardling-steps", 36, RustingPlanets.err) {{
 
         }};
 
@@ -36,6 +37,10 @@ public class RustingAchievements implements ContentList {
         }};
 
         youMonster = new UnlockableAchievement(modname + "-you-monster"){{
+
+        }};
+
+        GTFO = new UnlockableAchievement(modname + "-GTFO"){{
 
         }};
     }

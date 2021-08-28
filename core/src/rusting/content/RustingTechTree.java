@@ -256,7 +256,6 @@ public class RustingTechTree implements ContentList {
                 });
             });
         });
-
     }
 
     //sets context to the node from the UnlockableContent

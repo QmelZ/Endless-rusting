@@ -57,6 +57,14 @@ public abstract class UnlockableERContent extends MappableERContent{
         }
     }
 
+    //lock the piece of content
+    public void lock(){
+        if(unlocked){
+            Core.settings.put(this.name + "-unlocked", false);
+            unlocked = false;
+        }
+    }
+
     /** @return whether this content is unlocked, or the player is in a custom (non-campaign) game. */
     public boolean unlockedNow(){
         return unlocked() || !Vars.state.isCampaign();

@@ -96,7 +96,7 @@ public class CraeUnitEntity extends UnitEntity {
     public void destroy() {
         if(!isAdded()) return;
         float power = chargef() * 150.0F;
-        float explosiveness = 1F;
+        float explosiveness = 1F + pulse/3.5f;
         if (!spawnedByCore) {
             Damage.dynamicExplosion(x, y, 0, explosiveness, power, bounds() / 2.0F, state.rules.damageExplosions, item().flammability > 1, team);
             int bulletSpawnInterval = type instanceof CraeUnitType ? unitType().projectileDeathSpawnInterval : 10;

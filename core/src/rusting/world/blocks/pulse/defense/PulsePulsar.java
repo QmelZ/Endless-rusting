@@ -1,19 +1,19 @@
 package rusting.world.blocks.pulse.defense;
 
+import arc.audio.Sound;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.util.Nullable;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mindustry.entities.Predict;
-import mindustry.entities.Units;
+import mindustry.entities.*;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Posc;
+import mindustry.gen.Sounds;
 import mindustry.logic.Ranged;
 import mindustry.type.StatusEffect;
-import rusting.content.RustingBullets;
-import rusting.content.RustingStatusEffects;
+import rusting.content.*;
 import rusting.world.blocks.pulse.PulseBlock;
 
 //haha, it's funny
@@ -36,6 +36,12 @@ public class PulsePulsar extends PulseBlock {
     public float burstSpacing = 0;
     //inaccuracy
     public float inaccuracy = 0;
+    //sound pitch
+    public float startSoundPitchMin = 0.1f, startSoundPitchMax = 0.3f,  shootSoundPitchMin = 0.65f, shootSoundPitchMax = 0.85f;
+    //shoot sound
+    public Sound shootSoundStart = Sounds.explosion, shootSound = Sounds.missile;
+    //effect played when you start shooting
+    public Effect shootStartEffect = Fxr.launchCraeWeavers, shootEffect = Fxr.craeWeaversResidue;
     //range
     public float range = 0;
     public float velocityInaccuracy = 0;
@@ -104,6 +110,11 @@ public class PulsePulsar extends PulseBlock {
                         Time.run(burstSpacing * i, () -> {
                             for(int i1 = 0; i1 < shots; i1++){
                                 bullet(projectile, speedScaling);
+                                shootEffect.at(x, y);
+                                shootSound.at(x, y, Mathf.random(shootSoundPitchMin, shootSoundPitchMax));
+
+                                consume();
+                                customConsume();
                             }
                         });
                     }
@@ -111,15 +122,21 @@ public class PulsePulsar extends PulseBlock {
                 else if(shots > 1){
                     for(int i = 0; i < shots; i++){
                         bullet(projectile, speedScaling);
+                        shootEffect.at(x, y);
+                        shootSound.at(x, y, Mathf.random(shootSoundPitchMin, shootSoundPitchMax));
+
+                        consume();
+                        customConsume();
                     }
                 }
 
-                consume();
-                customConsume();
+                shootStartEffect.at(x, y);
             }
             Units.nearbyEnemies(team, x - range()/2, y - range()/2, range(), range(), u -> {
                 u.apply(status, statusDuration);
             });
+            shootSoundStart.at(x, y, Mathf.random(startSoundPitchMax, startSoundPitchMax));
+
         }
 
         public void bullet(BulletType bullet, float speedScl){

@@ -1,16 +1,11 @@
 package rusting.interfaces;
 
+import arc.graphics.Color;
 import arc.util.Nullable;
 import mindustry.gen.Building;
-import mindustry.gen.Buildingc;
-import rusting.content.RustingResearchTypes;
 import rusting.world.modules.PulseModule;
 
-public abstract interface PulseBlockc extends Buildingc, Researchablec{
-
-    default void setupValues(){
-        researchTypes.add(RustingResearchTypes.pulse);
-    }
+public interface PulseBlockc{
 
     default float pulseEfficiency(){
         return 1;
@@ -77,6 +72,14 @@ public abstract interface PulseBlockc extends Buildingc, Researchablec{
 
     default PulseModule pulseModule(){
         return null;
+    }
+
+    default void drawLaser(PulseBlockc building, float lerpPercent, Color laserCol, Color laserCol2) {
+
+    }
+
+    default float laserOffset(){
+        return 8;
     }
 
 }

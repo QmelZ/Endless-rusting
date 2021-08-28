@@ -114,15 +114,19 @@ public class RustingUnits implements ContentList{
             constructor = CraeUnitEntity::new;
 
             abilities.add(
-                    new UpkeeperFieldAbility(4.35f, 135, 45, 4f)
+                new UpkeeperFieldAbility(4.35f, 135, 45, 4f)
             );
-            weapons.add(
+            weapons.addAll(
                 new Weapon("none") {{
                     x = 0;
                     y = 0;
                     mirror = false;
                     bullet = RustingBullets.paveBolt;
-                    reload = 120;
+                    reload = 75;
+                    shootCone = 35;
+                    shots = 2;
+                    shotDelay = 1;
+                    inaccuracy = 1;
                 }}
             );
         }};
@@ -486,7 +490,7 @@ public class RustingUnits implements ContentList{
                     y = -0.35f;
                     shootY = 19.45f;
                     reload = 430;
-                    shots = 0;
+                    shots = 9;
                     spacing = 3;
                     shootSound = Sounds.none;
                     recoil = 3;
@@ -502,7 +506,7 @@ public class RustingUnits implements ContentList{
                     shootCone = 90;
                     reload = 430;
                     inaccuracy = 4;
-                    recoil = 4;
+                    recoil = 3;
                 }},
                 new Weapon("endless-rusting-spinascene-beam"){{
                     x = 16.25f;
@@ -513,7 +517,7 @@ public class RustingUnits implements ContentList{
                     shotDelay = 5;
                     reload = 430;
                     inaccuracy = 4;
-                    recoil = 4;
+                    recoil = 3;
                 }},
                 new Weapon("none"){{
                     x = 0;

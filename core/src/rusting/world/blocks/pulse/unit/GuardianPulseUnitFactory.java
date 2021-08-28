@@ -9,6 +9,11 @@ public class GuardianPulseUnitFactory extends PulseUnitFactory{
         super(name);
     }
 
+    @Override
+    public boolean isHidden() {
+        return true;//!Varsr.debug || super.isHidden();
+    }
+
     public class GuardianPulseUnitFactoryBuild extends PulseUnitFactoryBuild{
         @Override
         public void onDestroyed() {

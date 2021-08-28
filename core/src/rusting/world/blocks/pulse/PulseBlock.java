@@ -1,6 +1,7 @@
 package rusting.world.blocks.pulse;
 
 import arc.Core;
+import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.math.Angles;
@@ -17,6 +18,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.Ranged;
 import mindustry.ui.Bar;
+import mindustry.ui.Cicon;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.meta.BlockGroup;
@@ -116,18 +118,21 @@ public class PulseBlock extends Block implements ResearchableBlock {
         shakeRegion = Core.atlas.find(name + "-shake");
     }
 
-
     @Override
     public void setBars(){
         super.setBars();
         bars.add("power", entity -> new Bar(() ->
-                Core.bundle.get("bar.pulsebalance"),
-                () -> Tmp.c1.set(chargeColourStart).lerp(chargeColourEnd,
-                         ((PulseBlockBuild) entity).chargef()),
-                () -> Mathf.clamp(((PulseBlockBuild) entity).chargef())
+            Core.bundle.get("bar.pulsebalance"),
+            () -> Tmp.c1.set(chargeColourStart).lerp(chargeColourEnd,
+                     ((PulseBlockBuild) entity).chargef()),
+            () -> Mathf.clamp(((PulseBlockBuild) entity).chargef())
         ));
     }
 
+    @Override
+    public TextureRegion researchUIcon() {
+        return icon(Cicon.medium);
+    }
 
     @Override
     public Seq<ResearchType> researchTypes() {
@@ -222,13 +227,6 @@ public class PulseBlock extends Block implements ResearchableBlock {
         }
 
         @Override
-        public void created() {
-            super.created();
-
-            setupValues();
-        }
-
-        @Override
         public float pulseEfficiency(){
             return Math.max(baseEfficiency, chargef(false) * timeScale());
         }
@@ -311,6 +309,11 @@ public class PulseBlock extends Block implements ResearchableBlock {
         }
 
         @Override
+        public float laserOffset() {
+            return laserOffset;
+        }
+
+        @Override
         public void updateTile() {
             super.updateTile();
             if(shake >= timeOffset){
@@ -332,11 +335,14 @@ public class PulseBlock extends Block implements ResearchableBlock {
             Draw.reset();
         }
 
-        public void drawLaser(PulseBlockBuild building, float lerpPercent, Color laserCol, Color laserCol2) {
+        @Override
+        public void drawLaser(PulseBlockc building, float lerpPercent, Color laserCol, Color laserCol2) {
             Draw.z(Layer.power);
-            float angle = angleTo(building.x, building.y) - 90;
+            if(!(building instanceof Building)) return;
+            Building build = (Building) building;
+            float angle = angleTo(build.x, build.y) - 90;
             float sourcx = x + Angles.trnsx(angle, 0, laserOffset), sourcy = y + Angles.trnsy(angle, 0, laserOffset);
-            float edgex = building.x + Angles.trnsx(angle + 180, 0, ((PulseBlock) building.block).laserOffset), edgey = building.y + Angles.trnsy(angle + 180, 0, ((PulseBlock) building.block).laserOffset);
+            float edgex = build.x + Angles.trnsx(angle + 180, 0, building.laserOffset()), edgey = build.y + Angles.trnsy(angle + 180, 0, building.laserOffset());
             Draw.color(laserCol, laserCol2, lerpPercent);
             Lines.stroke(1.35f);
             Lines.line(sourcx, sourcy, edgex, edgey);
@@ -348,14 +354,23 @@ public class PulseBlock extends Block implements ResearchableBlock {
         public void draw(){
             super.draw();
             if(chargeRegion != Core.atlas.find("error")) {
-                Draw.z(Layer.bullet);
+                boolean highdraw = Core.settings.getBool("settings.er.pulsehighdraw");
+                if(Core.settings.getBool("settings.er.additivepulsecolours")) Draw.blend(Blending.additive);
+                Draw.z(highdraw ? Layer.bullet : Layer.blockOver);
                 Draw.color(chargeColourStart, chargeColourEnd, chargef());
-                Draw.alpha(alphaDraw);
-                Draw.rect(shakeRegion, x + xOffset, y + yOffset, (chargeRegion.width + yOffset)/4, (chargeRegion.height + xOffset)/4, 270);
+                if(Core.settings.getBool("settings.er.pulsedrawshake")){
+                    Draw.alpha(alphaDraw);
+                    if(!highdraw) Draw.alpha(Draw.getColor().a * Draw.getColor().a);
+                    Draw.rect(shakeRegion, x + xOffset, y + yOffset, (chargeRegion.width + yOffset)/4, (chargeRegion.height + xOffset)/4, 270);
+                };
                 Draw.alpha(chargef());
+                if(!highdraw) Draw.alpha(Draw.getColor().a * Draw.getColor().a);
                 Draw.rect(chargeRegion, x, y, 270);
-                Draw.alpha((float) (chargef() * 0.5));
-                Draw.rect(chargeRegion, x, y, (float) (chargeRegion.height * 1.5/4), (float) (chargeRegion.width * 1.5/4), 270);
+                if(Core.settings.getBool("settings.er.pulseglare")){
+                    Draw.alpha(chargef() * chargef() * 0.5f);
+                    Draw.rect(chargeRegion, x, y, (float) (chargeRegion.height * 1.5/4), (float) (chargeRegion.width * 1.5/4), 270);
+                }
+                if(Core.settings.getBool("settings.er.additivepulsecolours")) Draw.blend();
             }
         }
 
