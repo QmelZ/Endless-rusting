@@ -3,17 +3,18 @@ package rusting.content;
 import arc.graphics.Color;
 import arc.math.geom.Vec2;
 import arc.util.Time;
+import mindustry.content.StatusEffects;
 import mindustry.ctype.ContentList;
 import mindustry.gen.Sounds;
+import mindustry.graphics.Layer;
 import mindustry.type.Weather;
-import mindustry.type.weather.ParticleWeather;
 import mindustry.world.meta.Attribute;
-import rusting.type.weather.BulletParticleWeather;
+import rusting.type.weather.*;
 
 public class RustingWeathers implements ContentList{
     public static Weather
             //destructive
-            fossilStorm, corrosiveDeluge, chemNullificationStorm, hailsiteSpray;
+            fossilStorm, corrosiveDeluge, pulesweptGround, chemNullificationStorm, hailsiteSpray;
 
     @Override
     public void load(){
@@ -41,15 +42,52 @@ public class RustingWeathers implements ContentList{
             attrs.set(Attribute.water, -0.2f);
         }};
 
-        corrosiveDeluge = new BulletParticleWeather("corrosive-deluge") {{
-            color = noiseColor = regionColour = Color.coral;
-            dynamicSpawning = false;
-            chanceSpawn = 0;
+        corrosiveDeluge = new BlindingParticleWeather("corrosive-deluge") {{
+            color = noiseColor = Color.coral;
+            useWindVector = true;
+            drawNoise = true;
+            sizeMax = 0;
+            sizeMin = 0;
+            status = StatusEffects.corroded;
+            statusGround = false;
+            statusDuration = 125f;
+            opacityMultiplier = 0.35f;
+            force = 0.075f;
+            sound = Sounds.rain;
+            soundVol = 0.45f;
+            duration = 6.35f * Time.toMinutes;
             attrs.set(Attribute.light, 0.75f);
             attrs.set(Attribute.water, 0.35f);
         }};
 
-        chemNullificationStorm = new ParticleWeather("chem-nullification-storm") {{
+        pulesweptGround = new BlindingParticleWeather("pulseswept-ground"){{
+            color = Palr.pulseBullet;
+            drawNoise = true;
+            sizeMax = 5;
+            sizeMin = 2;
+            minAlpha = 0.2f;
+            maxAlpha = 0.6f;
+            density = 1550;
+            baseSpeed = 1.25f;
+            opacityMultiplier = 0.15f;
+            drawLayer = Layer.groundUnit + 0.5f;
+            status = RustingStatusEffects.balancedPulsation;
+            statusAir = false;
+            useWindVector = true;
+            force = 0.15f;
+            sound = Sounds.windhowl;
+            duration = 2.45f * Time.toMinutes;
+            opacityModifier = 5;
+            opacityGroundModifier = 0.55f;
+            opacityAirModifier = 0.35f;
+            attrs.set(Attribute.light, -0.95f);
+            attrs.set(Attribute.water, -0.55f);
+            attrs.set(Attribute.spores, -1);
+            attrs.set(Attribute.oil, -0.15f);
+            attrs.set(Attribute.heat, -0.35f);
+        }};
+
+        chemNullificationStorm = new BaseParticleWeather("chem-nullification-storm") {{
             color = noiseColor = Color.cyan;
             particleRegion = "particle";
             useWindVector = true;
@@ -73,7 +111,7 @@ public class RustingWeathers implements ContentList{
             attrs.set(Attribute.spores, -0.45f);
         }};
 
-        hailsiteSpray = new ParticleWeather("hailsiteSpray"){{
+        hailsiteSpray = new BaseParticleWeather("hailsite-spray"){{
             color = noiseColor = Palr.lightstriken;
             particleRegion = "particle";
             statusGround = false;

@@ -28,6 +28,8 @@ public class InstantBounceBulletType extends BounceBulletType implements instant
         this.hittable = false;
         this.trailEffect = Fxr.lineCircles;
         this.trailChance = 0;
+        this.width = 2;
+        this.lightOpacity = 0;
     }
 
     @Override
@@ -134,7 +136,7 @@ public class InstantBounceBulletType extends BounceBulletType implements instant
                 graphicEffects.trailEffect(trailColor, x, y, 2.5f, 2, 1, trailFadeIn, trailFadeOut, points);
                 Posc owner = null;
                 if(b.owner instanceof Posc) owner = (Posc) owner;
-                graphicEffects.trailEffect(trailColor, owner.x(), owner.y(), 2.5f, 2, 1, trailFadeIn, trailFadeOut, points);
+                graphicEffects.trailEffect(trailColor, owner.x(), owner.y(), width, 2, 1, trailFadeIn, trailFadeOut, points);
                 b.remove();
             }
         }

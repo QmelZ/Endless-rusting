@@ -20,6 +20,7 @@ dependencies {
     implementation "com.github.Anuken.Mindustry:core:$pMindustryVersion"
     implementation "com.github.Anuken.Mindustry:annotations:$pMindustryVersion"
     implementation "com.github.Anuken.Arc:arc-core:$pArcVersion"
+    implementation("com.github.Anuken.Arc:flabel:6534b0e34bfcb24d02d99cb9534d087ea76b5601")
 }
 
 jar {

@@ -19,12 +19,10 @@ public class RustingSectorPresets implements ContentList {
 
         plantaePresevereDomae = new SectorPreset("plantae-presevere-domae", RustingPlanets.err, 196){{
             difficulty = 1f;
-            useAI = false;
         }};
 
         volenChannels = new SectorPreset("volen-channels", RustingPlanets.err, 154){{
             difficulty = 4;
-            useAI = false;
         }};
 
         paileanCorridors = new SectorPreset("pailean-corridors", RustingPlanets.err, 79){{

@@ -63,7 +63,7 @@ public class PulsePoint extends PulseBlock {
         public void draw() {
 
             Draw.z(Layer.block);
-            Draw.rect(base, x, y, 270);
+            Draw.rect(base, x, y, 0);
 
             Draw.z(Layer.turret);
             Draw.rect(region, x, y, rotation - 90);

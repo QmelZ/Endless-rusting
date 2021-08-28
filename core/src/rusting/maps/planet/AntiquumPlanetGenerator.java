@@ -1,13 +1,16 @@
 package rusting.maps.planet;
 
+import arc.files.Fi;
 import arc.struct.ObjectMap;
+import arc.util.Log;
+import arc.util.async.Threads;
+import mindustry.Vars;
 import mindustry.content.Blocks;
-import mindustry.game.Team;
 import mindustry.maps.generators.BaseGenerator;
 import mindustry.maps.planet.SerpuloPlanetGenerator;
 import mindustry.world.Block;
 import mindustry.world.Tiles;
-import rusting.content.Palr;
+import rusting.content.RustingPlanets;
 
 import static mindustry.Vars.state;
 
@@ -51,12 +54,17 @@ public class AntiquumPlanetGenerator extends SerpuloPlanetGenerator {
 
     @Override
     protected void generate(){
-
-        super.generate();
-        state.rules.ambientLight = Palr.pulseChargeEnd;
-        state.rules.waveTeam = Team.blue;
-        state.rules.infiniteResources = false;
+        int currentSector = state.rules.sector.id;
+        Log.info(currentSector);
+        Fi file = Vars.saveDirectory.child("sector-" + RustingPlanets.err.name + "-" + currentSector + ".msav");
+        Log.info(file);
+        file.delete();
+        file = Vars.saveDirectory.child("sector-" + RustingPlanets.err.name + "-" + currentSector + "-backup.msav");
+        Log.info(file);
+        file.delete();
+        Threads.throwAppException(new Throwable("You're not permitted here! \n (Strong forces prevent you from tinkering with the old world. Perhaps it would be better to stay on the path?)"));
     }
+
 
     @Override
     public void postGenerate(Tiles tiles){

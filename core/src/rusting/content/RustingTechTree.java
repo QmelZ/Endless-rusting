@@ -107,8 +107,10 @@ public class RustingTechTree implements ContentList {
 
         extendNode(graphitePress, () -> {
             node(bulasteltForgery, Seq.with(new SectorComplete(plantaePresevereDomae)), () -> {
-                node(desalinationMixer, Seq.with(new Produce(RustingItems.halsinte)), () -> {
+                node(desalinationMixer, Seq.with(new Produce(RustingItems.halsinte), new SectorComplete(volenChannels)), () -> {
+                    node(cameoCrystallisingBasin, Seq.with(new Produce(RustingItems.melonaleum), new SectorComplete(sulphuricSea)), () -> {
 
+                    });
                 });
             });
         });
@@ -155,7 +157,9 @@ public class RustingTechTree implements ContentList {
             nodeProduce(RustingItems.taconite, () -> {
 
                 nodeProduce(RustingItems.halsinte, () -> {
+                    nodeProduce(RustingItems.cameoShardling, () -> {
 
+                    });
                 });
 
                 nodeProduce(RustingItems.bulastelt, () -> {
@@ -252,7 +256,6 @@ public class RustingTechTree implements ContentList {
                 });
             });
         });
-
     }
 
     //sets context to the node from the UnlockableContent

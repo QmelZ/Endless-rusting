@@ -1,6 +1,7 @@
 package rusting.content;
 
 import mindustry.ctype.ContentList;
+import rusting.ctype.SectorBasedAchievement;
 import rusting.ctype.UnlockableAchievement;
 
 import static rusting.EndlessRusting.modname;
@@ -9,17 +10,21 @@ public class RustingAchievements implements ContentList {
 
     public static UnlockableAchievement
     //planet 1
-    shardlingSteps, theBoatmansCursedBoatman, pulseTeleporterConstructed, planet1Clear,
+    shardlingSteps, theBoatmansCursedBoatman, powerfulLight, pulseTeleporterConstructed, planet1Clear,
     //msc
     youMonster, giganticQuestionMark, GTFO;
 
     @Override
     public void load() {
-        shardlingSteps = new UnlockableAchievement( modname + "-shardling-steps") {{
+        shardlingSteps = new SectorBasedAchievement( modname + "-shardling-steps", 36, RustingPlanets.err) {{
 
         }};
 
         theBoatmansCursedBoatman = new UnlockableAchievement(modname + "-the-boatmans-cursed-boatman") {{
+
+        }};
+
+        powerfulLight = new UnlockableAchievement(modname + "-powerful-light"){{
 
         }};
 
@@ -32,6 +37,10 @@ public class RustingAchievements implements ContentList {
         }};
 
         youMonster = new UnlockableAchievement(modname + "-you-monster"){{
+
+        }};
+
+        GTFO = new UnlockableAchievement(modname + "-GTFO"){{
 
         }};
     }

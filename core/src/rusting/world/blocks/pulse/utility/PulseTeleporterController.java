@@ -12,6 +12,8 @@ import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.world.Tile;
+import rusting.content.Fxr;
+import rusting.content.RustingAchievements;
 import rusting.interfaces.PrimitiveControlBlock;
 import rusting.world.blocks.pulse.distribution.PulseCanal.PulseCanalBuild;
 import rusting.world.blocks.pulse.utility.PulseTeleporterCorner.PulseTeleporterCornerBuild;
@@ -45,7 +47,7 @@ public class PulseTeleporterController extends PulseTeleporterPart {
     private PulseTeleporterControllerBuild build;
     private Building tmpBuild, tmpBuild2;
     boolean returnBool = false, cornerFound = false;
-    Tile tmpTile = null;
+    Tile tmpTile = null, tmpTile2 = null;
 
     private PulseTeleporterControllerBuild asControllerBuild(Building build){
         return (PulseTeleporterControllerBuild) build;
@@ -57,35 +59,49 @@ public class PulseTeleporterController extends PulseTeleporterPart {
 
     //function findMulti(){let build = Vars.world.buildWorld(Core.input.mouseWorld().x, Core.input.mouseWorld().y); return build.block.multiblockFormed(build.tile)}
 
-    public boolean multiblockFormed(Tile tile) {
+    public boolean setupMultiblock(Tile tile) {
         returnBool = false;
         if(!(tile.build instanceof PulseTeleporterControllerBuild)) return false;
         build = asControllerBuild(tile.build);
         build.proximity().each(b -> {
             if(returnBool == true) {
-                //Log.info("breaking out of loop");
+                Log.info("breaking out of loop");
                 return;
             }
-            //Log.info("Building is instance of canal: " + (b instanceof PulseCanalBuild));
-            //Log.info("build is facing: " + (b.rotation * 90) % 360);
-            //Log.info("angle to block is: " + build.angleTo(b.x, b.y));
+            Log.info("Building is instance of canal: " + (b instanceof PulseCanalBuild));
+            Log.info("build is facing: " + (b.rotation * 90) % 360);
+            Log.info("angle to block is: " + build.angleTo(b.x, b.y));
+            Log.info("build's relative position with ofset is: " + b.tile.x + " " + b.tile.y + " " + (tile.x - b.tile.x) + " " + (tile.y - b.tile.y));
             if(b instanceof PulseCanalBuild && (b.rotation * 90) % 360 == build.angleTo(b.x, b.y)) {
+                Fxr.corrodedEffect.at(b.x, b.y);
                 returnBool = true;
                 tmpBuild2 = b;
             }
         });
         if(returnBool == false) return returnBool;
-        //Log.info("found canal");
-        for (int i = 0; i < 3; i++) {
-            //Log.info("cycle " + (i + 1));
+        Log.info("found canal");
+        returnBool = false;
+        for (int i = 0; i < 12; i++) {
+            if (tmpTile == tile && i > 0) {
+                returnBool = true;
+                break;
+            }
+            Log.info("cycle " + (i + 1));
             if(tmpBuild2 instanceof PulseCanalBuild) {
+                Fxr.corrodedEffect.at(tmpBuild2.x, tmpBuild2.y);
+                Log.info(tmpBuild2 + " instance of PulseCanalBuild");
                 tmpTile = rusting.world.blocks.pulse.distribution.PulseCanal.asCanal(tmpBuild2).canalEnding;
+                Log.info("ending being at  x:" + tmpTile.x + " y:" + tmpTile.y);
                 if(Mathf.dst(tmpBuild2.tile.x, tmpBuild2.tile.y, tmpTile.x, tmpTile.y) < 8) break;
-                if (i == 3 && tmpTile == tile) returnBool = true;
                 else if(tmpTile.build != null && tmpTile.build instanceof PulseTeleporterCornerBuild){
                     tmpBuild = tmpTile.build;
-                    Tmp.v1.trns(tmpBuild.rotation * 90 - 90, 8);
+                    Tmp.v1.trns(tmpBuild.rotation * 90, 8);
+                    Log.info("the corner's position is:" + "x: " + tmpTile.x + " y: " + tmpTile.y);
                     tmpBuild2 = world.buildWorld(tmpBuild.x + Tmp.v1.x, tmpBuild.y + Tmp.v1.y);
+                    tmpTile2 = world.tileWorld(tmpBuild.x + Tmp.v1.x, tmpBuild.y + Tmp.v1.y);
+                    Log.info("the corner's endling position is:" + "x: " + tmpTile2.x + " y: " + tmpTile2.y);
+
+                    Fxr.blackened.at(tmpTile2.x * 8, tmpTile2.y * 8);
                 }
             }
         }
@@ -141,8 +157,11 @@ public class PulseTeleporterController extends PulseTeleporterPart {
         @Override
         public void updateTile() {
             super.updateTile();
-            if(chargef() > 0.9f && !multiblockFormed) multiblockFormed = multiblockFormed(tile);
-            if(multiblockFormed && Vars.state.isCampaign()) Core.settings.put("settings.er.teleporterbuilt", true);
+            if(chargef() > 0.9f && !multiblockFormed) multiblockFormed = setupMultiblock(tile);
+            if(multiblockFormed && Vars.state.isCampaign()) {
+                Core.settings.put("settings.er.teleporterbuilt", true);
+                RustingAchievements.pulseTeleporterConstructed.unlock();
+            }
         }
 
         public void teleportUnits(){

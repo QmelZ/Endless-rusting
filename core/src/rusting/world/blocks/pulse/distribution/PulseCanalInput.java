@@ -68,7 +68,7 @@ public class PulseCanalInput extends PulseBlock {
         Draw.rect(region, req.drawx(), req.drawy());
         Draw.z(Layer.blockOver + 0.1f);
 
-        Draw.rect(topRegion, req.drawx(), req.drawy(), req.rotation * 90 - 90);
+        Draw.rect(topRegion, req.drawx(), req.drawy(), req.rotation * 90);
     }
 
     public class PulseCanalInputBuild extends PulseBlockBuild implements rusting.interfaces.PulseCanalInput, PrimitiveControlBlock {
@@ -95,7 +95,7 @@ public class PulseCanalInput extends PulseBlock {
             Draw.rect(region, x, y);
             Draw.z(Layer.blockOver + 0.1f);
 
-            Draw.rect(topRegion, x, y, rotation * 90 - 90);
+            Draw.rect(topRegion, x, y, rotation * 90);
         }
 
         @Override

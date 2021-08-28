@@ -45,7 +45,7 @@ public class FieldBlockListDialog extends CustomBaseDialog {
     public void makeList(Seq<ResearchType> researchTypes){
         researchTypes.each(type -> {
             Varsr.research.researchMap.get(type).each(m -> {
-
+                researchable.add(m.item);
             });
         });
     }
@@ -100,7 +100,7 @@ public class FieldBlockListDialog extends CustomBaseDialog {
                 researchable.each(type -> {
                     if(!(type instanceof UnlockableContent)) return;
                     UnlockableContent unlock = (UnlockableContent) type;
-                    if (!unlocked(unlock)) return;
+                    if (!unlocked(unlock) || type.getResearchModule().isHidden) return;
                     final boolean isResearched = Varsr.research.researched(player.team(), type, type.researchTypes());
                     Image image = new Image(unlock.icon(Cicon.medium)).setScaling(Scaling.fit);
                     Color imageCol = isResearched ? Color.white : Pal.darkerGray;

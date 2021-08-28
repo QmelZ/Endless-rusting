@@ -18,13 +18,15 @@ import mindustry.graphics.Pal;
 import mindustry.world.Tile;
 import mindustry.world.meta.Stat;
 import rusting.content.Palr;
+import rusting.interfaces.PulseBlockc;
+import rusting.interfaces.ResearchableBlock;
 import rusting.world.blocks.pulse.PulseBlock;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
 
 //a block which can connect to other pulse blocks and transmit a pulse
-public class PulseNode extends PulseBlock {
+public class PulseNode extends PulseBlock implements ResearchableBlock {
     //Reload of the node till it can transmit a pulse to a nearby block
     public float pulseReloadTime = 60;
     //How many bursts the node sends
@@ -57,7 +59,7 @@ public class PulseNode extends PulseBlock {
 
         config(Integer.class, (PulseNodeBuild entity, Integer i) -> {
             Building other = world.build(i);
-            if(!(other instanceof PulseBlockBuild)) return;
+            if(!(other instanceof PulseBlockc)) return;
             if(entity.connections.contains(i)){
                 //unlink
                 entity.connections.remove(i);
@@ -87,6 +89,7 @@ public class PulseNode extends PulseBlock {
     @Override
     public void setPulseStats() {
         super.setPulseStats();
+        pStats.connections.setValue(connectionsPotential);
         pStats.pulseReloadTime.setValue(60/pulseReloadTime);
         pStats.energyTransmission.setValue(energyTransmission);
         pStats.pulseBursts.setValue(pulseBursts);
@@ -98,7 +101,7 @@ public class PulseNode extends PulseBlock {
         super.drawPlace(x, y, rotation, valid);
         Tile tile = world.tile(x, y);
 
-        if(tile != null && laserRange > 0) {
+        if(tile != null && laserRange > 0 && connectionsPotential > 0) {
             Lines.stroke(1f);
             Draw.color(Pal.placing);
             Drawf.circles(x * tilesize + offset, y * tilesize + offset, (float) (laserRange * tilesize));
@@ -107,7 +110,7 @@ public class PulseNode extends PulseBlock {
 
     @Override
     public void drawRequestConfigTop(BuildPlan req, Eachable<BuildPlan> list){
-        if(req.config instanceof Point2[] ){
+        if(req.config instanceof Point2[]){
             Point2[] ps = (Point2[]) req.config;
             for(Point2 point : ps){
                 int px = req.x + point.x, py = req.y + point.y;
@@ -124,7 +127,7 @@ public class PulseNode extends PulseBlock {
     }
 
     public static boolean nodeCanConnect(PulseNodeBuild build, Building target){
-        return (!(target instanceof PulseBlockBuild) || ((PulseBlockBuild) target).connectableTo()) && !build.connections.contains(target.pos()) && build.connections.size < ((PulseNode) (build.block)).connectionsPotential && ((PulseNode) build.block).laserRange * 8 >= Mathf.dst(build.x, build.y, target.x, target.y);
+        return (!(target instanceof PulseBlockc) || ((PulseBlockc) target).connectableTo()) && !build.connections.contains(target.pos()) && build.connections.size < ((PulseNode) (build.block)).connectionsPotential && ((PulseNode) build.block).laserRange * 8 >= Mathf.dst(build.x, build.y, target.x, target.y);
     }
 
     protected void getPotentialLinks(PulseNode.PulseNodeBuild build, Team team, Seq<Building> others){
@@ -219,7 +222,7 @@ public class PulseNode extends PulseBlock {
                 if(chargef() <= 0 || j == null) return;
                 if(index[0] > connectionsPotential) connections.remove(l);
                 float energyTransmitted = Math.min(pulseModule.pulse, energyTransmission);
-                if(((PulseBlockBuild)j).receivePulse(energyTransmitted, this)) removePulse(energyTransmitted);
+                if(((PulseBlockc)j).receivePulse(energyTransmitted, this)) removePulse(energyTransmitted);
                 index[0]++;
             });
         }
@@ -254,7 +257,7 @@ public class PulseNode extends PulseBlock {
             connections.each(l -> {
                 Building other = world.build(l);
                 if(other == null || other.isNull() || !other.isAdded()) return;
-                drawLaser((PulseBlockBuild) other, chargef(), laserColor, chargeColourEnd);
+                drawLaser((PulseBlockc) other, chargef(), laserColor, chargeColourEnd);
             });
         }
 

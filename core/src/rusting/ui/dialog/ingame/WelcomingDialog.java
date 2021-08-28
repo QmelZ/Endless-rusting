@@ -98,8 +98,6 @@ public class WelcomingDialog extends CustomBaseDialog {
 
             if(enableSkip) {
                 t.button(Core.atlas.drawable("check-on"), () -> {
-                    //Varsr.username = Vars.player.name();
-                    //Core.settings.put("settings.er.username", Varsr.username);
                     hide();
                 });
             }

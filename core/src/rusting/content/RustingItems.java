@@ -6,7 +6,7 @@ import mindustry.type.Item;
 
 public class RustingItems implements ContentList {
     public static Item
-        melonaleum, bulastelt, taconite, halsinte, cameoShardling
+        melonaleum, bulastelt, taconite, halsinte, cameoShardling, camaintAmalgam
     ;
     @Override
     public void load() {
@@ -35,6 +35,13 @@ public class RustingItems implements ContentList {
         }};
 
         cameoShardling = new Item("cameo-shardling", Color.valueOf("#576561")){{
+            hardness = 1;
+            cost = 0.86f;
+            charge = 0.35f;
+            flammability = -0.15f;
+        }};
+
+        camaintAmalgam = new Item("camaint-amalgamate", Color.valueOf("#63726e")){{
             hardness = 1;
             cost = 0.86f;
             charge = 0.35f;
