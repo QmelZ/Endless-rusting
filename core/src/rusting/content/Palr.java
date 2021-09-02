@@ -15,6 +15,7 @@ public class Palr {
         dustriken = Color.valueOf("#70696c"),
         lightstriken = Color.valueOf("#ddcece"),
         darkPyraBloom = new Color(Pal.darkPyraFlame).lerp(Color.white, 0.15f),
-        camaintLiquid = Color.valueOf("#586b5f")
+        camaintLiquid = Color.valueOf("#586b5f"),
+        camaintLightning = Color.valueOf("#86958c");
     ;
 }

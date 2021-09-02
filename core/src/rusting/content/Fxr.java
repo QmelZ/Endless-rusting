@@ -523,5 +523,14 @@ public class Fxr{
             Draw.color(Palr.pulseBullet, Items.titanium.color, (x + y)/39 % 1);
             Fill.square(e.x + x, e.y + y - e.fin() * 36, e.fout() * 2.35f, e.fout() * 360);
         });
+    }),
+
+    regionDrop = new Effect(125, e -> {
+        if(!(e.data instanceof TextureRegion)) return;
+        TextureRegion region = ((TextureRegion) e.data);
+        Draw.alpha(Math.min(e.fout() * 10, 1));
+        randLenVectors(e.id, 1, e.finpow() * 16, e.rotation, 360, (x, y) -> {
+            Draw.rect(region, e.x + x, e.y + Mathf.clamp(10 - e.fslope() * e.fslope() * 10, -9, 1), e.rotation);
+        });
     });
 }

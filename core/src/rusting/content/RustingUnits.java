@@ -77,7 +77,7 @@ public class RustingUnits implements ContentList{
     public static CraeUnitType
             duono, duoly, duanga;
     public static UnitType
-            marrow, metaphys, ribigen, spinascene,
+            marrow, metaphys, ribigen, spinascene, trumpedoot,
             fahrenheit, celsius;
     public static UnitType
         stingray;
@@ -295,7 +295,7 @@ public class RustingUnits implements ContentList{
         EntityMapping.nameMap.put("marrow", BaseUnit::new);
         marrow = new UnitType("marrow"){{
             hitSize = 8;
-            health = 155;
+            health = 335;
             armor = 1;
             speed = 0.5225f;
             accel = 0.5f;
@@ -338,7 +338,7 @@ public class RustingUnits implements ContentList{
         EntityMapping.nameMap.put("metaphys", BaseUnit::new);
         metaphys = new UnitType("metaphys"){{
             hitSize = 10;
-            health = 540;
+            health = 830;
             armor = 4;
             speed = 0.45f;
             accel = 0.15f;
@@ -384,7 +384,7 @@ public class RustingUnits implements ContentList{
         EntityMapping.nameMap.put("ribigen", BaseUnit::new);
         ribigen = new UnitType("ribigen"){{
             hitSize = 13;
-            health = 1140;
+            health = 1235;
             armor = 10;
             speed = 0.35f;
             accel = 0.35f;
@@ -475,13 +475,13 @@ public class RustingUnits implements ContentList{
             );
 
             immunities.addAll(
-                    StatusEffects.wet,
-                    StatusEffects.burning,
-                    StatusEffects.sporeSlowed,
-                    StatusEffects.sapped,
-                    RustingStatusEffects.shieldShatter,
-                    RustingStatusEffects.amberstriken,
-                    RustingStatusEffects.umbrafliction
+                StatusEffects.wet,
+                StatusEffects.burning,
+                StatusEffects.sporeSlowed,
+                StatusEffects.sapped,
+                RustingStatusEffects.shieldShatter,
+                RustingStatusEffects.amberstriken,
+                RustingStatusEffects.umbrafliction
             );
 
             weapons.addAll(
@@ -508,17 +508,6 @@ public class RustingUnits implements ContentList{
                     inaccuracy = 4;
                     recoil = 3;
                 }},
-                new Weapon("endless-rusting-spinascene-beam"){{
-                    x = 16.25f;
-                    y = -5.25f;
-                    bullet = RustingBullets.fossilShard;
-                    shootCone = 90;
-                    shots = 4;
-                    shotDelay = 5;
-                    reload = 430;
-                    inaccuracy = 4;
-                    recoil = 3;
-                }},
                 new Weapon("none"){{
                     x = 0;
                     y = 0;
@@ -531,6 +520,72 @@ public class RustingUnits implements ContentList{
                     shootCone = 360;
                     rotate = true;
                 }}
+            );
+        }};
+
+        EntityMapping.nameMap.put("trumpedoot", BaseUnit::new);
+        trumpedoot = new UnitType("trumpedoot"){{
+            hitSize = 28;
+            health = 32000;
+            armor = 23;
+            speed = 0.35f;
+            accel = 0.65f;
+            drag = 0.45f;
+            rotateSpeed = 0.95f;
+            lightRadius = hitSize * 4.5f;
+            lightColor = Palr.dustriken;
+            lightOpacity = 0.013f;
+            itemCapacity = 125;
+            commandLimit = 5;
+            mechLegColor = Palr.dustriken;
+
+            constructor = BaseUnit::new;
+
+            abilities.addAll(
+                new RegenerationAbility(1.3f),
+                new SpeedupAbility(){{
+                    range = 115;
+                    lineThickness = 7;
+                    laserOffset = 2.35f;
+                    maxWidth = 2;
+                    x = 15.5f;
+                    mirror = true;
+                }}
+            );
+
+            weapons.addAll(
+                new Weapon("endless-rusting-triumpedoot-weapon"){{
+                    bullet = RustingBullets.gunnersVortex;
+                    reload = 195;
+                    shootX = 21;
+                    shootY = 6;
+                    shots = 4;
+                    x = 0;
+                    shootCone = 360;
+                    spacing = 15;
+                    alternate = false;
+                    top = false;
+                    recoil = 15;
+                    shake = 5;
+                }},
+                new Weapon("none"){{
+                    x = 0;
+                    mirror = false;
+                    shots = 3;
+                    spacing = 120;
+                    shootCone = 360;
+                    reload = 1200;
+                    bullet = RustingBullets.guardianVortex;
+                    shotDelay = 5;
+                }}
+            );
+            immunities.addAll(
+                StatusEffects.wet,
+                StatusEffects.burning,
+                StatusEffects.sporeSlowed,
+                StatusEffects.sapped,
+                RustingStatusEffects.amberstriken,
+                RustingStatusEffects.umbrafliction
             );
         }};
 

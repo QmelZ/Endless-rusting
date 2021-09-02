@@ -56,6 +56,7 @@ public class RustingWeathers implements ContentList{
             sound = Sounds.rain;
             soundVol = 0.45f;
             duration = 6.35f * Time.toMinutes;
+            drawLayer = Layer.overlayUI;
             attrs.set(Attribute.light, 0.75f);
             attrs.set(Attribute.water, 0.35f);
         }};

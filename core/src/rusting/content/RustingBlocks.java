@@ -2,8 +2,7 @@ package rusting.content;
 
 import arc.Events;
 import arc.graphics.Color;
-import arc.struct.EnumSet;
-import arc.struct.Seq;
+import arc.struct.*;
 import arc.util.Log;
 import arc.util.Time;
 import mindustry.Vars;
@@ -76,7 +75,7 @@ public class RustingBlocks implements ContentList{
         //ore blocks
         melonaleum, taconite,
         //crafting
-        bulasteltForgery, desalinationMixer, cameoCrystallisingBasin, cameoPaintMixer,
+        bulasteltForgery, desalinationMixer, cameoCrystallisingBasin, cameoPaintMixer, camaintAmalgamator,
         //defense
         terraMound, terraMoundLarge, wol,
         //power
@@ -435,6 +434,21 @@ public class RustingBlocks implements ContentList{
             consumes.items(with(Items.lead, 3, Items.silicon, 1, RustingItems.halsinte, 2));
             consumes.liquid(Liquids.water, 0.125f);
         }};
+
+        camaintAmalgamator = new GenericCrafter("camaint-amalgamator"){{
+            requirements(Category.crafting, with(Items.lead, 65, Items.graphite, 15, Items.silicon, 35, Items.sand, 85));
+            buildVisibility = BuildVisibility.hidden;
+            craftEffect = Fx.none;
+            outputItem = new ItemStack(RustingItems.camaintAmalgam, 8);
+            craftTime = 150;
+            size = 2;
+            hasPower = true;
+            hasLiquids = true;
+
+            consumes.power(3.25f);
+            consumes.liquid(RustingLiquids.cameaint, 0.0635f);
+            consumes.items(with(Items.titanium, 3, RustingItems.bulastelt, 4, RustingItems.cameoShardling, 2));
+        }};
         //endregion crafting
 
         //region defense
@@ -513,6 +527,7 @@ public class RustingBlocks implements ContentList{
             health = 95;
             speed = 0.04f;
             displayedSpeed = 5.5f;
+            floating = true;
         }};
 
         //endregion distribution
@@ -927,8 +942,17 @@ public class RustingBlocks implements ContentList{
         }};
 
         tether = new HarpoonTurret("tether"){{
-            requirements(Category.turret, with(Items.lead, 75, Items.titanium, 35, RustingItems.camaintAmalgam, 55));
+            requirements(Category.turret, with(Items.lead, 75, Items.titanium, 55, Items.thorium, 15, RustingItems.camaintAmalgam, 75));
             size = 2;
+            health = 350 * size * size;
+            shootLength = 6.25f;
+            reloadTime = 115;
+            range = 245;
+            pullStrength = 85;
+            ammoTypes = ObjectMap.of(RustingItems.camaintAmalgam, RustingBullets.cameoSmallHarpoon);
+            shootSound = ModSounds.harpoonLaunch;
+            shootEffect = Fx.shootBig;
+            shootShake = 3;
         }};
 
         prikend = new PowerTurret("prikend"){{
@@ -987,7 +1011,7 @@ public class RustingBlocks implements ContentList{
             recoilAmount = 2f;
             reloadTime = 65f;
             powerUse = 6f;
-            shootShake = 2f;
+            shootShake = 5f;
             shootEffect = Fxr.shootMhemFlame;
             smokeEffect = Fx.none;
             heatColor = Pal.darkPyraFlame;
@@ -1010,7 +1034,7 @@ public class RustingBlocks implements ContentList{
             reloadTime = 145f;
             shootCone = 360;
             powerUse = 8f;
-            shootShake = 2f;
+            shootShake = 1f;
             shootEffect = Fxr.shootMhemFlame;
             smokeEffect = Fx.none;
             heatColor = Palr.dustriken;
@@ -1258,7 +1282,8 @@ public class RustingBlocks implements ContentList{
             requirements(Category.units, with(Items.copper, 75, RustingItems.taconite, 55, RustingItems.bulastelt, 30));
             plans = Seq.with(
                 new UnitPlan(RustingUnits.marrow, 2345, with(Items.silicon, 35, Items.copper, 15, RustingItems.taconite, 25)),
-                new UnitPlan(RustingUnits.stingray, 60, with())
+                new UnitPlan(RustingUnits.stingray, 60, with()),
+                    new UnitPlan(RustingUnits.trumpedoot, 60, with())
             );
             size = 3;
             consumes.power(0.85f);

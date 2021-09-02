@@ -50,7 +50,7 @@ public class PulseGeneratorAbility extends MountAbility {
                 building.addPulse(pulse);
                 timeSincePulse = 0;
             }
-            else ((CraeUnitEntity) unit).addPulse(pulse);
+            else if(unit instanceof CraeUnitEntity) ((CraeUnitEntity) unit).addPulse(pulse);
             timer = 0;
         }
     }

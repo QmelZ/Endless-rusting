@@ -3,12 +3,11 @@ package rusting.graphics;
 
 import arc.Core;
 import arc.graphics.*;
-import arc.graphics.g2d.PixmapRegion;
-import arc.graphics.g2d.TextureRegion;
+import arc.graphics.g2d.*;
+import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.struct.Seq;
-import arc.util.Log;
-import arc.util.Nullable;
+import arc.util.*;
 import mindustry.core.Version;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
@@ -111,6 +110,19 @@ public class Drawr {
         });
         return stencil;
     };
+
+    //draws a chain of sprites
+    public static void drawChain(TextureRegion region, float x, float y, float endx, float endy, float drawRotation){
+        float angleToEnd = Mathf.angle(endx - x, endy - y);
+        float distance = Mathf.dst(x, y, endx, endy);
+        float remainder = distance % region.height/4;
+        float pixremainder = distance * 4 % region.height;
+        for (int i = 0; i < distance/region.height * 4; i++) {
+            Tmp.v1.trns(angleToEnd, distance - i * region.height/4 + remainder - region.height/8).add(x ,y);
+            Draw.rect(region, Tmp.v1.x, Tmp.v1.y, drawRotation + angleToEnd);
+        }
+        Draw.rect(region, x, y, region.width/4, pixremainder/4, drawRotation + angleToEnd);
+    }
 
     //oh boy, here we go again
     public static void fullSpriteGenerator(UnitType unit){

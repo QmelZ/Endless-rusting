@@ -19,8 +19,8 @@ public class AutoreloadItemTurret extends ItemTurret {
 
     public class AutoreloadItemTurretBuild extends ItemTurretBuild{
         @Override
-        public void update() {
-            super.update();
+        public void updateTile() {
+            super.updateTile();
             if(reload <= autoreloadThreshold * reloadTime && !isShooting()) {
                 reload = Math.min(reload + Time.delta / reloadTime * baseReloadSpeed() * 60 * 3, autoreloadThreshold * reloadTime);
             }

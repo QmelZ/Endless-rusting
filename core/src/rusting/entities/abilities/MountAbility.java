@@ -4,6 +4,7 @@ import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
+import arc.math.Mathf;
 import mindustry.entities.abilities.Ability;
 import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
@@ -21,6 +22,7 @@ public class MountAbility extends Ability {
     public float x = 0, y = 0;
 
     public boolean mirror;
+    public boolean mirrorRotation = false;
 
     protected float timer;
     private float angle = 0;
@@ -58,7 +60,7 @@ public class MountAbility extends Ability {
     public void draw(Unit unit){
         for(int i = 0; i < 2; i++){
             if(!mirror && i > 1) break;
-            drawMount(unit, angle, 1 - i * 2);
+            drawMount(unit, mirrorRotation ? angle * (1 - i * 2) : angle, 1 - i * 2);
         }
     }
 
@@ -67,7 +69,7 @@ public class MountAbility extends Ability {
             float mountx = mountx(unit, reverse);
             float mounty = mounty(unit, reverse);
 
-            Draw.z(unit.type.flying ? Layer.flyingUnit + 1 : Layer.turret);
+            Draw.z(Mathf.lerp(Layer.groundUnit, Layer.flyingUnit, unit.elevation));
 
             TextureRegion mount = Core.atlas.find(EndlessRusting.modname + "-" + mountName);
             if (Core.atlas.isFound(mount)) Draw.rect(mount, unit.x + mountx, unit.y + mounty,mount.width/4 * reverse, mount.height/4, angle);

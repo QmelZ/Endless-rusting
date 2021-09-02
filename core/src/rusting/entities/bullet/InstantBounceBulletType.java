@@ -15,7 +15,7 @@ import java.util.Arrays;
 public class InstantBounceBulletType extends BounceBulletType implements instantBullet{
 
     public float length = 100;
-    public float trailFadeIn = 5, trailFadeOut = 25;
+    public float trailFadeIn = 25, trailFadeOut = 125;
 
     public InstantBounceBulletType(float speed, float damage, String sprite) {
         super(speed, damage, sprite);

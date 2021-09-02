@@ -15,6 +15,7 @@ import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.Pal;
 import mindustry.world.blocks.defense.turrets.Turret.TurretBuild;
+import rusting.EndlessRusting;
 import rusting.entities.bullet.*;
 import rusting.math.Mathr;
 
@@ -23,11 +24,11 @@ import static rusting.content.RustingStatusEffects.*;
 public class RustingBullets implements ContentList{
 
     public static Cons<Bullet>
-    homing;
+    homing, homingOwner;
 
     public static BulletType
         //basic bullets
-        fossilShard, cloudyShard, craeShard, raehShard, mhemShard, fraeShard, paveShard, pavenShardling, darkShard, stingrayShard, spawnerGlass, spawnerGlassFrag, spawnerBulat, spawnerBulatFrag,
+        fossilShard, cloudyShard, craeShard, raehShard, mhemShard, fraeShard, paveShard, pavenShardling, darkShard, unhittableDarkShard, horizonShard, stingrayShard, spawnerGlass, spawnerGlassFrag, spawnerBulat, spawnerBulatFrag,
         //artillery
         mhemQuadStorm, craeQuadStorm, lightfractureTitanim, lightfractureBulat,
         //liquid
@@ -45,11 +46,13 @@ public class RustingBullets implements ContentList{
         //glaivs
         craeLightGlaive, craeLightGlaiveRight, craeLightGlaiveLeft, saltyLightGlaive,
         //instant bullets
-        horizonInstalt, nummingInstalt, timelessInstalt,
+        horizonInstalt, nummingInstalt, timelessInstalt, gunnersInstalt,
         //bullet spawning bullets
-        nummingVortex, cloudyVortex, boltingVortex, flamstrikenVortex,
+        nummingVortex, cloudyVortex, boltingVortex, flamstrikenVortex, gunnersVortex, guardianVortex,
         //flames
-        longThorFlame, longPyraFlame
+        longThorFlame, longPyraFlame,
+        //harpoons
+        cameoSmallHarpoon;
         ;
 
     @Override
@@ -71,11 +74,22 @@ public class RustingBullets implements ContentList{
                     bullet.fdata = 1;
                 }
             }
-            //essentualy goes to owner aim pos if owner has instance of the Turret Build.
+            //essentualy goes to owner aim pos.
 
         };
 
-        horizonInstalt = new InstantBounceBulletType(1, 22, "bullet"){{
+        homingOwner = bullet -> {
+            Tmp.v1.set(bullet.x, bullet.y);
+            if(bullet.owner instanceof Posc) {
+                Tmp.v1.set(((Posc) bullet.owner).x(), ((Posc) bullet.owner).y());
+            }
+            bullet.vel.setAngle(Angles.moveToward(bullet.rotation(), bullet.angleTo(Tmp.v1.x, Tmp.v1.y), Time.delta));
+            //essentualy goes to owner.
+
+        };
+
+        //low speed to make targeting work
+        horizonInstalt = new InstantBounceBulletType(0.0001f, 22, "bullet"){{
             width = 7;
             height = 8;
             lifetime = 54;
@@ -92,7 +106,7 @@ public class RustingBullets implements ContentList{
             bounceCap = 3;
         }};
 
-        nummingInstalt = new InstantBounceBulletType(1,  7.5f, "bullet"){{
+        nummingInstalt = new InstantBounceBulletType(0.0001f,  7.5f, "bullet"){{
             width = 7;
             height = 8;
             lifetime = 54;
@@ -110,7 +124,7 @@ public class RustingBullets implements ContentList{
             bounceCap = 4;
         }};
 
-        timelessInstalt = new InstantBounceBulletType(1, 38, "bullet"){{
+        timelessInstalt = new InstantBounceBulletType(0.0001f, 38, "bullet"){{
             width = 7;
             height = 8;
             lifetime = 192;
@@ -125,6 +139,23 @@ public class RustingBullets implements ContentList{
             drag = 0.005f;
             bounciness = 1.2;
             bounceCap = 2;
+        }};
+
+        gunnersInstalt = new InstantBounceBulletType(0.0001f, 38, "bullet"){{
+            width = 7;
+            height = 8;
+            lifetime = 192;
+            length = 216;
+            buildingDamageMultiplier = 0.55f;
+            shootEffect = Fx.shootSmall;
+            hitEffect = Fx.hitFuse;
+            bounceEffect = Fx.blockExplosionSmoke;
+            trailColor = Palr.dustriken;
+            status = shieldShatter;
+            knockback = 0.3f;
+            drag = 0.005f;
+            bounciness = 1.35f;
+            bounceCap = 5;
         }};
 
         fossilShard = new BounceBulletType(4, 9, "bullet"){{
@@ -307,6 +338,58 @@ public class RustingBullets implements ContentList{
             drag = 0.015f;
             bounciness = 0.95;
             absorbable = false;
+        }};
+
+        //Spawned by Trumpedoot
+        //God it's such a stupid name, but it's funny aswell
+        unhittableDarkShard = new BounceBulletType(6.5f, 25, "bullet"){{
+            consUpdate = bullet -> {
+                if(bullet.fin() % 0.04 < 0.01) Fxr.blackened.at(bullet.x, bullet.y, bullet.rotation());
+            };
+            despawnEffect = Fx.fireSmoke;
+            hitEffect = Fx.casing3Double;
+            bounceEffect = Fx.none;
+            shootEffect = Fxr.blackened;
+            frontColor = Color.darkGray;
+            backColor = Palr.voidBullet;
+            status = RustingStatusEffects.umbrafliction;
+            statusDuration = 160;
+            lightOpacity = 0;
+            width = 15;
+            height = 21;
+            lifetime = 17.5f;
+            hitEffect = Fx.hitFuse;
+            trailLength = 0;
+            homingPower = 0.125f;
+            drag = 0.015f;
+            bounciness = 0.95;
+            absorbable = true;
+            hittable = false;
+            reflectable = false;
+        }};
+
+        //essentualy a coppied Stingray Shard
+        horizonShard = new BounceBulletType(8, 99f, "bullet"){{
+            despawnEffect = Fxr.corrodedEffect;
+            bounceEffect = Fx.none;
+            shootEffect = Fx.none;
+            frontColor = Color.white;
+            backColor = Palr.lightstriken;
+            status = shieldShatter;
+            statusDuration = 160;
+            lightOpacity = 0;
+            width = 7;
+            height = 6;
+            trailLength = 6;
+            trailWidth = 4;
+            lifetime = 26.5f;
+            hitEffect = Fx.hitFuse;
+            drag = 0.015f;
+            bounciness = 0.95;
+            buildingDamageMultiplier = 1.75f;
+            reflectable = false;
+            hittable = false;
+            absorbable = true;
         }};
 
         stingrayShard = new BounceBulletType(8, 28f, "bullet"){{
@@ -1031,7 +1114,7 @@ public class RustingBullets implements ContentList{
             bullets = Seq.with(
                 new BulletSpawner(){{
                     bullet = cloudyShard;
-                    reloadTime = 9.5f;
+                    reloadTime = 3.5f;
                     manualAiming = true;
                     inaccuracy = 1;
                     intervalIn = 95;
@@ -1039,7 +1122,7 @@ public class RustingBullets implements ContentList{
                 }},
                 new BulletSpawner(){{
                     bullet = cloudyShard;
-                    reloadTime = 3.5f;
+                    reloadTime = 9.5f;
                     manualAiming = false;
                     idleInaccuracy = 360;
                     inaccuracy = 5;
@@ -1141,6 +1224,86 @@ public class RustingBullets implements ContentList{
 
         }};
 
+        gunnersVortex = new BulletSpawnBulletType(0, 125, "none"){{
+            useRange = true;
+            recoil = 3;
+            bullets = Seq.with(
+                new BulletSpawner(){{
+                    bullet = horizonShard;
+                    reloadTime = 25;
+                    shootSound = Sounds.artillery;
+                    intervalIn = 10;
+                    intervalOut = 10;
+                }},
+                new BulletSpawner(){{
+                    bullet = horizonShard;
+                    reloadTime = 15;
+                    shootSound = Sounds.artillery;
+                    intervalIn = 10;
+                    intervalOut = 10;
+                }}
+            );
+            hitSound = Sounds.release;
+            frontColor = Palr.lightstriken;
+            backColor = Pal.bulletYellowBack;
+            despawnEffect = Fxr.instaltSummonerExplosion;
+            lifetime = 158f;
+            width = height = 11f;
+            splashDamageRadius = 35f * 0.75f;
+            splashDamage = 33f;
+            shootEffect = Fx.shootBig;
+            trueSpeed = 1.25f;
+
+            shrinkX = 0.15f;
+            shrinkY = 0.63f;
+
+            scaleDrawIn = 2.5f;
+            scaleDrawOut = 7f;
+            absorbable = false;
+            reflectable = false;
+            hittable = true;
+        }};
+
+        guardianVortex = new BulletSpawnBulletType(0, 1550, "none"){{
+            consUpdate = homingOwner;
+            trueSpeed = 1;
+
+            useRange = true;
+            range = 210;
+            keepVelocity = false;
+
+            bullets = Seq.with(
+                new BulletSpawner(){{
+                    bullet = unhittableDarkShard;
+                    reloadTime = 6.5f;
+                    shootSound = Sounds.none;
+                    intervalIn = 125;
+                    intervalOut = 125;
+                    lifetimeMultiplier = 2;
+                }}
+            );
+            frontColor = Palr.voidBullet;
+            backColor = Palr.voidBullet;
+            despawnEffect = Fx.sparkShoot;
+            lifetime = 1200;
+            width = height = 11f;
+            splashDamage = 33f;
+            homingPower = 0.02f;
+            homingRange = 50;
+            splashDamageRadius = 35f * 0.75f;
+            shootEffect = Fx.shootBig;
+
+            shrinkX = 0.15f;
+            shrinkY = 0.63f;
+
+            scaleDrawIn = 15;
+            scaleDrawOut = 15;
+            drawSize = 9;
+            absorbable = false;
+            hittable = true;
+            reflectable = false;
+        }};
+
         longThorFlame = new BulletType(4.35f, 34.5f){{
             ammoMultiplier = 6f;
             hitSize = 9f;
@@ -1169,6 +1332,16 @@ public class RustingBullets implements ContentList{
             status = StatusEffects.melting;
             hittable = false;
             reflectable = false;
+        }};
+
+        cameoSmallHarpoon = new BlockHarpoonBulletType(10.15f, 32, EndlessRusting.modname + "-cameo-small-harpoon") {{
+            lifetime = 28.4f;
+            homingPower = 0.15f;
+            width = 32;
+            height = 32;
+            lightning = 4;
+            lightningLength = 8;
+            hitSound = Sounds.spark;
         }};
     }
 }

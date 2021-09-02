@@ -6,14 +6,17 @@ import arc.graphics.Color;
 import arc.input.KeyCode;
 import arc.math.Mathf;
 import arc.struct.Seq;
-import arc.util.*;
+import arc.util.Time;
+import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.StatusEffects;
 import mindustry.game.EventType;
+import mindustry.game.EventType.FileTreeInitEvent;
 import mindustry.game.EventType.Trigger;
 import mindustry.game.Team;
 import mindustry.gen.Call;
 import mindustry.mod.Mod;
+import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
 import mindustry.world.blocks.storage.CoreBlock.CoreBuild;
 import rusting.content.*;
@@ -25,9 +28,11 @@ public class EndlessRusting extends Mod{
 
     public static RustedSettingAdder settingAdder = new RustedSettingAdder();
     private static Seq<UnitType> immunityUnits;
+    private static Seq<UnitType> empImmune;
+    private static Seq<StatusEffect> whitelistedStuns = Seq.with(StatusEffects.unmoving);
 
     public EndlessRusting(){
-
+        Events.on(FileTreeInitEvent.class, e -> ModSounds.load());
         Core.settings.defaults("er.drawtrails", true);
         Core.settings.defaults("er.advancedeffects", true);
 
@@ -39,6 +44,7 @@ public class EndlessRusting extends Mod{
 
         Events.on(EventType.ContentInitEvent.class, e -> {
             Varsr.content.init();
+
         });
 
         Events.on(EventType.UnitCreateEvent.class,
@@ -95,7 +101,6 @@ public class EndlessRusting extends Mod{
 
     @Override
     public void init(){
-        Vars.enableConsole = true;
         Varsr.init();
     }
 
@@ -105,15 +110,26 @@ public class EndlessRusting extends Mod{
         settingAdder.init();
         Varsr.content.load();
         immunityUnits = Seq.with(RustingUnits.stingray);
+        empImmune = Seq.with(RustingUnits.marrow, RustingUnits.metaphys, RustingUnits.ribigen, RustingUnits.spinascene, RustingUnits.trumpedoot);
+
         Vars.content.statusEffects().each(s -> {
             //chek for NaN damage
             if(!s.name.contains("endless-rusting") && !s.name.contains("pixelcraft") && (s.disarm == true || s.damage == s.damage && s.damage >= 1 || s.speedMultiplier <= 0.85f || s.healthMultiplier < 0.85f || s.damageMultiplier < 0.85f)) immunityUnits.each(unit -> unit.immunities.add(s));
+            if(hasPower(s.name) || hasPower(s.localizedName) || s.description != null && hasPower(s.description)) empImmune.each(u -> u.immunities.add(s));
 
         });
         RustingUnits.stingray.immunities.remove(StatusEffects.melting);
         RustingUnits.stingray.immunities.remove(StatusEffects.tarred);
 
 
+
+    }
+
+    private static boolean hasPower(String string){
+        if(string == null) return false;
+        String lowerString = string;
+        lowerString.toLowerCase();
+        return lowerString.contains("emp") || string.contains("electri") || string.contains("electrif") || string.contains("shocked");
     }
 
     @Override

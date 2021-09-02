@@ -7,8 +7,7 @@ import arc.func.Cons;
 import arc.math.Mathf;
 import arc.struct.Queue;
 import arc.struct.Seq;
-import arc.util.Log;
-import arc.util.Tmp;
+import arc.util.*;
 import mindustry.Vars;
 import mindustry.content.Blocks;
 import mindustry.content.StatusEffects;
@@ -24,6 +23,7 @@ import rusting.content.RustingStatusEffects;
 import rusting.core.RustedContentLoader;
 import rusting.core.Rusting;
 import rusting.core.holder.ItemScoreHolder;
+import rusting.entities.abilities.SpeedupAbility;
 import rusting.game.RustingEvents.AchievementUnlockEvent;
 import rusting.interfaces.PulseCanalInput;
 import rusting.interfaces.PulseInstantTransportation;
@@ -132,7 +132,6 @@ public class Varsr implements Loadable {
                 ){
                     RustingAchievements.theBoatmansCursedBoatman.unlock();
                     Events.fire(new AchievementUnlockEvent(RustingAchievements.theBoatmansCursedBoatman));
-                    RustingAchievements.theBoatmansCursedBoatman.locked();
                 }
             }
         };
@@ -155,7 +154,12 @@ public class Varsr implements Loadable {
         );
 
         Events.on(Trigger.update.getClass(), e -> {
-            if(!Vars.state.isPaused() && Vars.player.unit() != null) lerpedPlayerElevation = Mathf.lerp(lerpedPlayerElevation, Vars.player.unit().elevation, 0.1f);
+            if(Vars.state.isPaused()) return;
+            if(Vars.player.unit() != null) lerpedPlayerElevation = Mathf.lerp(lerpedPlayerElevation, Vars.player.unit().elevation, 0.1f);
+            SpeedupAbility.speedupBullets.each(b -> {
+                SpeedupAbility.speedupBullets.remove(b);
+                b.time += Time.delta;
+            });
         });
 
         Log.info("Loaded Varsr");
@@ -163,6 +167,7 @@ public class Varsr implements Loadable {
     }
 
     public static void debug(){
+        Vars.enableConsole = true;
         Vars.content.blocks().each(b -> {
             if(b.name.contains("endless-rusting") && b.buildVisibility == BuildVisibility.hidden && b.synthetic()) b.buildVisibility = BuildVisibility.shown;
         });
