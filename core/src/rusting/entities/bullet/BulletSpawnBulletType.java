@@ -6,10 +6,12 @@ import arc.graphics.g2d.*;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.struct.Seq;
+import arc.util.Nullable;
 import arc.util.Time;
 import mindustry.content.Bullets;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BulletType;
+import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.world.blocks.defense.turrets.Turret.TurretBuild;
 import rusting.content.Palr;
@@ -21,6 +23,9 @@ public class BulletSpawnBulletType extends ConsBulletType{
     public float finalFragBullets = 1;
 
     public float scaleDrawIn = 4, scaleDrawOut = 4, drawSize = 4;
+    public boolean useRange = false;
+    public float range = 0;
+    public float trueSpeed = 0;
 
     public static class BulletSpawner{
         public BulletType bullet = Bullets.standardCopper;
@@ -33,6 +38,7 @@ public class BulletSpawnBulletType extends ConsBulletType{
         //allows owner to aim for the bullet.
         public boolean manualAiming = true;
         public Sound shootSound = Sounds.none;
+        public float lifetimeMultiplier = 1, speedMultiplier = 1;
     }
 
     public Seq<BulletSpawner> bullets = new Seq<BulletSpawner>();
@@ -43,6 +49,7 @@ public class BulletSpawnBulletType extends ConsBulletType{
 
     public BulletSpawnBulletType(float speed, float damage, String sprite) {
         super(speed, damage, sprite);
+        this.trueSpeed = speed;
         this.keepVelocity = false;
         this.collides = false;
         this.frontColor = Palr.lightstriken;
@@ -55,6 +62,19 @@ public class BulletSpawnBulletType extends ConsBulletType{
         super.init(b);
         if(b != null){
             b.data = new float[bullets.size];
+        }
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        if(useRange && range <= 0) {
+            bullets.each(b -> {
+                if (b.bullet.range() > range && b.bullet != this) range = b.bullet.range();
+            });
+            useRange = false;
+            range += range();
+            useRange = true;
         }
     }
 
@@ -90,7 +110,7 @@ public class BulletSpawnBulletType extends ConsBulletType{
                         if(spawner.inaccuracy != 0) rotation += Math.random() * spawner.inaccuracy;
                     }
                 }
-                spawner.bullet.create(b.owner, b.team, b.x, b.y, rotation + spawner.inaccuracy);
+                spawner.bullet.create(b.owner, b.team, b.x, b.y, rotation + spawner.inaccuracy, spawner.speedMultiplier, spawner.lifetimeMultiplier);
                 if(spawner.shootSound != Sounds.none) spawner.shootSound.at(b.x, b.y);
                 ((float[]) b.data)[i] = 0;
                 b.fdata = rotation;
@@ -125,5 +145,33 @@ public class BulletSpawnBulletType extends ConsBulletType{
             Lines.stroke((scaling - i) * spacing/5);
             Lines.circle(b.x, b.y, (scaling - i) * spacing + i + drawSize);
         }
+    }
+
+    @Override
+    public float range() {
+        return useRange ? range : super.range();
+    }
+
+    public Bullet create(@Nullable Entityc owner, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, Object data){
+        Bullet bullet = Bullet.create();
+        bullet.type = this;
+        bullet.owner = owner;
+        bullet.team = team;
+        bullet.time = 0f;
+        bullet.vel.trns(angle, trueSpeed * velocityScl);
+        if(backMove){
+            bullet.set(x - bullet.vel.x * Time.delta, y - bullet.vel.y * Time.delta);
+        }else{
+            bullet.set(x, y);
+        }
+        bullet.lifetime = lifetime * lifetimeScl;
+        bullet.data = data;
+        bullet.drag = drag;
+        bullet.hitSize = hitSize;
+        bullet.damage = (damage < 0 ? this.damage : damage) * bullet.damageMultiplier();
+        bullet.add();
+
+        if(keepVelocity && owner instanceof Velc) bullet.vel.add(((Velc) bullet.owner).vel());
+        return bullet;
     }
 }

@@ -424,6 +424,67 @@ public class Fxr{
         Fill.circle(e.x, e.y, e.fout()  * e.fout() * 45);
     }),
 
+    craeNukebuthehe = new Effect(265, 225, e -> {
+        e.scaled(25f, b -> {
+            color(Color.white, Palr.pulseShieldEnd, b.fin());
+            stroke(b.fout() * b.fslope() * 3f);
+            Lines.circle(b.x, b.y, (b.finpow()) * 155);
+        });
+
+        e.scaled(34f, b -> {
+            color(Color.white, Palr.pulseBullet, b.fin());
+            stroke(b.fslope() * b.fslope() * 4f);
+            Lines.circle(b.x, b.y, (b.finpow()) * 75f);
+        });
+
+        e.scaled(45, b -> {
+            Draw.alpha(Math.min(e.fout() * 2, 1));
+            color(Color.white, Palr.pulseShieldEnd, b.fin());
+            stroke(b.fslope() * b.fslope() * 4f);
+            Lines.circle(b.x, b.y, b.finpow() * 225f);
+            color(Color.white, Palr.lightstriken, b.fin());
+            Lines.circle(b.x, b.y, b.finpow() * 197f);
+        });
+
+        e.scaled(125, b -> {
+            Draw.alpha(Math.min(e.fout() * 3, 1));
+            color(Color.white, Palr.pulseShieldEnd, b.fin());
+            stroke(b.fslope() * b.fslope() * 4f + 0.65f);
+            Angles.randLenVectors(e.id, 35, Mathf.absin(b.finpow() * 4, 155), e.rotation, 360, (x, y) -> {
+                Lines.circle(e.x + x, e.y + y, b.fout() * b.fout());
+            });
+        });
+
+        Drawf.light(e.x, e.y, e.finpow() * 125, Palr.pulseBullet, e.fslope() * e.fslope());
+
+        for(int i : Mathf.signs){
+            color(Palr.pulseBullet);
+            Drawf.tri(e.x, e.y, 21f * e.fout(), 215f - e.finpow() * 175, Angles.moveToward(e.rotation - 65f * i, e.rotation, e.finpow() * 65));
+            color(Palr.pulseChargeEnd);
+            Drawf.tri(e.x, e.y, 27 * (1 - e.finpow()), 180f - e.finpow() * 65, Angles.moveToward(e.rotation + 85f * i, e.rotation, e.finpow() * 95));
+            color(Palr.pulseChargeEnd);
+            Drawf.tri(e.x, e.y, 35 * (1 - e.finpow()), 190f - e.finpow() * 70, Angles.moveToward(e.rotation + 85f * i, e.rotation, e.finpow() * 95));
+        }
+
+        for(int i : Mathf.signs){
+            color(Color.white);
+            Draw.alpha(0.35f * e.fin() + 0.55f * e.fslope());
+            Tmp.v1.trns(Angles.moveToward(e.rotation + 85f * i, 35, e.finpow() * 95), 150f - e.fout() * 167);
+            Drawf.tri(e.x, e.y, 17f * e.fout(), 95f - e.fout() * 45, Angles.moveToward(e.rotation - 65f * i, 35, e.finpow() * 65));
+            Tmp.v1.trns(Angles.moveToward(e.rotation + 85f * i, 35, e.finpow() * 95), 95f - e.fslope() * 45);
+            Drawf.tri(e.x, e.y, 15f * (1 - e.finpow()), 150f - e.fslope() * 75, Angles.moveToward(e.rotation + 85f * i, 35, e.finpow() * 135));
+        }
+        color(Palr.pulseChargeStart);
+
+        Draw.alpha(Math.min(e.finpow() * 5, 0.45f));
+
+        Fill.circle(e.x, e.y, e.fout() * e.fout() * 165);
+
+        Draw.alpha(Math.min(e.finpow() * 2, 1f));
+        Fill.circle(e.x, e.y, e.fout() * e.fout() * 55);
+        Drawf.light(e.x, e.y, e.finpow() * 150, Palr.pulseBullet, e.fslope() * e.fslope());
+    }),
+
 
     //modified flak explosion
     instaltSummonerExplosion = new Effect(45, e -> {
@@ -523,5 +584,16 @@ public class Fxr{
             Draw.color(Palr.pulseBullet, Items.titanium.color, (x + y)/39 % 1);
             Fill.square(e.x + x, e.y + y - e.fin() * 36, e.fout() * 2.35f, e.fout() * 360);
         });
-    });
+    }),
+
+    regionDrop = new Effect(125, e -> {
+        if(!(e.data instanceof TextureRegion)) return;
+        TextureRegion region = ((TextureRegion) e.data);
+        Draw.alpha(Math.min(e.fout() * 10, 1));
+        randLenVectors(e.id, 1, e.finpow() * 16, e.rotation, 360, (x, y) -> {
+            Draw.rect(region, e.x + x, e.y + Mathf.clamp(10 - e.fslope() * e.fslope() * 10, -9, 1), e.rotation);
+        });
+    })
+
+    ;
 }

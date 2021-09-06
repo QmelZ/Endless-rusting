@@ -56,12 +56,14 @@ public class RustingWeathers implements ContentList{
             sound = Sounds.rain;
             soundVol = 0.45f;
             duration = 6.35f * Time.toMinutes;
+            drawLayer = Layer.overlayUI;
             attrs.set(Attribute.light, 0.75f);
             attrs.set(Attribute.water, 0.35f);
         }};
 
         pulesweptGround = new BlindingParticleWeather("pulseswept-ground"){{
             color = Palr.pulseBullet;
+            blindingColor = Palr.darkerPulseChargeStart;
             drawNoise = true;
             sizeMax = 5;
             sizeMin = 2;
@@ -69,7 +71,7 @@ public class RustingWeathers implements ContentList{
             maxAlpha = 0.6f;
             density = 1550;
             baseSpeed = 1.25f;
-            opacityMultiplier = 0.15f;
+            opacityMultiplier = 0.375f;
             drawLayer = Layer.groundUnit + 0.5f;
             status = RustingStatusEffects.balancedPulsation;
             statusAir = false;
@@ -78,8 +80,8 @@ public class RustingWeathers implements ContentList{
             sound = Sounds.windhowl;
             duration = 2.45f * Time.toMinutes;
             opacityModifier = 5;
-            opacityGroundModifier = 0.55f;
-            opacityAirModifier = 0.35f;
+            opacityGroundModifier = 0.35f;
+            opacityAirModifier = 0.05f;
             attrs.set(Attribute.light, -0.95f);
             attrs.set(Attribute.water, -0.55f);
             attrs.set(Attribute.spores, -1);

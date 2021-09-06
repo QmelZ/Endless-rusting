@@ -8,15 +8,14 @@ import arc.scene.event.HandCursorListener;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.Table;
 import arc.util.Time;
-import mindustry.core.Version;
 import mindustry.gen.Sounds;
-import mindustry.gen.Tex;
 import rusting.Varsr;
 import rusting.content.RustingAchievements;
 import rusting.ctype.UnlockableAchievement;
 import rusting.game.RustingEvents.AchievementQuestionMarkClick;
 import rusting.game.RustingEvents.AchievementUnlockEvent;
 import rusting.ui.dialog.CustomBaseDialog;
+import rusting.ui.dialog.Texr;
 
 public class ERAchievementsDialog extends CustomBaseDialog {
 
@@ -53,7 +52,7 @@ public class ERAchievementsDialog extends CustomBaseDialog {
             if(achievement.unlocked()) {
                 image.addListener(
                     new Tooltip(tip -> {
-                        tip.background(Version.number >= 7 ? Core.atlas.getDrawable("button") : Tex.button).table(t2 -> {
+                        tip.background(Texr.button).table(t2 -> {
                             t2.add(achievement.localizedName);
                             t2.row();
                             t2.add(achievement.description);

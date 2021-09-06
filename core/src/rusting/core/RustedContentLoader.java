@@ -49,6 +49,7 @@ public class RustedContentLoader {
     }
 
     public void load(){
+
         each(c -> {
             if (c instanceof UnlockableERContent) {
                 UnlockableERContent content = (UnlockableERContent) c;

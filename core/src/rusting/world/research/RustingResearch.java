@@ -1,10 +1,13 @@
 package rusting.world.research;
 
+import arc.func.Boolf;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Log;
 import mindustry.Vars;
 import mindustry.game.Team;
+import mindustry.gen.Building;
+import mindustry.gen.Groups;
 import mindustry.io.JsonIO;
 import rusting.Varsr;
 import rusting.ctype.ResearchType;
@@ -176,6 +179,19 @@ public class RustingResearch {
             });
         });
         return returnTeamModule;
+    }
+
+    public Building getCenter(Seq<ResearchType> types){
+        Boolf<ResearchCenter> centercons = c -> {
+            Seq<ResearchType> reearchSeq = Seq.with();
+            reearchSeq.set(types);
+            c.researchTypes().each(r -> {
+                if(reearchSeq.contains(r)) reearchSeq.remove(r);
+            });
+            return reearchSeq.size == 0;
+        };
+
+        return Groups.build.find(b -> b.block instanceof ResearchCenter && centercons.get((ResearchCenter) b.block));
     }
 
     private ResearchCenter asResearchCenter(Object o){

@@ -62,7 +62,7 @@ public class StingrayUnitEntity extends AntiquimGuardianUnitEntity{
         trailSeq.get(1).update(x + Tmp.v1.x, y + Tmp.v1.y);
         if(shieldCharge >= 2000) {
             shieldCharge += addableShieldCharge;
-            addableShieldCharge = 1250;
+            addableShieldCharge = 750;
             shieldCharge = 0;
             tmpFloat2 = 120;
             Fxr.stingrayShieldPop.at(x, y, rotation, this);
@@ -72,7 +72,7 @@ public class StingrayUnitEntity extends AntiquimGuardianUnitEntity{
                 }
             });
         }
-        if(health < maxHealth) iframes = Math.max(iframes - Time.delta, 0);
+        if(health < maxHealth) iframes = Math.max(iframes - Time.delta/2, 0);
         if(addableShieldCharge > 0){
             iframes = Math.min(iframes + Math.min(addableShieldCharge, 5 * Time.delta), 2000);
             addableShieldCharge = Math.max(addableShieldCharge - 5 * Time.delta, 0);

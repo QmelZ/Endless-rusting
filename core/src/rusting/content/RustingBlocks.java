@@ -2,8 +2,7 @@ package rusting.content;
 
 import arc.Events;
 import arc.graphics.Color;
-import arc.struct.EnumSet;
-import arc.struct.Seq;
+import arc.struct.*;
 import arc.util.Log;
 import arc.util.Time;
 import mindustry.Vars;
@@ -29,13 +28,14 @@ import mindustry.world.meta.*;
 import rusting.core.holder.PanelHolder;
 import rusting.core.holder.ShootingPanelHolder;
 import rusting.game.RustingEvents.Trigger;
-import rusting.world.blocks.capsules.CapsuleCenter;
+import rusting.world.blocks.capsules.CapsuleBlockResearchCenter;
 import rusting.world.blocks.defense.turret.*;
 import rusting.world.blocks.environment.*;
 import rusting.world.blocks.logic.UnbreakableMessageBlock;
 import rusting.world.blocks.power.AttributeBurnerGenerator;
 import rusting.world.blocks.production.ConditionalDrill;
 import rusting.world.blocks.pulse.PulseBlock;
+import rusting.world.blocks.pulse.crafting.PulseCondensary;
 import rusting.world.blocks.pulse.crafting.PulseGenericCrafter;
 import rusting.world.blocks.pulse.defense.*;
 import rusting.world.blocks.pulse.distribution.*;
@@ -76,7 +76,7 @@ public class RustingBlocks implements ContentList{
         //ore blocks
         melonaleum, taconite,
         //crafting
-        bulasteltForgery, desalinationMixer, cameoCrystallisingBasin, cameoPaintMixer,
+        bulasteltForgery, desalinationMixer, cameoCrystallisingBasin, cameoPaintMixer, camaintAmalgamator,
         //defense
         terraMound, terraMoundLarge, wol,
         //power
@@ -95,7 +95,7 @@ public class RustingBlocks implements ContentList{
         //Siphon
         pulseSiphon,
         //crafting
-        pulseCondensery, pulseMelomaeMixer,
+        pulseCondensary, pulseMelomaeMixer,
         //Walls
         pulseBarrier, pulseBarrierLarge,
         //Research
@@ -118,6 +118,8 @@ public class RustingBlocks implements ContentList{
         pulseFactory, enlightenmentReconstructor, ascendanceReconstructor, pulseDistributor,
         //controll
         pulseDirectionalController, pulseContactSender,
+        //frae
+        fraeResarchCenter,
         //healer turrets
         thrum, spikent,
         //harpoons
@@ -266,6 +268,7 @@ public class RustingBlocks implements ContentList{
             speedMultiplier = 0.95f;
             variants = 3;
             attributes.set(Attribute.water, -0.85f);
+            wall = paileanWallen;
         }};
 
         paileanPathen = new Floor("pailean-pathen"){{
@@ -274,6 +277,7 @@ public class RustingBlocks implements ContentList{
             attributes.set(Attribute.water, -0.85f);
             attributes.set(Attribute.heat, 0.075f);
             blendGroup = paileanStolnen;
+            wall = paileanWallen;
         }};
 
         ebrinDrylon = new Floor("ebrin-drylon"){{
@@ -283,6 +287,7 @@ public class RustingBlocks implements ContentList{
             attributes.set(Attribute.water, -1f);
             attributes.set(Attribute.spores, -0.15f);
             attributes.set(Attribute.heat, 0.025f);
+            wall = paileanBarreren;
         }};
 
         classemStolnene = new Floor("classem-stolnene"){{
@@ -293,6 +298,7 @@ public class RustingBlocks implements ContentList{
             lightRadius = 10;
             attributes.set(Attribute.water, 0.15f);
             attributes.set(Attribute.heat, -0.15f);
+            wall = classemBarrreren;
         }};
 
 
@@ -306,6 +312,7 @@ public class RustingBlocks implements ContentList{
             attributes.set(Attribute.water, 0.75f);
             attributes.set(Attribute.heat, -0.55f);
             attributes.set(Attribute.spores, -0.15f);
+            wall = classemPulsen;
         }};
 
         classemPathen = new Floor("classem-pathen"){{
@@ -317,6 +324,7 @@ public class RustingBlocks implements ContentList{
             lightRadius = 7;
             attributes.set(Attribute.water, 1.35f);
             attributes.set(Attribute.heat, -0.35f);
+            wall = classemBarrreren;
         }};
 
         dripiveGrassen = new Floor("dripive-grassen"){{
@@ -324,10 +332,12 @@ public class RustingBlocks implements ContentList{
             attributes.set(Attribute.water, 1.14f);
             attributes.set(Attribute.spores, -0.25f);
             attributes.set(Attribute.heat, -0.35f);
+            wall = dripiveWallen;
         }};
 
         volenStolnene = new Floor("volen-stolnene"){{
             variants = 3;
+            wall = volenStolnene;
         }};
 
         paileanWallen = new StaticWall("pailean-wallen"){{
@@ -371,9 +381,10 @@ public class RustingBlocks implements ContentList{
         fraePulseCapedWall = new PulseBlock("pulse-capped-frae-wall"){{
             requirements(Category.defense, with(Items.titanium, 35, RustingItems.bulastelt, 15, RustingItems.cameoShardling, 25));
             buildVisibility = BuildVisibility.editorOnly;
+            researchTypes.add(RustingResearchTypes.capsule);
         }};
 
-        capsuleCenterTest = new CapsuleCenter("etst"){{
+        capsuleCenterTest = new CapsuleBlockResearchCenter("etst"){{
             requirements(Category.effect, with());
         }};
 
@@ -434,6 +445,21 @@ public class RustingBlocks implements ContentList{
             consumes.power(0.72f);
             consumes.items(with(Items.lead, 3, Items.silicon, 1, RustingItems.halsinte, 2));
             consumes.liquid(Liquids.water, 0.125f);
+        }};
+
+        camaintAmalgamator = new GenericCrafter("camaint-amalgamator"){{
+            requirements(Category.crafting, with(Items.lead, 65, Items.graphite, 15, Items.silicon, 35, Items.sand, 85));
+            buildVisibility = BuildVisibility.hidden;
+            craftEffect = Fx.none;
+            outputItem = new ItemStack(RustingItems.camaintAmalgam, 8);
+            craftTime = 150;
+            size = 2;
+            hasPower = true;
+            hasLiquids = true;
+
+            consumes.power(3.25f);
+            consumes.liquid(RustingLiquids.cameaint, 0.0635f);
+            consumes.items(with(Items.titanium, 3, RustingItems.bulastelt, 4, RustingItems.cameoShardling, 2));
         }};
         //endregion crafting
 
@@ -513,6 +539,7 @@ public class RustingBlocks implements ContentList{
             health = 95;
             speed = 0.04f;
             displayedSpeed = 5.5f;
+            floating = true;
         }};
 
         //endregion distribution
@@ -562,8 +589,8 @@ public class RustingBlocks implements ContentList{
             size = 1;
             powerLoss = 0.0025f;
             pulseReloadTime = 15;
-            energyTransmission = 3f;
-            pulseStorage = 25;
+            energyTransmission = 25f;
+            pulseStorage = 65;
             resistance = 0.075f;
             laserRange = 13;
             canOverload = false;
@@ -580,8 +607,8 @@ public class RustingBlocks implements ContentList{
             pulseReloadTime = 35;
             minRequiredPulsePercent = 0.15f;
             connectionsPotential = 2;
-            energyTransmission = 10f;
-            pulseStorage = 45;
+            energyTransmission = 35f;
+            pulseStorage = 95;
             overloadCapacity = 15;
             resistance = 0.075f;
             laserOffset = 3;
@@ -593,10 +620,12 @@ public class RustingBlocks implements ContentList{
         pulseResonator = new ConductivePulseBlock("pulse-resonator"){{
             requirements(Category.power, with(Items.copper, 35, Items.silicon, 20, Items.titanium, 10));
             centerResearchRequirements(true, with(Items.copper, 175, Items.coal, 45, Items.silicon, 90, Items.titanium, 75));
+            health = 350;
             size = 1;
             powerLoss = 0.00425f;
             resistance = 0;
-            pulseStorage = 175;
+            pulseStorage = 350;
+            energyTransmission = 2.5f;
             canOverload = false;
         }};
 
@@ -613,19 +642,22 @@ public class RustingBlocks implements ContentList{
             canOverload = false;
         }};
 
-        pulseCondensery = new PulseGenericCrafter("pulse-melonaleum-condensery"){{
-            requirements(Category.crafting, with(Items.copper, 55, Items.coal, 35, Items.silicon, 45, Items.titanium, 85));
+        pulseCondensary = new PulseCondensary("pulse-melonaleum-condensery"){{
+            requirements(Category.crafting, with(Items.copper, 345, Items.coal, 235, Items.silicon, 200, Items.titanium, 185, Items.metaglass, 130));
             centerResearchRequirements(true, with(Items.coal, 65, Items.silicon, 45, Items.pyratite, 25, Items.metaglass, 85));
             size = 2;
-            powerLoss = 0.15f;
-            pulseStorage = 150;
+            powerLoss = 0.35f;
+            pulseStorage = 1750;
             canOverload = false;
-            minRequiredPulsePercent = 0.45f;
-            customConsumes.pulse = 55;
+            minRequiredPulsePercent = 0.65f;
+            customConsumes.pulse = 350;
             craftTime = 85;
 
-            consumes.liquid(RustingLiquids.melomae, 0.85f);
-            outputItem = new ItemStack(RustingItems.melonaleum, 4);
+            drawer = new CondensaryDrawer();
+            itemCapacity = 70;
+
+            consumes.liquid(RustingLiquids.melomae, 1.925f);
+            outputItem = new ItemStack(RustingItems.melonaleum, 35);
         }};
 
         pulseMelomaeMixer = new PulseGenericCrafter("pulse-melomae-mixer"){{
@@ -889,6 +921,15 @@ public class RustingBlocks implements ContentList{
 
         //endregion pulse
 
+        //region frae
+
+        //temperary block
+        fraeResarchCenter = new CapsuleBlockResearchCenter("frae-research-center"){{
+            requirements(Category.effect, with(Items.copper, 60, Items.lead, 25, Items.silicon, 25));
+            size = 2;
+        }};
+        //endregion frae
+
         //region turrets
 
         thrum = new HealerBeamTurret("thrum"){{
@@ -927,8 +968,17 @@ public class RustingBlocks implements ContentList{
         }};
 
         tether = new HarpoonTurret("tether"){{
-            requirements(Category.turret, with(Items.lead, 75, Items.titanium, 35, RustingItems.camaintAmalgam, 55));
+            requirements(Category.turret, with(Items.lead, 75, Items.titanium, 55, Items.thorium, 15, RustingItems.camaintAmalgam, 75));
             size = 2;
+            health = 350 * size * size;
+            shootLength = 6.25f;
+            reloadTime = 115;
+            range = 245;
+            pullStrength = 85;
+            ammoTypes = ObjectMap.of(RustingItems.camaintAmalgam, RustingBullets.cameoSmallHarpoon);
+            shootSound = ModSounds.harpoonLaunch;
+            shootEffect = Fx.shootBig;
+            shootShake = 3;
         }};
 
         prikend = new PowerTurret("prikend"){{
@@ -987,7 +1037,7 @@ public class RustingBlocks implements ContentList{
             recoilAmount = 2f;
             reloadTime = 65f;
             powerUse = 6f;
-            shootShake = 2f;
+            shootShake = 5f;
             shootEffect = Fxr.shootMhemFlame;
             smokeEffect = Fx.none;
             heatColor = Pal.darkPyraFlame;
@@ -1010,7 +1060,7 @@ public class RustingBlocks implements ContentList{
             reloadTime = 145f;
             shootCone = 360;
             powerUse = 8f;
-            shootShake = 2f;
+            shootShake = 1f;
             shootEffect = Fxr.shootMhemFlame;
             smokeEffect = Fx.none;
             heatColor = Palr.dustriken;
@@ -1258,7 +1308,8 @@ public class RustingBlocks implements ContentList{
             requirements(Category.units, with(Items.copper, 75, RustingItems.taconite, 55, RustingItems.bulastelt, 30));
             plans = Seq.with(
                 new UnitPlan(RustingUnits.marrow, 2345, with(Items.silicon, 35, Items.copper, 15, RustingItems.taconite, 25)),
-                new UnitPlan(RustingUnits.stingray, 60, with())
+                new UnitPlan(RustingUnits.stingray, 60, with()),
+                    new UnitPlan(RustingUnits.trumpedoot, 60, with())
             );
             size = 3;
             consumes.power(0.85f);

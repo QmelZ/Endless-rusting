@@ -6,13 +6,17 @@ import rusting.ctype.ResearchType;
 public class RustingResearchTypes implements ContentList {
 
     public static ResearchType
-    pulse
+    pulse, capsule
     ;
 
     @Override
     public void load() {
 
         pulse = new ResearchType("pulse") {{
+
+        }};
+
+        capsule = new ResearchType("capsule") {{
 
         }};
 

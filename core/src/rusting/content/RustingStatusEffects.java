@@ -23,7 +23,7 @@ import rusting.type.statusEffect.*;
 
 public class RustingStatusEffects implements ContentList {
     public static StatusEffect
-            weather, fuesin, amberstriken, umbrafliction, macrosis, macotagus, balancedPulsation, hailsalilty, causticBurning, shieldShatter, corruptShield, fragmentaein, guardiansBlight;
+            weather, hpooned, fuesin, amberstriken, umbrafliction, macrosis, macotagus, balancedPulsation, hailsalilty, causticBurning, shieldShatter, corruptShield, fragmentaein, guardiansBlight;
     public static Cons
             corruptShieldCons;
 
@@ -36,6 +36,11 @@ public class RustingStatusEffects implements ContentList {
 
         //sued by weather and to see if unit was alive during a weather effect
         weather = new StatusEffect("weather"){
+
+        };
+
+        //used by harpoons to stop harpoons from targeting the same target as another
+        hpooned = new StatusEffect("hpooned"){
 
         };
 
@@ -65,6 +70,7 @@ public class RustingStatusEffects implements ContentList {
         amberstriken = new CrystalStatusEffect("amberstriken"){{
             speedMultiplier = 0.35F;
             transitionDamage = 10f;
+            hitSizeMax = 16;
             effect = Fx.plasticburn;
             init(() -> {
                 if(Version.number > 6) return;
@@ -89,6 +95,7 @@ public class RustingStatusEffects implements ContentList {
         umbrafliction = new CrystalStatusEffect("umbrafliction"){{
             transitionDamage = 45;
             speedMultiplier = 0.15F;
+            hitSizeMax = 21;
             effect = Fxr.blackened;
             init(() -> {
                 if(Version.number > 6) return;

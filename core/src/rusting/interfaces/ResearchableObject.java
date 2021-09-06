@@ -13,6 +13,10 @@ import rusting.world.modules.ResearchModule;
 
 public interface ResearchableObject {
 
+    default String name(){
+        return "defaukt";
+    }
+
     default Seq<ResearchType> researchTypes(){
         return null;
     }
@@ -22,11 +26,7 @@ public interface ResearchableObject {
     }
 
     default void centerResearchRequirements(ItemStack[] stack){
-        centerResearchRequirements(true, true, stack);
-    }
-
-    default void centerResearchRequirements(boolean requiresResearching, ItemStack[] stack){
-        centerResearchRequirements(true, requiresResearching, stack);
+        centerResearchRequirements(true, stack);
     }
 
     //backwards compatibility with my own code.
@@ -36,7 +36,7 @@ public interface ResearchableObject {
         return null;
     }
 
-    default void centerResearchRequirements(boolean reset, boolean requiresResearching, ItemStack[] stack){
+    default void centerResearchRequirements(boolean requiresResearching, ItemStack[] stack){
         if(getResearchModule() == null) return;
         getResearchModule().needsResearching = requiresResearching;
         getResearchModule().centerResearchRequirements = stack;

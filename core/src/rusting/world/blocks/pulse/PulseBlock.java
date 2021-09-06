@@ -17,6 +17,7 @@ import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.Ranged;
+import mindustry.type.ItemStack;
 import mindustry.ui.Bar;
 import mindustry.ui.Cicon;
 import mindustry.world.Block;
@@ -40,7 +41,7 @@ public class PulseBlock extends Block implements ResearchableBlock {
     //research types for the block
     public Seq<ResearchType> researchTypes = new Seq<ResearchType>();
     //research module with more specific information
-    public ResearchModule researchModule = new ResearchModule();
+    public ResearchModule researchModule;
 
     private boolean tmpBool = false;
 
@@ -130,6 +131,11 @@ public class PulseBlock extends Block implements ResearchableBlock {
     }
 
     @Override
+    public String name() {
+        return name;
+    }
+
+    @Override
     public TextureRegion researchUIcon() {
         return icon(Cicon.medium);
     }
@@ -141,6 +147,7 @@ public class PulseBlock extends Block implements ResearchableBlock {
 
     @Override
     public ResearchModule getResearchModule() {
+        if(researchModule == null) researchModule = new ResearchModule(ItemStack.with(), this);
         return researchModule;
     }
 
@@ -218,7 +225,7 @@ public class PulseBlock extends Block implements ResearchableBlock {
 
         @Override
         public PulseModule pulseModule() {
-            return PulseBlockc.super.pulseModule();
+            return pulseModule;
         }
 
         @Override
