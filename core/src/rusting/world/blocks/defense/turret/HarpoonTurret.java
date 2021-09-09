@@ -172,6 +172,7 @@ public class HarpoonTurret extends AutoreloadItemTurret {
                             if(hasHarpoon()) {
                                 BlockHarpoonBulletType bullet = getHarpoon();
                                 stuckOn.damagePierce(bullet.tearDamage);
+                                stuckOn.apply(bullet.bleedEffect, bullet.bleedEffectDuration);
                                 Fxr.instaltSummonerExplosion.at(harpoonPosition.x, harpoonPosition.y);
                                 Geometry.iterateLine(0, x, y, stuckOn.x, stuckOn.y, getHarpoon().chainRegion.height/4, (x2, y2) -> {
                                     Fxr.regionDrop.at(x2, y2, angleTo(harpoonPosition) - 90, getHarpoon().chainRegion);

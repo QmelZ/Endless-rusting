@@ -4,9 +4,11 @@ import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import mindustry.content.StatusEffects;
 import mindustry.entities.Lightning;
 import mindustry.entities.Units;
 import mindustry.gen.*;
+import mindustry.type.StatusEffect;
 import rusting.content.Palr;
 import rusting.world.blocks.defense.turret.HarpoonTurret.HarpoonTurretBuild;
 
@@ -16,9 +18,18 @@ public class BlockHarpoonBulletType extends ConsBulletType{
     public float shredDamage = 0;
     //chance per tick
     public float dischargeChance = 0.015f;
+
+    //damage every time the unit's damaged from harpoon
     public float ripDamage = 5;
+    //damage when the harpoon is riped out
     public float tearDamage = 65;
 
+    //effect applied to a unit that it's stuck in every time it's damaged
+    public StatusEffect bleedEffect = StatusEffects.none;
+    //the duration of the applied effect
+    public float bleedEffectDuration = 60;
+
+    //region for drawing the chain
     public TextureRegion chainRegion;
 
     public BlockHarpoonBulletType(float speed, float damage, String sprite) {

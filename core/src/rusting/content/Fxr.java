@@ -1,5 +1,6 @@
 package rusting.content;
 
+import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.math.Angles;
@@ -589,6 +590,14 @@ public class Fxr{
     regionDrop = new Effect(125, e -> {
         if(!(e.data instanceof TextureRegion)) return;
         TextureRegion region = ((TextureRegion) e.data);
+        Draw.alpha(Math.min(e.fout() * 10, 1));
+        randLenVectors(e.id, 1, e.finpow() * 16, e.rotation, 360, (x, y) -> {
+            Draw.rect(region, e.x + x, e.y + Mathf.clamp(10 - e.fslope() * e.fslope() * 10, -9, 1), e.rotation);
+        });
+    }),
+
+    regionDropERr = new Effect(35, e -> {
+        TextureRegion region = Core.atlas.find("error");
         Draw.alpha(Math.min(e.fout() * 10, 1));
         randLenVectors(e.id, 1, e.finpow() * 16, e.rotation, 360, (x, y) -> {
             Draw.rect(region, e.x + x, e.y + Mathf.clamp(10 - e.fslope() * e.fslope() * 10, -9, 1), e.rotation);

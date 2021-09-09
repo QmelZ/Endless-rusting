@@ -55,6 +55,7 @@ public class FieldBlockListDialog extends CustomBaseDialog {
         else if(tile.build != null && tile.build.block instanceof ResearchCenter) makeList(((ResearchCenter) tile.build.block).researchTypes());
     }
 
+    /*
     public void makeList(Seq<String> fieldNames, int threshold) {
         researchable.clear();
         Vars.content.blocks().each(b -> {
@@ -69,6 +70,8 @@ public class FieldBlockListDialog extends CustomBaseDialog {
             if (fields >= 1 && fields >= threshold && b instanceof ResearchableObject) researchable.add((ResearchableObject) b);
         });
     }
+
+     */
 
     public void show(Tile tile) {
         if(!(tile.build instanceof Building && tile.build.block instanceof ResearchCenter)) return;
@@ -96,7 +99,7 @@ public class FieldBlockListDialog extends CustomBaseDialog {
                 list.left();
 
                 researchable.each(type -> {
-                    if(!(type instanceof UnlockableContent)) return;
+                    if(!(type instanceof UnlockableContent) || Varsr.research.getCenter(type.researchTypes()) == null) return;
                     UnlockableContent unlock = (UnlockableContent) type;
                     if (!unlocked(unlock) || type.getResearchModule().isHidden) return;
                     final boolean isResearched = Varsr.research.researched(player.team(), type, type.researchTypes());

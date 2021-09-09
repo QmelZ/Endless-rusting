@@ -11,6 +11,7 @@ import rusting.type.Capsule;
 public class RustedContentLoader {
 
     private final Seq<ContentList> contentLists = Seq.with(
+            new RustingTeams(),
             new RustingResearchTypes(),
             new RustingStatusEffects(),
             new RustingLiquids(),

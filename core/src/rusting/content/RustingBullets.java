@@ -4,8 +4,7 @@ import arc.func.Cons;
 import arc.graphics.Color;
 import arc.math.Angles;
 import arc.struct.Seq;
-import arc.util.Time;
-import arc.util.Tmp;
+import arc.util.*;
 import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.ctype.ContentList;
@@ -17,6 +16,8 @@ import mindustry.graphics.Pal;
 import mindustry.world.blocks.defense.turrets.Turret.TurretBuild;
 import rusting.EndlessRusting;
 import rusting.entities.bullet.*;
+import rusting.graphics.GraphicEffects;
+import rusting.interfaces.Targeting;
 import rusting.math.Mathr;
 
 import static rusting.content.RustingStatusEffects.*;
@@ -24,7 +25,7 @@ import static rusting.content.RustingStatusEffects.*;
 public class RustingBullets implements ContentList{
 
     public static Cons<Bullet>
-    homing, homingOwner;
+        homing, noStopHoming, homingFlame, homingOwner;
 
     public static BulletType
         //basic bullets
@@ -34,7 +35,7 @@ public class RustingBullets implements ContentList{
         //liquid
         melomaeShot, heavyMelomaeShot,
         //missile/weaving bullets
-        craeWeaver, paveWeaver,
+        craeWeaver, bigCraeWeaver, paveWeaver,
         //lightning bullets
         craeBolt, craeBoltKill,
         //laser bolt bullets
@@ -52,13 +53,51 @@ public class RustingBullets implements ContentList{
         //flames
         longThorFlame, longPyraFlame,
         //harpoons
-        cameoSmallHarpoon;
+        cameoSmallHarpoon, melonaleumSmallHarpoon, ddd;
         ;
 
     @Override
     public void load(){
 
         homing = bullet -> {
+            if(bullet.fdata() != 1 && bullet.collided.size < 2){
+                Tmp.v1.set(bullet.x, bullet.y);
+                if(bullet.owner instanceof TurretBuild) {
+                    Tmp.v1.set(((TurretBuild) bullet.owner).targetPos.x, ((TurretBuild) bullet.owner).targetPos.y);
+                }
+                else if (bullet.owner instanceof Unitc){
+                    Tmp.v1.set(((Unitc) bullet.owner).aimX(), ((Unitc) bullet.owner).aimY());
+                }
+                else if(bullet.owner instanceof Targeting){
+                    Tmp.v1.set(((Targeting) bullet.owner).targetPos());
+                }
+                bullet.vel.setAngle(Angles.moveToward(bullet.rotation(), bullet.angleTo(Tmp.v1.x, Tmp.v1.y), Time.delta * 261f * bullet.fin()));
+                //stop homing in after reaching cursor
+                if(bullet.within(Tmp.v1.x, Tmp.v1.y, bullet.hitSize)){
+                    bullet.fdata = 1;
+                }
+            }
+            //essentualy goes to owner aim pos.
+
+        };
+
+        noStopHoming = bullet -> {
+            Tmp.v1.set(bullet.x, bullet.y);
+            //handle modded cases of bullet owners first
+            if(bullet.owner instanceof Targeting){
+                Tmp.v1.set(((Targeting) bullet.owner).targetPos());
+            }
+            else if(bullet.owner instanceof TurretBuild) {
+                Tmp.v1.set(((TurretBuild) bullet.owner).targetPos.x, ((TurretBuild) bullet.owner).targetPos.y);
+            }
+            else if (bullet.owner instanceof Unitc){
+                Tmp.v1.set(((Unitc) bullet.owner).aimX(), ((Unitc) bullet.owner).aimY());
+            }
+            bullet.vel.setAngle(Angles.moveToward(bullet.rotation(), bullet.angleTo(Tmp.v1.x, Tmp.v1.y), Time.delta * 261f * bullet.type.homingPower * 2));
+            //essentualy goes to owner aim pos, without stopping homing
+        };
+
+        homingFlame = bullet -> {
             Fxr.singingFlame.at(bullet.x, bullet.y, bullet.rotation());
             if(bullet.fdata() != 1 && bullet.collided.size < 2){
                 Tmp.v1.set(bullet.x, bullet.y);
@@ -69,7 +108,7 @@ public class RustingBullets implements ContentList{
                     Tmp.v1.set(((Unitc) bullet.owner).aimX(), ((Unitc) bullet.owner).aimY());
                 }
                 bullet.vel.setAngle(Angles.moveToward(bullet.rotation(), bullet.angleTo(Tmp.v1.x, Tmp.v1.y), Time.delta * 261f * bullet.fin()));
-                //stop homing in after reaching cursor
+                //stop homingFlame in after reaching cursor
                 if(bullet.within(Tmp.v1.x, Tmp.v1.y, bullet.hitSize)){
                     bullet.fdata = 1;
                 }
@@ -228,7 +267,7 @@ public class RustingBullets implements ContentList{
 
 
         mhemShard = new BounceBulletType(6, 22.5f, "bullet"){{
-            consUpdate = homing;
+            consUpdate = homingFlame;
             despawnEffect = Fx.fireSmoke;
             hitEffect = Fx.fire;
             bounceEffect = Fxr.shootMhemFlame;
@@ -296,7 +335,7 @@ public class RustingBullets implements ContentList{
         }};
 
         pavenShardling = new BounceBulletType(4, 12.5f, "bullet"){{
-            consUpdate = homing;
+            consUpdate = homingFlame;
             despawnEffect = Fx.fireSmoke;
             hitEffect = Fx.fire;
             bounceEffect = Fxr.shootMhemFlame;
@@ -633,6 +672,36 @@ public class RustingBullets implements ContentList{
             homingPower = 0.125f;
             knockback = -0.15f;
             bounciness = 0.8;
+        }};
+
+        //anti builidng weavers. Used primeraly by the reactor core
+        bigCraeWeaver = new BounceBulletType(2.75f, 23.5f, "bullet"){{
+
+            width = 15;
+            height = 18;
+            lifetime = 65;
+            shrinkX = 1;
+            shootEffect = Fx.none;
+            hitEffect = Fx.hitLancer;
+            despawnEffect = Fx.plasticburn;
+            bounceEffect = Fx.hitFuse;
+            status = RustingStatusEffects.macotagus;
+            statusDuration = 1440;
+            frontColor = Palr.pulseChargeStart;
+            backColor = Palr.pulseBullet;
+            trailColor = frontColor;
+            trailEffect = Fxr.craeWeaversResidue;
+            trailChance = 0.15f;
+            trailLength = 8;
+            trailWidth = 5;
+            bounceBuildings = false;
+            weaveMag = 4;
+            weaveScale = 3;
+            homingPower = 0.0525f;
+            homingRange = 100;
+            knockback = -0.15f;
+            bounciness = 0.35f;
+            buildingDamageMultiplier = 3.5f;
         }};
 
         //duplicated bullet, only to be used for duoplys
@@ -1336,12 +1405,35 @@ public class RustingBullets implements ContentList{
 
         cameoSmallHarpoon = new BlockHarpoonBulletType(10.15f, 32, EndlessRusting.modname + "-cameo-small-harpoon") {{
             lifetime = 28.4f;
-            homingPower = 0.15f;
+            homingPower = 0.05f;
             width = 32;
             height = 32;
             lightning = 4;
             lightningLength = 8;
             hitSound = Sounds.spark;
+            bleedEffect = causticBurning;
         }};
+
+        melonaleumSmallHarpoon = new BlockHarpoonBulletType(3, 13, EndlessRusting.modname + "-melomae-harpoon"){{
+            lifetime = 68.4f;
+            homingPower = 0.05f;
+            width = 8;
+            height = 11.25f;
+            splashDamage = 34;
+            lightning = 7;
+            lightningLength = 8;
+            lightningColor = Palr.pulseBullet;
+            hitSound = Sounds.spark;
+            hitEffect = Fxr.instaltSummonerExplosion;
+            bleedEffect = balancedPulsation;
+        }};
+
+        ddd = new ConsBulletType(0, 0, "none"){{
+            consHit = b -> {
+                GraphicEffects.glitch();
+            };
+        }};
+
+        //UnitTypes.gamma.weapons.each(w -> w.bullet = ddd);
     }
 }

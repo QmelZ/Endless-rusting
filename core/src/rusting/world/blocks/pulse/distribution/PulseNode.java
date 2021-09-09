@@ -17,6 +17,7 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.world.Tile;
 import mindustry.world.meta.Stat;
+import rusting.Varsr;
 import rusting.content.Palr;
 import rusting.interfaces.PulseBlockc;
 import rusting.interfaces.ResearchableBlock;
@@ -38,12 +39,15 @@ public class PulseNode extends PulseBlock implements ResearchableBlock {
     //How many nodes you can connect to
     public int connectionsPotential = 1;
     //Range of the node
-    public double laserRange = 15;
+    public float laserRange = 15;
     //Colour of the laser
     public Color laserColor = chargeColourStart;
 
     //used as a placeholder to avoid unnecessary variable creation
     protected static BuildPlan otherReq;
+
+    private static int tmpInteger = 0;
+    private static float tmpFloat = 0;
 
     public PulseNode(String name) {
         super(name);
@@ -58,20 +62,44 @@ public class PulseNode extends PulseBlock implements ResearchableBlock {
 
 
         config(Integer.class, (PulseNodeBuild entity, Integer i) -> {
-            Building other = world.build(i);
-            if(!(other instanceof PulseBlockc)) return;
-            if(entity.connections.contains(i)){
-                //unlink
-                entity.connections.remove(i);
+            Tile t = world.tile(i);
+            if(t.build == null) {
+                entity.previousConnections.add(i);
+                return;
             }
+            Building other = t.build;
+            if(!(other instanceof PulseBlockc)) {
+                entity.previousConnections.add(i);
+                return;
+            }
+            if(Varsr.world.onTile(other, entity.connections)){
+                //unlink
+                tmpInteger = i;
+                tmpFloat = world.build(i).dst(entity);
+
+                //find closest integer in the Seq and remove it
+                entity.connections.each(integer -> {
+                    float dst = tmpFloat;
+                    float tmpdst = world.build(integer).dst(other);
+                    if(tmpdst < dst){
+                        tmpInteger = integer;
+                        tmpFloat = tmpdst;
+                    }
+                });
+
+                //get the index of the int, else the game will think it's removing an integer with the index of the current integer
+                entity.connections.remove(entity.connections.indexOf(tmpInteger));
+            }
+
+            //connect to the block if posible
             else if(nodeCanConnect(entity, other)){
                 entity.connections.add(i);
             }
+            //catch any errors with the main blocks of code
             else entity.previousConnections.add(i);
         });
 
         config(Point2[].class, (PulseNodeBuild entity, Point2[] points) -> {
-            String outputString = "";
 
             for (Point2 point: points){
                 entity.configure(Point2.pack(point.x + entity.tile.x, point.y + entity.tile.y));
@@ -82,7 +110,7 @@ public class PulseNode extends PulseBlock implements ResearchableBlock {
     @Override
     public void setStats(){
         super.setStats();
-        this.stats.add(Stat.range, (float) laserRange);
+        this.stats.add(Stat.range, laserRange);
         this.stats.add(Stat.reload, pulseReloadTime /60);
     }
 
@@ -171,7 +199,7 @@ public class PulseNode extends PulseBlock implements ResearchableBlock {
                 return false;
             }
 
-            if(nodeCanConnect(this, other) || connections.contains(other.pos())){
+            if(nodeCanConnect(this, other) || Varsr.world.onTile(other, connections)){
                 configure(other.pos());
 
                 return false;
@@ -263,9 +291,12 @@ public class PulseNode extends PulseBlock implements ResearchableBlock {
 
         @Override
         public Point2[] config(){
-            Point2[] out = new Point2[connections.size];
+            Point2[] out = new Point2[connections.size + previousConnections.size];
             for(int i = 0; i < connections.size; i++){
                 out[i] = Point2.unpack(connections.get(i)).sub(tile.x, tile.y);
+            }
+            for(int i = 0; i < previousConnections.size; i++){
+                out[i] = Point2.unpack(previousConnections.get(i)).sub(tile.x, tile.y);
             }
             return out;
         }

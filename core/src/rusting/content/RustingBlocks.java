@@ -39,6 +39,7 @@ import rusting.world.blocks.pulse.crafting.PulseCondensary;
 import rusting.world.blocks.pulse.crafting.PulseGenericCrafter;
 import rusting.world.blocks.pulse.defense.*;
 import rusting.world.blocks.pulse.distribution.*;
+import rusting.world.blocks.pulse.production.InfectedsGeneratorCore;
 import rusting.world.blocks.pulse.production.PulseGenerator;
 import rusting.world.blocks.pulse.unit.*;
 import rusting.world.blocks.pulse.utility.*;
@@ -87,7 +88,7 @@ public class RustingBlocks implements ContentList{
         terraConveyor,
         //pulse
         //Pulse collection
-        pulseGenerator, pulseCollector,
+        pulseCollector, pulseGenerator, infectedsGeneratorCore,
         //Nodes
         pulseNode, pulseTesla,
         //Storage
@@ -111,7 +112,7 @@ public class RustingBlocks implements ContentList{
         //endregion storage
         //turrets
         //environment/turrets
-        archangel, pulseMotar,
+        archangel, pulseMotar, pulseFieldGen,
         //landmines
         pulseLandmine,
         //units
@@ -123,7 +124,7 @@ public class RustingBlocks implements ContentList{
         //healer turrets
         thrum, spikent,
         //harpoons
-        tether,
+        pilink, tether,
         //pannel turrets
         prikend, prsimdeome, prefraecon, rangi, pafleaver,
         //drylon
@@ -582,6 +583,25 @@ public class RustingBlocks implements ContentList{
             minRequiredPulsePercent = 0.35f;
         }};
 
+        infectedsGeneratorCore = new InfectedsGeneratorCore("infecteds-generator-core"){{
+            requirements(Category.power, with(Items.copper, 90, Items.silicon, 55, Items.titanium, 45));
+            centerResearchRequirements(true, with(Items.copper, 350,  Items.coal, 125, Items.graphite, 95, Items.titanium, 225, RustingItems.melonaleum, 85));
+            consumes.item(RustingItems.melonaleum, 3);
+            size = 6;
+            canOverload = true;
+            overloadCapacity = 1250;
+            productionTime = 30;
+            pulseAmount = 135.5f;
+            pulseReloadTime = 15;
+            energyTransmission = 8.5f;
+            connectionsPotential = 3;
+            pulseStorage = 2350;
+            resistance = 0.25f;
+            laserOffset = 10;
+            laserRange = 7;
+            minRequiredPulsePercent = 0.35f;
+        }};
+
         //Loses power fast, but is great at transmitting pulses to far blocks.
         pulseNode = new PulseNode("pulse-node"){{
             requirements(Category.power, with(Items.copper, 5, Items.lead, 4, Items.titanium, 3));
@@ -817,6 +837,10 @@ public class RustingBlocks implements ContentList{
             canOverload = true;
         }};
 
+        pulseFieldGen = new PulseBlock("pulse-rip-field-generator"){{
+
+        }};
+
         //region landmines
         pulseLandmine = new PulseLandmine("pulse-landmine") {{
             requirements(Category.effect, with(Items.lead, 15, Items.silicon, 10, RustingItems.melonaleum, 5));
@@ -976,6 +1000,21 @@ public class RustingBlocks implements ContentList{
             range = 245;
             pullStrength = 85;
             ammoTypes = ObjectMap.of(RustingItems.camaintAmalgam, RustingBullets.cameoSmallHarpoon);
+            shootSound = ModSounds.harpoonLaunch;
+            shootEffect = Fx.shootBig;
+            shootShake = 3;
+        }};
+
+        pilink = new PulseHarpoonTurret("pilink") {{
+            requirements(Category.turret, with(Items.lead, 75, Items.titanium, 55, Items.thorium, 15, RustingItems.camaintAmalgam, 75));
+            size = 1;
+            health = 550;
+            shootLength = 6.25f;
+            reloadTime = 115;
+            range = 245;
+            pullStrength = 85;
+            shootLength = 0;
+            ammoTypes = ObjectMap.of(RustingItems.melonaleum, RustingBullets.melonaleumSmallHarpoon);
             shootSound = ModSounds.harpoonLaunch;
             shootEffect = Fx.shootBig;
             shootShake = 3;

@@ -12,7 +12,7 @@ public class RustingItems implements ContentList {
     public void load() {
         melonaleum = new Item("melonaleum", Color.valueOf("#6572ca")){{
             flammability = 0.1f;
-            explosiveness = 3;
+            explosiveness = 3.75f;
             radioactivity = 0.25f;
             charge = 2.25f;
             hardness = 3;

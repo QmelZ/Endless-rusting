@@ -22,16 +22,13 @@ public interface ResearchableObject {
     }
 
     default TextureRegion researchUIcon(){
-        return Core.atlas.find("");
+        return Core.atlas.find(name());
     }
 
     default void centerResearchRequirements(ItemStack[] stack){
         centerResearchRequirements(true, stack);
     }
 
-    //backwards compatibility with my own code.
-    // I can't believe I've come to this and I haven't even hit rock bottom yet.
-    // When do I get to keep my stats?
     default ResearchModule getResearchModule(){
         return null;
     }
@@ -44,7 +41,6 @@ public interface ResearchableObject {
         if(this instanceof UnlockableContent){
             string[0] += ((UnlockableContent) this).localizedName + "'s stack contains: ";
         }
-        Varsr.logStack(string[0], stack);
     }
 
     default boolean researched(Team team){

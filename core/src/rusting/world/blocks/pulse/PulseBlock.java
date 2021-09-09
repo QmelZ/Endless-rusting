@@ -70,6 +70,8 @@ public class PulseBlock extends Block implements ResearchableBlock {
     public BulletType projectile = RustingBullets.craeShard;
     //chance modifier for projectile spawning
     public float projectileChanceModifier = 1;
+    //offset for projectiles spawned
+    public float projectileOffset = 1;
     //how far away the laser is from the block, is used for drawing to and from block,
     public float laserOffset = 3;
     //custom consumer module used purely to store values
@@ -296,7 +298,8 @@ public class PulseBlock extends Block implements ResearchableBlock {
 
         public void overloadEffect(){
             //for now, sprays projectiles around itself, and damages itself.
-            if(!Vars.headless && Mathf.chance(overloadChargef() * projectileChanceModifier)) Call.createBullet(projectile, team, x, y, Mathf.random(360), projectile.damage, (float) ((Mathf.random(0.5f) + 0.3) * size), 1);
+            Tmp.v1.trns(Mathf.random(360), projectileOffset);
+            if(!Vars.headless && Mathf.chance(overloadChargef() * projectileChanceModifier)) Call.createBullet(projectile, team, x + Tmp.v1.x, y + Tmp.v1.y, Tmp.v1.angle(), projectile.damage, Mathf.random(0.5f) + 0.3f * size, 1);
         }
 
         public boolean overloaded(){
@@ -324,14 +327,13 @@ public class PulseBlock extends Block implements ResearchableBlock {
         public void updateTile() {
             super.updateTile();
             if(shake >= timeOffset){
-                xOffset = (float) (block.size * 0.3 * Mathf.range(2));
-                yOffset = (float) (block.size * 0.3 * Mathf.range(2));
+                xOffset = block.size * 0.3f * Mathf.range(2);
+                yOffset = block.size * 0.3f * Mathf.range(2);
                 alphaDraw = Mathf.absin(Time.time/100, chargef());
             }
             else shake++;
             pulseModule.pulse = Math.max(pulseModule.pulse - powerLoss, 0);
             if(overloaded()) overloadEffect();
-
         }
 
         @Override
@@ -375,7 +377,7 @@ public class PulseBlock extends Block implements ResearchableBlock {
                 Draw.rect(chargeRegion, x, y, 270);
                 if(Core.settings.getBool("settings.er.pulseglare")){
                     Draw.alpha(chargef() * chargef() * 0.5f);
-                    Draw.rect(chargeRegion, x, y, (float) (chargeRegion.height * 1.5/4), (float) (chargeRegion.width * 1.5/4), 270);
+                    Draw.rect(chargeRegion, x, y, chargeRegion.height * 1.5f/4, chargeRegion.width * 1.5f/4, 270);
                 }
                 if(Core.settings.getBool("settings.er.additivepulsecolours")) Draw.blend();
             }
