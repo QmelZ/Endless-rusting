@@ -10,14 +10,18 @@ public class RustingTeams implements ContentList {
     @Override
     public void load() {
         Vars.mods.getScripts().runConsole(
-        "importPackage(java.util);" +
             "let natives = extend(Team, 113, \"Antiquum Natives\", Color.valueOf(\"#70696c\"), {});" +
-            "let acrillimyl = extend(Team, 114, \"Acrillimyl\", Color.valueOf(\"#b6cad6\"), {});" +
-            "let pulseInfected = extend(Team, 115, \"Pulse Infected\", Color.valueOf(\"#5c79d0\"), Color.valueOf(\"#646eb2\"), Color.valueOf(\"#6977d6\"), Color.valueOf(\"#8199e1\"), {});" +
-            "Object.asign(Team.all[116], {name: \"Void Infected\", color: Color.valueOf(\"#33355b\"), palette: [Color.valueOf(\"#6a5c88\"), Color.valueOf(\"#ac8ac1\"), Color.valueOf(\"#33355b\"))]);"
+            "let acrillimyl = extend(Team, 114, \"Antiquum Natives\", Color.valueOf(\"#b6cad6\"), {});" +
+            "let pulseInfected = extend(Team, 115, \"Pulse Infected\", Color.valueOf(\"#5c79d0\"), Color.valueOf(\"#646eb2\"), Color.valueOf(\"#6977d6\"), (\"#8199e1\"{});" +
+            "let voidInfected = extend(Team, 116, \"Void Infected\", Color.valueOf(\"#3d3742\"), {});" +
+            "Team.baseTeams = Arrays.copyOf(Team.baseTeams, Team.baseTeams.length + 4);" +
+            "Team.baseTeams[Team.baseTeams.length - 1] = acrillimyl;" +
+            "Team.baseTeams[Team.baseTeams.length - 2] = natives;" +
+            "Team.baseTeams[Team.baseTeams.length - 3] = pulseInfected;" +
+            "Team.baseTeams[Team.baseTeams.length - 4] = voidInfected;"
         );
         antiquumNatives = Team.get(113);
         acrillimyl = Team.get(114);
-
+        //acrillimyl = new Team(180, "Acrillimyl", Color.valueOf("#b6cad6"));
     }
 }

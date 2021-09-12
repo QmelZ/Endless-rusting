@@ -295,7 +295,7 @@ public class RustingUnits implements ContentList{
         EntityMapping.nameMap.put("marrow", BaseUnit::new);
         marrow = new UnitType("marrow"){{
             hitSize = 8;
-            health = 335;
+            health = 215;
             armor = 1;
             speed = 0.5225f;
             accel = 0.5f;

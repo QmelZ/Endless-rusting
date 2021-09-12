@@ -9,6 +9,7 @@ import arc.math.geom.Position;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.content.Items;
+import mindustry.content.Liquids;
 import mindustry.entities.Effect;
 import mindustry.game.Team;
 import mindustry.gen.Bullet;
@@ -73,6 +74,17 @@ public class Fxr{
 
             randLenVectors(e.id, 15, e.finpow() * 172f, e.rotation, 10f, (x, y) -> {
                 Fill.circle(e.x + x, e.y + y + Math.max(e.finpow() - 0.9f, 0)/9 * 10 * 9 * Tmp.v1.set(x, y).len()/172 * 9, e.fout() * 2.6f);
+            });
+        }),
+
+        healingWaterSmoke = new Effect(323f, 80f, e -> {
+            color(Liquids.water.color, Color.gray, e.finpow());
+            Draw.alpha(e.finpow() * 0.75f + 0.25f);
+
+            Draw.z(Mathf.lerp(Layer.groundUnit + 1, Layer.flyingUnit + 4, Math.min(e.fin() * 2, 1)));
+
+            randLenVectors(e.id, 2, e.finpow() * 12, e.rotation, 360, (x, y) -> {
+                Fill.circle(e.x + x, e.y + y + Math.max(e.finpow() - 0.3f, 0)/7 * 10 * 9 * Tmp.v1.set(x, y).len()/10f * 9, e.fout() * 1.6f);
             });
         }),
 

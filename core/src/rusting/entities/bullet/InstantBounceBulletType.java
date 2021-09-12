@@ -135,8 +135,15 @@ public class InstantBounceBulletType extends BounceBulletType implements instant
                 despawnEffect.at(x, y);
                 GraphicEffects.trailEffect(trailColor, x, y, 2.5f, 2, 1, trailFadeIn, trailFadeOut, points);
                 Posc owner = null;
-                if(b.owner instanceof Posc) owner = (Posc) owner;
-                GraphicEffects.trailEffect(trailColor, owner.x(), owner.y(), width, 2, 1, trailFadeIn, trailFadeOut, points);
+                if(b.owner instanceof Posc) {
+                    try {
+                        owner = (Posc) owner;
+                        GraphicEffects.trailEffect(trailColor, owner.x(), owner.y(), width, 2, 1, trailFadeIn, trailFadeOut, points);
+                    }
+                    catch (Error e){
+
+                    }
+                }
                 b.remove();
             }
         }

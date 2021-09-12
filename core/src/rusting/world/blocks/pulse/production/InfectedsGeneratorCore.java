@@ -79,6 +79,13 @@ public class InfectedsGeneratorCore extends PulseGenerator{
         @Override
         public void updateTile() {
             super.updateTile();
+
+            if(unit != null){
+                unit.health(health);
+                unit.rotation(rotation);
+                unit.team(team);
+                unit.set(x, y);
+            }
             totalProgress += pulseEfficiency() * Time.delta * warmup;
             if(cons.valid() && customConsumeValid()) {
                 warmup = Mathf.approachDelta(warmup, 1, pulseEfficiency() * Time.delta / 100);
@@ -113,7 +120,7 @@ public class InfectedsGeneratorCore extends PulseGenerator{
 
         @Override
         public void overloadEffect() {
-            float inaccuracy = 25 + 180 * (1 - shootWarmup)/2;
+            float inaccuracy = 10 + 250 * (1 - shootWarmup)/2;
             if(canShoot() && isShooting()){
                 lastShootRot = angleTo(targetPos);
                 float minShootWarmup = Math.max(shootWarmup * 2, 0.55f);
@@ -164,15 +171,11 @@ public class InfectedsGeneratorCore extends PulseGenerator{
             Draw.reset();
             Draw.rect(baseRegion, x, y);
             if(chargeRegion != Core.atlas.find("error")) {
-                /*
                 Draw.color(chargeColourStart, chargeColourEnd, chargef());
-                Draw.alpha(chargef()/0.35f * warmup);
+                Draw.alpha(chargef()/0.35f);
                 Draw.rect(chargeRegion, x, y);
                 Draw.reset();
                 Draw.z(Layer.block);
-                Draw.blend();
-
-                 */
             }
 
             Draw.rect(rotatorRegion, x, y, totalProgress * rotatorSpeed % 360);
@@ -196,6 +199,8 @@ public class InfectedsGeneratorCore extends PulseGenerator{
             Draw.z(Layer.blockOver + 0.1f);
             Draw.rect(topRotatorRegion, x, y, topRotorRotation % 360);
 
+            Draw.reset();
+
             if(shootWarmup > 0.01f){
                 Draw.z(Layer.effect);
                 Draw.color(chargeColourStart, chargeColourEnd, Mathf.absin(Time.delta/90, 1, 1));
@@ -208,8 +213,6 @@ public class InfectedsGeneratorCore extends PulseGenerator{
                     Lines.swirl(x, y, 20 - 2 * i, 86/360, lastShootRot - 86/2);
                 }
             }
-
-            Draw.reset();
         }
     }
 }

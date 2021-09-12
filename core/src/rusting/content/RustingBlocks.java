@@ -20,6 +20,7 @@ import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.distribution.Conveyor;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.StaticWall;
+import mindustry.world.blocks.power.LightBlock;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.blocks.units.Reconstructor;
@@ -29,11 +30,13 @@ import rusting.core.holder.PanelHolder;
 import rusting.core.holder.ShootingPanelHolder;
 import rusting.game.RustingEvents.Trigger;
 import rusting.world.blocks.capsules.CapsuleBlockResearchCenter;
+import rusting.world.blocks.defense.ProjectileAttackWall;
 import rusting.world.blocks.defense.turret.*;
 import rusting.world.blocks.environment.*;
 import rusting.world.blocks.logic.UnbreakableMessageBlock;
 import rusting.world.blocks.power.AttributeBurnerGenerator;
 import rusting.world.blocks.production.ConditionalDrill;
+import rusting.world.blocks.production.ResearchableCrafter;
 import rusting.world.blocks.pulse.PulseBlock;
 import rusting.world.blocks.pulse.crafting.PulseCondensary;
 import rusting.world.blocks.pulse.crafting.PulseGenericCrafter;
@@ -79,7 +82,7 @@ public class RustingBlocks implements ContentList{
         //crafting
         bulasteltForgery, desalinationMixer, cameoCrystallisingBasin, cameoPaintMixer, camaintAmalgamator,
         //defense
-        terraMound, terraMoundLarge, wol,
+        terraMound, terraMoundLarge, hailsiteBarrier, hailsiteBarrierLarge, wol,
         //power
         waterBoilerGenerator,
         //drill
@@ -96,7 +99,7 @@ public class RustingBlocks implements ContentList{
         //Siphon
         pulseSiphon,
         //crafting
-        pulseCondensary, pulseMelomaeMixer,
+        pulseCondensary, pulseMelomaeMixer, pulseGelPress,
         //Walls
         pulseBarrier, pulseBarrierLarge,
         //Research
@@ -136,9 +139,9 @@ public class RustingBlocks implements ContentList{
         //bomerang related turrets
         refract, diffract, reflect,
         //region unit
-        fraeFactory, antiquaeGuardianBuilder, absentReconstructor, dwindlingReconstructor,
+        hotSpringSprayer, fraeFactory, antiquaeGuardianBuilder, absentReconstructor, dwindlingReconstructor,
         //logic
-        raehLog, fraeLog;
+        halsinteLamp, raehLog, fraeLog;
 
     public static void addLiquidAmmo(Block turret, Liquid liquid, BulletType bullet){
         ((LiquidTurret) turret).ammoTypes.put(liquid, bullet);
@@ -418,7 +421,24 @@ public class RustingBlocks implements ContentList{
             consumes.liquid(Liquids.water, 0.1235f);
         }};
 
-        cameoCrystallisingBasin = new GenericCrafter("cameo-crystallising-basin"){{
+        cameoPaintMixer = new ResearchableCrafter("cameo-paint-mixer"){{
+            requirements(Category.crafting, with(Items.lead, 145, Items.graphite, 75, Items.titanium, 45, RustingItems.bulastelt, 65));
+            centerResearchRequirements(true, ItemStack.with(Items.silicon, 355, RustingItems.halsinte, 135, RustingItems.bulastelt, 65));
+            researchTypes.add(RustingResearchTypes.capsule);
+            buildVisibility = BuildVisibility.hidden;
+            craftEffect = Fx.none;
+            outputLiquid = new LiquidStack(RustingLiquids.cameaint, 7.5f);
+            craftTime = 50;
+            size = 3;
+
+            drawer = new DrawRotorTop();
+            consumes.power(0.72f);
+            consumes.items(with(Items.lead, 3, Items.silicon, 1, RustingItems.halsinte, 2));
+            consumes.liquid(Liquids.water, 0.125f);
+        }};
+
+
+        cameoCrystallisingBasin = new ResearchableCrafter("cameo-crystallising-basin"){{
             requirements(Category.crafting, with(Items.lead, 65, Items.graphite, 15, Items.silicon, 35, Items.sand, 85));
             buildVisibility = BuildVisibility.hidden;
             craftEffect = Fx.none;
@@ -434,21 +454,7 @@ public class RustingBlocks implements ContentList{
             consumes.liquid(RustingLiquids.cameaint, 0.2235f);
         }};
 
-        cameoPaintMixer = new GenericCrafter("cameo-paint-mixer"){{
-            requirements(Category.crafting, with(Items.lead, 65, Items.graphite, 15, Items.silicon, 35, Items.sand, 85));
-            buildVisibility = BuildVisibility.hidden;
-            craftEffect = Fx.none;
-            outputLiquid = new LiquidStack(RustingLiquids.cameaint, 7.5f);
-            craftTime = 50;
-            size = 3;
-
-            drawer = new DrawRotorTop();
-            consumes.power(0.72f);
-            consumes.items(with(Items.lead, 3, Items.silicon, 1, RustingItems.halsinte, 2));
-            consumes.liquid(Liquids.water, 0.125f);
-        }};
-
-        camaintAmalgamator = new GenericCrafter("camaint-amalgamator"){{
+        camaintAmalgamator = new ResearchableCrafter("camaint-amalgamator"){{
             requirements(Category.crafting, with(Items.lead, 65, Items.graphite, 15, Items.silicon, 35, Items.sand, 85));
             buildVisibility = BuildVisibility.hidden;
             craftEffect = Fx.none;
@@ -477,6 +483,23 @@ public class RustingBlocks implements ContentList{
             size = 2;
             health = 420 * size * size;
             insulated = true;
+        }};
+
+        hailsiteBarrier = new ProjectileAttackWall("hailsite-barrier"){{
+            requirements(Category.defense, with(RustingItems.taconite, 3, RustingItems.halsinte, 7));
+            size = 1;
+            health = 355 * size * size;
+            variants = 2;
+            absorbLasers = true;
+        }};
+
+        hailsiteBarrierLarge = new ProjectileAttackWall("hailsite-barrier-large"){{
+            requirements(Category.defense, with(RustingItems.taconite, 12, RustingItems.halsinte, 28));
+            size = 2;
+            health = 355 * size * size;
+            variants = 2;
+            absorbLasers = true;
+            deathProjectiles = 23;
         }};
 
         wol = new Wall("wol"){{
@@ -590,10 +613,10 @@ public class RustingBlocks implements ContentList{
             size = 6;
             canOverload = true;
             overloadCapacity = 1250;
-            productionTime = 30;
-            pulseAmount = 135.5f;
-            pulseReloadTime = 15;
-            energyTransmission = 8.5f;
+            productionTime = 10;
+            pulseAmount = 115.5f;
+            pulseReloadTime = 5;
+            energyTransmission = 45.5f;
             connectionsPotential = 3;
             pulseStorage = 2350;
             resistance = 0.25f;
@@ -696,6 +719,26 @@ public class RustingBlocks implements ContentList{
             liquidCapacity = 75;
 
             outputLiquid = new LiquidStack(RustingLiquids.melomae, 3);
+        }};
+
+
+        pulseGelPress = new PulseGenericCrafter("pulse-gel-press"){{
+            requirements(Category.crafting, with(Items.copper, 95, Items.metaglass, 65, Items.plastanium, 55, RustingItems.halsinte, 35));
+            centerResearchRequirements(true, with(Items.coal, 125, Items.silicon, 45, Items.metaglass, 65, Items.titanium, 85));
+            drawer = new DrawPulseLiquidCrafter();
+            hasLiquids = true;
+            size = 3;
+            powerLoss = 0.05f;
+            pulseStorage = 350;
+            canOverload = false;
+            minRequiredPulsePercent = 0.45f;
+            customConsumes.pulse = 13.5f;
+            consumes.liquid(RustingLiquids.melomae, 0.16f);
+            consumes.items(ItemStack.with(RustingItems.bulastelt, 2, RustingItems.halsinte, 3, Items.lead, 1));
+            craftTime = 145;
+            liquidCapacity = 75;
+
+            outputItem = new ItemStack(RustingItems.gelChip, 3);
         }};
 
         pulseBarrier = new PulseBarrier("pulse-barrier"){{
@@ -999,7 +1042,7 @@ public class RustingBlocks implements ContentList{
             reloadTime = 115;
             range = 245;
             pullStrength = 85;
-            ammoTypes = ObjectMap.of(RustingItems.camaintAmalgam, RustingBullets.cameoSmallHarpoon);
+            ammoTypes = ObjectMap.of(RustingItems.cameoShardling, RustingBullets.cameoSmallHarpoon);
             shootSound = ModSounds.harpoonLaunch;
             shootEffect = Fx.shootBig;
             shootShake = 3;
@@ -1343,6 +1386,12 @@ public class RustingBlocks implements ContentList{
 
         //region unit
 
+        hotSpringSprayer = new HotSpring("hot-spring-sprayer"){{
+            requirements(Category.units, with(RustingItems.bulastelt, 6, RustingItems.halsinte, 12));
+            consumes.liquid(Liquids.water, 0.05f);
+            liquidCapacity = 250;
+        }};
+
         fraeFactory = new UnitFactory("frae-factory"){{
             requirements(Category.units, with(Items.copper, 75, RustingItems.taconite, 55, RustingItems.bulastelt, 30));
             plans = Seq.with(
@@ -1386,8 +1435,16 @@ public class RustingBlocks implements ContentList{
         raehLog = new UnbreakableMessageBlock("raeh-log"){{
             buildVisibility = BuildVisibility.shown;
         }};
+
         fraeLog = new UnbreakableMessageBlock("frae-log"){{
             buildVisibility = BuildVisibility.shown;
+        }};
+
+        halsinteLamp = new LightBlock("halsinte-lamp"){{
+            requirements(Category.effect, BuildVisibility.lightingOnly, with(Items.metaglass, 5, RustingItems.halsinte, 16, RustingItems.bulastelt, 9));
+            hasPower = false;
+            brightness = 0.15f;
+            radius = 85;
         }};
         //endregion
 

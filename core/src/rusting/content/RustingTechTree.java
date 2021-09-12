@@ -153,6 +153,26 @@ public class RustingTechTree implements ContentList {
             });
         });
 
+        extendNode(groundFactory, () -> {
+            node(fraeFactory, Seq.with(new SectorComplete(volenChannels), new Produce(RustingItems.halsinte)), () -> {
+                node(RustingUnits.marrow, () -> {
+                    node(RustingUnits.metaphys, () -> {
+                        node(RustingUnits.ribigen, Seq.with(new SectorComplete(pulsatingGroves)), () -> {
+                            node(RustingUnits.spinascene, () -> {
+                                debugNode(RustingUnits.trumpedoot, Seq.with(new SectorComplete(preservatory)), () -> {
+
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+
+        extendNode(repairPoint, () -> {
+            node(hotSpringSprayer, Seq.with(new SectorComplete(volenChannels)), () -> {});
+        });
+
         extendNode(Items.copper, () -> {
             nodeProduce(RustingItems.taconite, () -> {
 

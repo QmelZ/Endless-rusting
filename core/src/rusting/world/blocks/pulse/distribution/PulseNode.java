@@ -41,7 +41,7 @@ public class PulseNode extends PulseBlock implements ResearchableBlock {
     //Range of the node
     public float laserRange = 15;
     //Colour of the laser
-    public Color laserColor = chargeColourStart;
+    public Color laserColor = Palr.pulseLaser;
 
     //used as a placeholder to avoid unnecessary variable creation
     protected static BuildPlan otherReq;
@@ -63,15 +63,13 @@ public class PulseNode extends PulseBlock implements ResearchableBlock {
 
         config(Integer.class, (PulseNodeBuild entity, Integer i) -> {
             Tile t = world.tile(i);
+            //must have been added via schem, add to previous connections
             if(t.build == null) {
                 entity.previousConnections.add(i);
                 return;
             }
             Building other = t.build;
-            if(!(other instanceof PulseBlockc)) {
-                entity.previousConnections.add(i);
-                return;
-            }
+            if(!(other instanceof PulseBlockc)) return;
             if(Varsr.world.onTile(other, entity.connections)){
                 //unlink
                 tmpInteger = i;
@@ -102,7 +100,9 @@ public class PulseNode extends PulseBlock implements ResearchableBlock {
         config(Point2[].class, (PulseNodeBuild entity, Point2[] points) -> {
 
             for (Point2 point: points){
-                entity.configure(Point2.pack(point.x + entity.tile.x, point.y + entity.tile.y));
+                if(point != null){
+                    entity.configure(Point2.pack(point.x + entity.tile.x, point.y + entity.tile.y));
+                }
             }
         });
     }
@@ -141,21 +141,23 @@ public class PulseNode extends PulseBlock implements ResearchableBlock {
         if(req.config instanceof Point2[]){
             Point2[] ps = (Point2[]) req.config;
             for(Point2 point : ps){
-                int px = req.x + point.x, py = req.y + point.y;
-                otherReq = null;
-                list.each(other -> {
-                    if(other.x == px && other.y == py && other.block instanceof PulseBlock) otherReq = other;
-                });
+                if(point != null && req != null) {
+                    int px = req.x + point.x, py = req.y + point.y;
+                    otherReq = null;
+                    list.each(other -> {
+                        if (other.x == px && other.y == py && other.block instanceof PulseBlock) otherReq = other;
+                    });
 
-                if(!(otherReq == null || otherReq.block == null) && req.block instanceof PulseNode) drawLaser(req.drawx(), req.drawy(), otherReq.drawx(), otherReq.drawy(), laserOffset, otherReq.block instanceof PulseBlock ? ((PulseBlock) otherReq.block).laserOffset : otherReq.block.size - 5, 0.5f, chargeColourStart, chargeColourEnd);
-
+                    if (!(otherReq == null || otherReq.block == null) && req.block instanceof PulseNode)
+                        drawLaser(req.drawx(), req.drawy(), otherReq.drawx(), otherReq.drawy(), laserOffset, otherReq.block instanceof PulseBlock ? ((PulseBlock) otherReq.block).laserOffset : otherReq.block.size - 5, 0.5f, chargeColourStart, chargeColourEnd);
+                }
             }
             Draw.color();
         }
     }
 
     public static boolean nodeCanConnect(PulseNodeBuild build, Building target){
-        return (!(target instanceof PulseBlockc) || ((PulseBlockc) target).connectableTo()) && !build.connections.contains(target.pos()) && build.connections.size < ((PulseNode) (build.block)).connectionsPotential && ((PulseNode) build.block).laserRange * 8 >= Mathf.dst(build.x, build.y, target.x, target.y);
+        return ((target instanceof PulseBlockc) && ((PulseBlockc) target).connectableTo()) && !build.connections.contains(target.pos()) && build.connections.size < ((PulseNode) (build.block)).connectionsPotential && ((PulseNode) build.block).laserRange * 8 >= Mathf.dst(build.x, build.y, target.x, target.y);
     }
 
     protected void getPotentialLinks(PulseNode.PulseNodeBuild build, Team team, Seq<Building> others){
@@ -285,7 +287,7 @@ public class PulseNode extends PulseBlock implements ResearchableBlock {
             connections.each(l -> {
                 Building other = world.build(l);
                 if(other == null || other.isNull() || !other.isAdded()) return;
-                drawLaser((PulseBlockc) other, chargef(), laserColor, chargeColourEnd);
+                drawLaser((PulseBlockc) other, laserColor);
             });
         }
 

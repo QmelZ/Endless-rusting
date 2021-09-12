@@ -123,7 +123,7 @@ public class PulseContactSender extends PulseControlModule{
             connections.each(l -> {
                 Building other = world.build(l);
                 if(other == null || other.isNull() || !other.isAdded()) return;
-                drawLaser((PulseBlockBuild) other, chargef(), laserColor, chargeColourEnd);
+                drawLaser((PulseBlockBuild) other, laserColor);
             });
         }
 

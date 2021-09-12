@@ -344,15 +344,14 @@ public class PulseBlock extends Block implements ResearchableBlock {
             Draw.reset();
         }
 
-        @Override
-        public void drawLaser(PulseBlockc building, float lerpPercent, Color laserCol, Color laserCol2) {
+        public void drawLaser(PulseBlockc building, Color laserCol) {
             Draw.z(Layer.power);
             if(!(building instanceof Building)) return;
             Building build = (Building) building;
             float angle = angleTo(build.x, build.y) - 90;
             float sourcx = x + Angles.trnsx(angle, 0, laserOffset), sourcy = y + Angles.trnsy(angle, 0, laserOffset);
             float edgex = build.x + Angles.trnsx(angle + 180, 0, building.laserOffset()), edgey = build.y + Angles.trnsy(angle + 180, 0, building.laserOffset());
-            Draw.color(laserCol, laserCol2, lerpPercent);
+            Draw.color(laserCol);
             Lines.stroke(1.35f);
             Lines.line(sourcx, sourcy, edgex, edgey);
             Fill.circle(edgex, edgey, 0.85f);

@@ -25,11 +25,13 @@ import static rusting.content.RustingStatusEffects.*;
 public class RustingBullets implements ContentList{
 
     public static Cons<Bullet>
-        homing, noStopHoming, homingFlame, homingOwner;
+        homing, noStopHoming, velbasedHoming, homingFlame, homingOwner;
 
     public static BulletType
         //basic bullets
-        fossilShard, cloudyShard, craeShard, raehShard, mhemShard, fraeShard, paveShard, pavenShardling, darkShard, unhittableDarkShard, horizonShard, stingrayShard, spawnerGlass, spawnerGlassFrag, spawnerBulat, spawnerBulatFrag,
+        fossilShard, cloudyShard, saltyShard,
+        craeShard, raehShard, mhemShard, fraeShard, paveShard, pavenShardling, darkShard, unhittableDarkShard,
+        horizonShard, stingrayShard, spawnerGlass, spawnerGlassFrag, spawnerBulat, spawnerBulatFrag,
         //artillery
         mhemQuadStorm, craeQuadStorm, lightfractureTitanim, lightfractureBulat,
         //liquid
@@ -94,6 +96,25 @@ public class RustingBullets implements ContentList{
                 Tmp.v1.set(((Unitc) bullet.owner).aimX(), ((Unitc) bullet.owner).aimY());
             }
             bullet.vel.setAngle(Angles.moveToward(bullet.rotation(), bullet.angleTo(Tmp.v1.x, Tmp.v1.y), Time.delta * 261f * bullet.type.homingPower * 2));
+            //essentualy goes to owner aim pos, without stopping homing
+        };
+
+        velbasedHoming = bullet -> {
+            Tmp.v1.set(bullet.x, bullet.y);
+            //handle modded cases of bullet owners first
+            if(bullet.owner instanceof Targeting){
+                Tmp.v1.set(((Targeting) bullet.owner).targetPos());
+            }
+            else if(bullet.owner instanceof TurretBuild) {
+                Tmp.v1.set(((TurretBuild) bullet.owner).targetPos.x, ((TurretBuild) bullet.owner).targetPos.y);
+            }
+            else if (bullet.owner instanceof Unitc){
+                Tmp.v1.set(((Unitc) bullet.owner).aimX(), ((Unitc) bullet.owner).aimY());
+            }
+            else{
+                Tmp.v2.trns(bullet.angleTo(Tmp.v1), bullet.type.homingPower).clamp(0, bullet.vel.len() - Tmp.v2.len());
+            }
+
             //essentualy goes to owner aim pos, without stopping homing
         };
 
@@ -226,6 +247,24 @@ public class RustingBullets implements ContentList{
             trailChance = 0.25f;
             knockback = 1.85f;
             homingPower = 0.15f;
+        }};
+
+        saltyShard = new BounceBulletType(4, 15, "bullet"){{
+            width = 11;
+            height = 13;
+            lifetime = 35;
+            hitEffect = Fx.hitFuse;
+            despawnEffect = Fx.plasticburn;
+            bounceEffect = Fx.hitLancer;
+            status = hailsalilty;
+            frontColor = Palr.lightstriken;
+            backColor = Palr.dustriken;
+            trailColor = frontColor;
+            trailEffect = Fxr.salty;
+            trailChance = 0.05f;
+            knockback = 3;
+            drag = 0.005f;
+            bounciness = 0.45;
         }};
 
         craeShard = new BounceBulletType(4, 5, "bullet"){{
@@ -581,7 +620,7 @@ public class RustingBullets implements ContentList{
             shrinkX = shrinkY = -2f;
         }};
 
-        lightfractureTitanim = new RandspriteBulletType(7.5f, 37, "endless-rusting-lightsword", 4){{
+        lightfractureTitanim = new RandspriteBulletType(7.5f, 48, "endless-rusting-lightsword", 4){{
             hitEffect = Fx.hitFuse;
             knockback = 0.15f;
             pierce = true;
@@ -601,7 +640,7 @@ public class RustingBullets implements ContentList{
             ammoMultiplier = 6;
         }};
 
-        lightfractureBulat = new RandspriteBulletType(6.6f, 28, "endless-rusting-lightsword", 4){{
+        lightfractureBulat = new RandspriteBulletType(6.6f, 35, "endless-rusting-lightsword", 4){{
             hitEffect = Fx.hitFuse;
             knockback = 1.35f;
             lifetime = 45;
@@ -675,7 +714,7 @@ public class RustingBullets implements ContentList{
         }};
 
         //anti builidng weavers. Used primeraly by the reactor core
-        bigCraeWeaver = new BounceBulletType(2.75f, 23.5f, "bullet"){{
+        bigCraeWeaver = new BounceBulletType(1.75f, 18.5f, "bullet"){{
 
             width = 15;
             height = 18;
@@ -694,14 +733,16 @@ public class RustingBullets implements ContentList{
             trailChance = 0.15f;
             trailLength = 8;
             trailWidth = 5;
-            bounceBuildings = false;
-            weaveMag = 4;
-            weaveScale = 3;
+            weaveMag = 2;
+            weaveScale = 2;
             homingPower = 0.0525f;
             homingRange = 100;
             knockback = -0.15f;
             bounciness = 0.35f;
             buildingDamageMultiplier = 3.5f;
+
+            reflectable = false;
+            absorbable = false;
         }};
 
         //duplicated bullet, only to be used for duoplys
