@@ -43,8 +43,8 @@ public class StingrayUnitEntity extends AntiquimGuardianUnitEntity{
         super.collision(other, x, y);
         if(other instanceof Bullet) {
             Bullet b = (Bullet) other;
-            if(b.damage > 235 && iframes > 0){
-                if(b.type.pierce = true && b.type.pierceCap > 0 && b.collided.size < b.type.pierceCap){
+            if(b.type.reflectable && b.damage > 235 && iframes > 0){
+                if(b.type.pierce == true && b.type.pierceCap > 0 && b.collided.size < b.type.pierceCap){
                     b.team = team;
                     b.rotation(angleTo(b));
                 }
