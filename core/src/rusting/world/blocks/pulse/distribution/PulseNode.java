@@ -249,6 +249,10 @@ public class PulseNode extends PulseBlock implements ResearchableBlock {
             connections.each(l -> {
                 Building j = world.build(l);
                 //need to double check, jic, because I've experienced crashes while a generator was pumping out energy
+                if(!(j instanceof PulseBlockc)){
+                    connections.remove(connections.indexOf(l));
+                    return;
+                }
                 if(chargef() <= 0 || j == null) return;
                 if(index[0] > connectionsPotential) connections.remove(l);
                 float energyTransmitted = Math.min(pulseModule.pulse, energyTransmission);
@@ -286,7 +290,7 @@ public class PulseNode extends PulseBlock implements ResearchableBlock {
             super.draw();
             connections.each(l -> {
                 Building other = world.build(l);
-                if(other == null || other.isNull() || !other.isAdded()) return;
+                if(other == null || other.isNull() || !other.isAdded() || !(other instanceof PulseBlockc)) return;
                 drawLaser((PulseBlockc) other, laserColor);
             });
         }

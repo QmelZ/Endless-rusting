@@ -17,7 +17,7 @@ import rusting.content.*;
 
 import static mindustry.Vars.state;
 
-public class CraeUnitEntity extends UnitEntity {
+public class CraeUnitEntity extends BaseUnitEntity {
 
     //blacklisted effects for the sake of the ai
     private static Seq<String> blacklistedStatusEffects = Seq.with("betamindy-amnesia");

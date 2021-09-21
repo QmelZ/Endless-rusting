@@ -5,7 +5,9 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.BulletType;
+import mindustry.game.Team;
 import mindustry.gen.Bullet;
+import mindustry.world.Tile;
 import mindustry.world.blocks.defense.Wall;
 import rusting.content.Fxr;
 import rusting.content.RustingBullets;
@@ -23,8 +25,15 @@ public class ProjectileAttackWall extends Wall {
     public float damagePerProjectile = 35;
     public Effect deathEffect = Fxr.instaltSummonerExplosion;
 
+    public boolean destroyableDerelict = false;
+
     public ProjectileAttackWall(String name) {
         super(name);
+    }
+
+    @Override
+    public boolean canBreak(Tile tile) {
+        return super.canBreak(tile) && (destroyableDerelict || tile.build.team != Team.derelict);
     }
 
     public class ProjectileAttackWallBuild extends WallBuild{
@@ -73,6 +82,11 @@ public class ProjectileAttackWall extends Wall {
         public boolean collision(Bullet bullet) {
             if(bullet != null) lastDamagedFrom = angleTo(bullet);
             return super.collision(bullet);
+        }
+
+        @Override
+        public void drawTeam() {
+            if(team != Team.derelict) super.drawTeam();
         }
 
         @Override

@@ -112,6 +112,17 @@ public class EndlessRusting extends Mod{
         Varsr.content.load();
         immunityUnits = Seq.with(RustingUnits.stingray);
         empImmune = Seq.with(RustingUnits.marrow, RustingUnits.metaphys, RustingUnits.ribigen, RustingUnits.spinascene, RustingUnits.trumpedoot);
+        Seq<UnitType> walls = Seq.with(RustingUnits.pulseBarrenBezerker);
+        final Seq<StatusEffect> statusEffectSeq = Seq.with();
+
+        walls.each(w -> {
+            statusEffectSeq.clear();
+            statusEffectSeq.addAll(w.immunities);
+            w.immunities.clear();
+            Vars.content.statusEffects().each(s -> {
+                if(!statusEffectSeq.contains(s)) w.immunities.add(s);
+            });
+        });
 
         Vars.content.statusEffects().each(s -> {
             //chek for NaN damage

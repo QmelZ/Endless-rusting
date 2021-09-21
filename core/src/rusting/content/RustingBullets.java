@@ -13,6 +13,7 @@ import mindustry.entities.Fires;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.Pal;
+import mindustry.logic.Ranged;
 import mindustry.world.blocks.defense.turrets.Turret.TurretBuild;
 import rusting.EndlessRusting;
 import rusting.entities.bullet.*;
@@ -25,17 +26,17 @@ import static rusting.content.RustingStatusEffects.*;
 public class RustingBullets implements ContentList{
 
     public static Cons<Bullet>
-        homing, noStopHoming, velbasedHoming, homingFlame, homingOwner;
+        homing, noStopHoming, velbasedHoming, velbasedHomingFlame, homingFlame, homingOwner;
 
     public static BulletType
         //basic bullets
         fossilShard, cloudyShard, saltyShard,
-        craeShard, raehShard, mhemShard, fraeShard, paveShard, pavenShardling, darkShard, unhittableDarkShard,
+        craeShard, raehShard, mhemShard, mhemaeShardling, fraeShard, paveShard, pavenShardling, darkShard, unhittableDarkShard,
         horizonShard, stingrayShard, spawnerGlass, spawnerGlassFrag, spawnerBulat, spawnerBulatFrag,
         //artillery
         mhemQuadStorm, craeQuadStorm, lightfractureTitanim, lightfractureBulat,
         //liquid
-        melomaeShot, heavyMelomaeShot,
+        melomaeShot, melomaeShotLong, heavyMelomaeShot, cameoShot, heavyCameoShot,
         //missile/weaving bullets
         craeWeaver, bigCraeWeaver, paveWeaver,
         //lightning bullets
@@ -111,11 +112,17 @@ public class RustingBullets implements ContentList{
             else if (bullet.owner instanceof Unitc){
                 Tmp.v1.set(((Unitc) bullet.owner).aimX(), ((Unitc) bullet.owner).aimY());
             }
-            else{
-                Tmp.v2.trns(bullet.angleTo(Tmp.v1), bullet.type.homingPower).clamp(0, bullet.vel.len() - Tmp.v2.len());
-            }
+            Tmp.v3.set(((Posc) bullet.owner()).x(), ((Posc) bullet.owner()).y());
+            Tmp.v1.sub(Tmp.v3).clamp(0, ((Ranged) bullet.owner).range()).add(Tmp.v3);
+            bullet.vel.add(Tmp.v2.trns(bullet.angleTo(Tmp.v1), bullet.type.homingPower * Time.delta)).clamp(0, bullet.type.speed);
+            if(bullet.dst(Tmp.v3.x, Tmp.v3.y) >= ((Ranged) bullet.owner).range() + bullet.type.speed + 3) bullet.time += bullet.lifetime/10 * Time.delta;
 
             //essentualy goes to owner aim pos, without stopping homing
+        };
+
+        velbasedHomingFlame = bullet -> {
+            velbasedHoming.get(bullet);
+            Fxr.burningFlame.at(bullet.x, bullet.y, bullet.rotation());
         };
 
         homingFlame = bullet -> {
@@ -303,8 +310,6 @@ public class RustingBullets implements ContentList{
             bounciness = 0.85;
         }};
 
-
-
         mhemShard = new BounceBulletType(6, 22.5f, "bullet"){{
             consUpdate = homingFlame;
             despawnEffect = Fx.fireSmoke;
@@ -324,6 +329,32 @@ public class RustingBullets implements ContentList{
             drag = 0.015f;
             bounciness = 0.95;
             bounceCap = 2;
+        }};
+
+        mhemaeShardling = new BounceBulletType( 2.5f,  11, "bullet"){{
+            consUpdate = velbasedHomingFlame;
+            despawnEffect = Fx.fireSmoke;
+            hitEffect = Fx.fire;
+            bounceEffect = Fxr.shootMhemFlame;
+            incendAmount = 10;
+            status = StatusEffects.burning;
+            statusDuration = 3600;
+            maxRange = 156;
+            width = 6;
+            height = 8;
+            hitSize = 12;
+            lifetime = 430;
+            homingPower = 0.15f;
+            homingRange = 0;
+            homingDelay = 35;
+            hitEffect = Fx.hitFuse;
+            trailLength = 0;
+            bounciness = 0.85f;
+            bounceCap = 0;
+            weaveScale = 4;
+            weaveMag = 3;
+            knockback = 3;
+            drag = 0.0015f;
         }};
 
         fraeShard = new ConsBulletType(10, 25, "bullet"){{
@@ -528,6 +559,7 @@ public class RustingBullets implements ContentList{
             fragLifeMax = 1.15f;
             scaleVelocity = true;
             reflectable = false;
+            status = fragmentaein;
         }};
 
         spawnerBulatFrag = new BasicBulletType(2.5f, 3, "bullet"){{
@@ -671,16 +703,49 @@ public class RustingBullets implements ContentList{
             drag = 0.01f;
         }};
 
+        melomaeShotLong =  new LiquidBulletType(RustingLiquids.melomae){{
+            pierce = true;
+            reflectable = false;
+            absorbable = false;
+            hittable = false;
+            lifetime = 65;
+            damage = 6.5f;
+            homingPower = 0.15f;
+            knockback = 0.7f;
+            puddleSize = 7f;
+            orbSize = 1.5f;
+            drag = 0.01f;
+        }};
+
         heavyMelomaeShot = new LiquidBulletType(RustingLiquids.melomae){{
             pierce = true;
             reflectable = false;
             absorbable = false;
             hittable = false;
+            speed = 4f;
             damage = 9.3f;
             homingPower = 0.075f;
             lifetime = 49f;
-            speed = 4f;
             knockback = 1.5f;
+            puddleSize = 8f;
+            orbSize = 4f;
+            drag = 0.001f;
+            ammoMultiplier = 0.4f;
+            statusDuration = 60f * 4f;
+        }};
+
+        cameoShot = new LiquidBulletType(RustingLiquids.cameaint){{
+            reloadMultiplier = 1.2f;
+            knockback = 1.2f;
+            drag = 0.01f;
+        }};
+
+        heavyCameoShot = new LiquidBulletType(RustingLiquids.cameaint){{
+            speed = 4f;
+            damage = 1.3f;
+            lifetime = 49f;
+            reloadMultiplier = 1.2f;
+            knockback = 2.1f;
             puddleSize = 8f;
             orbSize = 4f;
             drag = 0.001f;
@@ -898,7 +963,7 @@ public class RustingBullets implements ContentList{
             drag = -0.001f;
         }};
 
-        saltyLightRoundaboutRight = new BoomerangBulletType(2, 7, "endless-rusting-boomerang"){{
+        saltyLightRoundaboutRight = new BoomerangBulletType(2, 15, "endless-rusting-boomerang"){{
 
             other = saltyLightRoundaboutLeft;
 
@@ -929,7 +994,7 @@ public class RustingBullets implements ContentList{
             fragBullets = 2;
         }};
 
-        saltyLightRoundaboutLeft = new BoomerangBulletType(2, 7, "endless-rusting-boomerang"){{
+        saltyLightRoundaboutLeft = new BoomerangBulletType(2, 15, "endless-rusting-boomerang"){{
 
             other = saltyLightRoundaboutRight;
 
@@ -1127,7 +1192,7 @@ public class RustingBullets implements ContentList{
             drag = -0.001f;
         }};
 
-        saltyLightGlaive = new BoomerangBulletType(3f, 45, "endless-rusting-glave-large"){{
+        saltyLightGlaive = new BoomerangBulletType(3f, 75, "endless-rusting-glave-large"){{
 
             consDespawned = b -> {
 

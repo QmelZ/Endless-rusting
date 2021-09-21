@@ -239,11 +239,11 @@ public class RustingTechTree implements ContentList {
 
         extendNode(groundZero,  () -> {
             node(incipiensGrounds, () -> {
-                    node(preservatory, Seq.with(new SectorComplete(paileanCorridors), new Research(terraConveyor)), () -> {
-                        node(hangout, Seq.with(new SettingLockedObjective("settings.er.teleporterbuilt", "Finish a relic of the old times, the Pulse Teleporter.")), () -> {
+                node(preservatory, Seq.with(new SectorComplete(paileanCorridors), new Research(terraConveyor)), () -> {
+                    node(hangout, Seq.with(new SettingLockedObjective("settings.er.teleporterbuilt", "Finish a relic of the old times, the Pulse Teleporter.")), () -> {
 
-                        });
                     });
+                });
 
                 node(plantaePresevereDomae, Seq.with(new SectorComplete(incipiensGrounds), new Research(navalFactory)), () -> {
                     node(volenChannels, Seq.with(new SectorComplete(plantaePresevereDomae), new Research(hail), new Research(lancer), new Research(UnitTypes.horizon), new Produce(Items.pyratite)), () -> {

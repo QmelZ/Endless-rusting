@@ -24,6 +24,7 @@ import rusting.ctype.ResearchType;
 import rusting.interfaces.ResearchCenter;
 import rusting.interfaces.ResearchableObject;
 import rusting.ui.dialog.CustomBaseDialog;
+import rusting.ui.dialog.Texr;
 
 import static mindustry.Vars.mobile;
 import static mindustry.Vars.player;
@@ -123,7 +124,10 @@ public class FieldBlockListDialog extends CustomBaseDialog {
                         } else if (unlocked(unlock)) Varsr.ui.unlock.show(unlock);
                     });
                     boolean finalIsResearched1 = isResearched;
-                    image.addListener(new Tooltip(t -> t.background(arc.Core.atlas.drawable("button")).add((finalIsResearched1 ? "The " : "Unlock the ") + unlock.localizedName + (finalIsResearched1 ? "" : "?"))));
+                    image.addListener(new Tooltip(t -> {
+                        t.background(Texr.button).add((finalIsResearched1 ? "The " : "Unlock the ") + unlock.localizedName + (finalIsResearched1 ? "" : "?"));
+                        t.row();
+                    }));
 
                     if ((++count[0]) % cols == 0) {
                         list.row();

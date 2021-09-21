@@ -5,14 +5,12 @@ import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.math.Angles;
 import arc.math.Mathf;
-import arc.math.geom.Position;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
 import mindustry.entities.Effect;
 import mindustry.game.Team;
-import mindustry.gen.Bullet;
 import mindustry.gen.Unit;
 import mindustry.graphics.*;
 import rusting.entities.units.CraeUnitEntity;
@@ -91,14 +89,19 @@ public class Fxr{
         singingFlame = new Effect(18, e ->{
             color(Pal.lightPyraFlame, Pal.darkPyraFlame, e.fin() * e.fin());
             float vx = e.x, vy = e.y;
-            if(e.data instanceof Position){
-                //fidn the offset from the bullet to it's data
-                vx += ((Bullet) e.data()).getX() * e.fin() - e.x;
-                vy += ((Bullet) e.data()).getY() * e.fin() - e.y;
-            }
             float finalVx = vx;
             float finalVy = vy;
             randLenVectors(e.id, 3, 2f + e.fin() * 16f, e.rotation + 180, 15, (x, y) -> {
+                Fill.circle(finalVx + x, finalVy + y, 0.2f + e.fout() * 1.5f);
+            });
+        }),
+
+        burningFlame = new Effect(15, e ->{
+            color(Palr.lightstriken, Pal.lightPyraFlame, Palr.darkPyraBloom, e.fin() * e.fin());
+            float vx = e.x, vy = e.y;
+            float finalVx = vx;
+            float finalVy = vy;
+            randLenVectors(e.id, 4, 2f + e.fin() * 21f, e.rotation + 180, 17, (x, y) -> {
                 Fill.circle(finalVx + x, finalVy + y, 0.2f + e.fout() * 1.5f);
             });
         }),

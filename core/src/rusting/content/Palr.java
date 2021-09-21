@@ -12,6 +12,8 @@ public class Palr {
         pulseShieldStart = Color.valueOf("#5c79d0"),
         pulseShieldEnd = new Color(Color.blue).lerp(Color.valueOf("#6e8adf"), 0.75f).lerp(Color.black, 0.25f),
         darkerPulseChargeStart = Color.valueOf("#393a4b"),
+        chillDecalDark = Color.valueOf("#b6cad6"),
+        chillDecalLight = Color.valueOf("#d7e0e5"),
         voidBullet = new Color(Color.purple).lerp(Color.black, 0.75f),
         dustriken = Color.valueOf("#70696c"),
         lightstriken = Color.valueOf("#ddcece"),

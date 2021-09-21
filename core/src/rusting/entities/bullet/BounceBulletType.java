@@ -2,6 +2,7 @@ package rusting.entities.bullet;
 
 import arc.Core;
 import arc.struct.Seq;
+import arc.util.Time;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
@@ -72,9 +73,7 @@ public class BounceBulletType extends ConsBulletType {
         super.hit(b, x, y);
         Teamc teamc = Units.closestEnemy(b.team, x, y, hitSize * 2 + 4, e -> b.collides(e));
         if(!(teamc instanceof Unit)) return;
-        Unit unit = null;
-        float difX = Math.abs(b.vel.x - x), difY = Math.abs(b.vel.y - y);
-        unit = (Unit)teamc;
+        Unit unit = (Unit)teamc;
         if ((bounceCap == -1 || b.collided.size <= bounceCap ) && bounceUnits){
             float rotation = b.vel.angle();
             b.vel.setAngle(360 + rotation - (rotation - b.angleTo(unit)) * 2);
@@ -82,6 +81,9 @@ public class BounceBulletType extends ConsBulletType {
             b.vel.add(unit.vel);
             bounceEffect.at(x, y, b.angleTo(x + b.vel.x, y + b.vel.y));
         }
+        Time.run(1, () -> {
+            b.collided.clear();
+        });
     }
 
 
