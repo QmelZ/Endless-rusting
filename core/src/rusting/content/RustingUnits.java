@@ -4,17 +4,18 @@ import arc.func.Prov;
 import arc.graphics.Color;
 import arc.struct.ObjectIntMap;
 import arc.struct.ObjectMap.Entry;
+import mindustry.ai.types.FlyingAI;
 import mindustry.ai.types.MinerAI;
 import mindustry.content.*;
 import mindustry.core.Version;
 import mindustry.ctype.ContentList;
 import mindustry.entities.abilities.StatusFieldAbility;
-import mindustry.entities.bullet.BombBulletType;
-import mindustry.entities.bullet.LaserBulletType;
+import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
+import rusting.EndlessRusting;
 import rusting.ai.types.BossStingrayAI;
 import rusting.ai.types.MultiSupportAI;
 import rusting.entities.abilities.*;
@@ -25,7 +26,7 @@ public class RustingUnits implements ContentList{
     private static Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new Entry[]{
             prov(StingrayUnitEntity.class, StingrayUnitEntity::new),
             prov(CraeUnitEntity.class, CraeUnitEntity::new),
-            prov(AcriUnitEntity.class, AcriUnitEntity::new),
+            prov(BaseUnitEntity.class, BaseUnitEntity::new),
             prov(BaseUnit.class, BaseUnit::new)
     };
 
@@ -80,10 +81,12 @@ public class RustingUnits implements ContentList{
             marrow, metaphys, ribigen, spinascene, trumpedoot,
             fahrenheit, celsius;
     public static UnitType
+            pulseBarrenBezerker;
+    public static UnitType
         stingray;
     //Acrimynal's drone army
     public static AcriUnitType
-            observantly, kindling;
+            observantly, kindling, sharpen;
 
     @Override
     public void load() {
@@ -292,10 +295,49 @@ public class RustingUnits implements ContentList{
             );
         }};
 
+        EntityMapping.nameMap.put("pulse-barren-bezerker", BaseUnit::new);
+        pulseBarrenBezerker = new UnitType("pulse-barren-bezerker"){{
+            health = 85;
+            armor = 5;
+            drawCell = false;
+            mechLegColor = Color.valueOf("#3b3e49");
+
+            constructor = BaseUnit::new;
+
+            weapons.addAll(
+                new Weapon("none") {{
+                    mirror = false;
+                    y = 0;
+                    x = 0;
+                    shootStatus = StatusEffects.unmoving;
+                    shootStatusDuration = 150;
+                    bullet = RustingBullets.craeWeaver;
+                    shots = 3;
+                    spacing = 7;
+                    shotDelay = 19;
+                    reload = 150;
+                }},
+                new Weapon("none") {{
+                    mirror = false;
+                    y = 0;
+                    x = 0;
+                    shootStatus = RustingStatusEffects.balancedPulsation;
+                    shootStatusDuration = 150;
+                    firstShotDelay = 55;
+                    bullet = RustingBullets.craeWeaver;
+                    shots = 4;
+                    spacing = 15;
+                    reload = 150;
+                }}
+            );
+
+            immunities.addAll(StatusEffects.unmoving, RustingStatusEffects.balancedPulsation);
+        }};
+
         EntityMapping.nameMap.put("marrow", BaseUnit::new);
         marrow = new UnitType("marrow"){{
             hitSize = 8;
-            health = 335;
+            health = 215;
             armor = 1;
             speed = 0.5225f;
             accel = 0.5f;
@@ -526,8 +568,8 @@ public class RustingUnits implements ContentList{
         EntityMapping.nameMap.put("trumpedoot", BaseUnit::new);
         trumpedoot = new UnitType("trumpedoot"){{
             hitSize = 28;
-            health = 32000;
-            armor = 23;
+            health = 29500;
+            armor = 19;
             speed = 0.35f;
             accel = 0.65f;
             drag = 0.45f;
@@ -542,7 +584,7 @@ public class RustingUnits implements ContentList{
             constructor = BaseUnit::new;
 
             abilities.addAll(
-                new RegenerationAbility(1.3f),
+                new RegenerationAbility(0.21f),
                 new SpeedupAbility(){{
                     range = 115;
                     lineThickness = 7;
@@ -591,21 +633,24 @@ public class RustingUnits implements ContentList{
 
         EntityMapping.nameMap.put("guardian-sulphur-stingray", StingrayUnitEntity::new);
         stingray = new UnitType("guardian-sulphur-stingray"){{
-            health = 8750;
-            armor = 3;
-            rotateSpeed = 3.25f;
+            health = 6500;
+            armor = 2;
+            rotateSpeed = 3.65f;
             lightOpacity = 0.35f;
             lightColor = Palr.pulseBullet;
             hitSize = 18;
             drag = 0.05f;
             accel = 0.055f;
-            speed = 3.75f;
+            speed = 2.85f;
             flying = true;
             circleTarget = true;
-            faceTarget = false;
+            faceTarget = true;
             omniMovement = false;
+            singleTarget = true;
             constructor = StingrayUnitEntity::new;
             if(Version.number < 7) defaultController = BossStingrayAI::new;
+            else defaultController = FlyingAI::new;
+            //yadayadablahblahblah nobody can read this sh1p
             abilities.addAll(
                 new RegenerationAbility(0.75f)
             );
@@ -679,7 +724,7 @@ public class RustingUnits implements ContentList{
             );
         }};
 
-        EntityMapping.nameMap.put("observantly", AcriUnitEntity::new);
+        EntityMapping.nameMap.put("observantly", BaseUnitEntity::new);
         observantly = new AcriUnitType("observantly"){{
 
             flying = true;
@@ -692,7 +737,7 @@ public class RustingUnits implements ContentList{
             hitSize = 19;
             itemCapacity = 14;
 
-            constructor = AcriUnitEntity::new;
+            constructor = BaseUnitEntity::new;
 
 
             weapons.addAll(
@@ -735,7 +780,7 @@ public class RustingUnits implements ContentList{
             );
         }};
 
-        EntityMapping.nameMap.put("kindling", AcriUnitEntity::new);
+        EntityMapping.nameMap.put("kindling", BaseUnitEntity::new);
         kindling = new AcriUnitType("kindling"){{
             flying = true;
 
@@ -750,13 +795,79 @@ public class RustingUnits implements ContentList{
             armor = 13;
             hitSize = 14;
             defaultController = MinerAI::new;
-            constructor = AcriUnitEntity::new;
+            constructor = BaseUnitEntity::new;
             abilities.addAll(
                 new HealthEqualizerAbility(){{
                     mountName = "none";
                     mirror = false;
                 }},
                 new RegenerationAbility(0.95f)
+            );
+        }};
+
+        EntityMapping.nameMap.put("kindling", BaseUnitEntity::new);
+        sharpen = new AcriUnitType("sharpen"){{
+            flying = true;
+            circleTarget = true;
+
+            accel = 0.025f;
+            drag = 0.0031f;
+            speed = 2.35f;
+            rotateSpeed = 7.5f;
+            itemCapacity = 15;
+            health = 340;
+            armor = 6;
+            hitSize = 14;
+            constructor = BaseUnitEntity::new;
+            abilities.addAll(
+                new StatusFieldAbility(StatusEffects.overdrive, 1690, 1380, 85)
+            );
+            weapons.addAll(
+                    new Weapon(EndlessRusting.modname + "-sharpen-weapon"){{
+                        x = 8.5f;
+                        y = -0.5f;
+                        reload = 2;
+                        top = false;
+                        alternate = false;
+                        bullet = new ContinuousLaserBulletType(5){{
+                            length = 130;
+                            width = 0.75f;
+                            hitEffect = Fx.hitLancer;
+                            drawSize = 420f;
+                            lifetime = 6;
+                            shake = 0.1f;
+                            despawnEffect = Fx.none;
+                            smokeEffect = Fx.none;
+                            fadeTime = 2;
+
+                            shootEffect = Fx.none;
+
+                            colors = new Color[]{Palr.chillDecalDark.cpy().a(.2f), Palr.chillDecalDark.cpy().a(.5f), Palr.chillDecalDark.cpy().mul(1.2f), Palr.chillDecalLight};
+                        }};
+                    }},
+                    new Weapon("none"){{
+                        x = 8.5f;
+                        y = -0.5f;
+                        reload = 2;
+                        firstShotDelay = 2;
+                        top = false;
+                        alternate = false;
+                        bullet = new ContinuousLaserBulletType(5){{
+                            length = 130;
+                            width = 0.75f;
+                            hitEffect = Fx.hitLancer;
+                            drawSize = 420f;
+                            lifetime = 6;
+                            shake = 0.1f;
+                            despawnEffect = Fx.none;
+                            smokeEffect = Fx.none;
+                            fadeTime = 2;
+
+                            shootEffect = Fx.none;
+
+                            colors = new Color[]{Palr.chillDecalDark.cpy().a(.2f), Palr.chillDecalDark.cpy().a(.5f), Palr.chillDecalDark.cpy().mul(1.2f), Palr.chillDecalLight};
+                        }};
+                    }}
             );
         }};
     }

@@ -1,6 +1,7 @@
 package rusting.type.weather;
 
 import arc.Core;
+import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.math.Mathf;
@@ -16,6 +17,8 @@ public class BlindingParticleWeather extends BaseParticleWeather {
     public float opacityGroundModifier = 0.15f,  opacityAirModifier = 0.85f, opacityModifier = 1.95f;
     //changeable if necessary, though not recommended
     public float drawLayer = Layer.weather;
+    //color of blinding
+    public Color blindingColor = color;
 
     public BlindingParticleWeather(String name) {
         super(name);

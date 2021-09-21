@@ -62,6 +62,10 @@ public class PulseChainNode extends PulseNode {
                 //get the building
                 Building j = Vars.world.build(l);
 
+                //do you think this dosn't happen, because if so I have a few things to say including that of which I am kinda
+                //ok I crashed once because something was null I'm to scared to leave it in, ok?
+                if(j == null) return;
+
                 //if healing percent is 0 or block has already been healed, return
                 if (trueHealingPercent <= 0 || mended.contains(j)) return;
 

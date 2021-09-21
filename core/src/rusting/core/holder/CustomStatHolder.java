@@ -78,7 +78,7 @@ public class CustomStatHolder {
             projectileRange
     );
 
-    //shown if the block has been assigned a pulse reload time stat
+    //shown if the block can transmit Pulse
     public Seq<StatHolder> conditionalRangeStats = Seq.with(
             connections,
             laserRange,
@@ -110,7 +110,7 @@ public class CustomStatHolder {
                     conditionalOverloadStats, canOverload, "overloadstats"
             ),
             new StatGroup(
-                    conditionalRangeStats, connections, "transmissionstats"
+                    conditionalRangeStats, energyTransmission, "transmissionstats"
             ),
             new StatGroup(
                     conditionalUtilityStats, healPercent, "utilitystats"

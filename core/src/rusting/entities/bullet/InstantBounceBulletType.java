@@ -8,7 +8,7 @@ import mindustry.content.Fx;
 import mindustry.entities.Damage;
 import mindustry.gen.*;
 import rusting.content.Fxr;
-import rusting.graphics.graphicEffects;
+import rusting.graphics.GraphicEffects;
 
 import java.util.Arrays;
 
@@ -133,10 +133,7 @@ public class InstantBounceBulletType extends BounceBulletType implements instant
             });
             else{
                 despawnEffect.at(x, y);
-                graphicEffects.trailEffect(trailColor, x, y, 2.5f, 2, 1, trailFadeIn, trailFadeOut, points);
-                Posc owner = null;
-                if(b.owner instanceof Posc) owner = (Posc) owner;
-                graphicEffects.trailEffect(trailColor, owner.x(), owner.y(), width, 2, 1, trailFadeIn, trailFadeOut, points);
+                GraphicEffects.trailEffect(trailColor, x, y, 2.5f, 2, 1, trailFadeIn, trailFadeOut, points);
                 b.remove();
             }
         }
@@ -152,10 +149,10 @@ public class InstantBounceBulletType extends BounceBulletType implements instant
             points[1][points[1].length - 1] = oy;
 
             despawnEffect.at(ox, oy);
-            graphicEffects.trailEffect(trailColor, ox, oy, 2.5f, 2, 1, trailFadeIn, trailFadeOut, points);
+            GraphicEffects.trailEffect(trailColor, ox, oy, 2.5f, 2, 1, trailFadeIn, trailFadeOut, points);
             if(b.owner != null && b.owner instanceof Posc) {
                 Posc owner = (Posc) b.owner;
-                graphicEffects.trailEffect(trailColor, owner.x(), owner.y(), 2.5f, 2, 1, trailFadeIn, trailFadeOut, points);
+                GraphicEffects.trailEffect(trailColor, owner.x(), owner.y(), 2.5f, 2, 1, trailFadeIn, trailFadeOut, points);
             }
             b.remove();
         }

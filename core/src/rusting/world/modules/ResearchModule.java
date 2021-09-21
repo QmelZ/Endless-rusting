@@ -48,4 +48,8 @@ public class ResearchModule {
         if(!teamMap.containsKey(team)) teamMap.put(team, new TeamResearchModule());
         return teamMap.get(team);
     };
+
+    public Integer id(){
+        return id;
+    }
 }

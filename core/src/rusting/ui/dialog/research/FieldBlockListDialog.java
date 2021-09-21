@@ -21,9 +21,10 @@ import mindustry.world.Tile;
 import rusting.Varsr;
 import rusting.content.Palr;
 import rusting.ctype.ResearchType;
+import rusting.interfaces.ResearchCenter;
 import rusting.interfaces.ResearchableObject;
 import rusting.ui.dialog.CustomBaseDialog;
-import rusting.world.blocks.pulse.utility.PulseResearchBlock;
+import rusting.ui.dialog.Texr;
 
 import static mindustry.Vars.mobile;
 import static mindustry.Vars.player;
@@ -33,16 +34,13 @@ public class FieldBlockListDialog extends CustomBaseDialog {
     public Seq<ResearchableObject> researchable = new Seq<ResearchableObject>();
     public Seq<String> databaseQuotes = new Seq<String>();
 
-    public FieldBlockListDialog(){
+    public FieldBlockListDialog() {
         super(Core.bundle.get("erui.pulseblockdatabasepage"), Core.scene.getStyle(DialogStyle.class));
         addCloseButton();
     }
 
-    public void makeList(Tile tile){
-        if(tile.build instanceof Building && tile.build.block instanceof PulseResearchBlock) makeList(((PulseResearchBlock) tile.build.block).fieldNames, ((PulseResearchBlock) tile.build.block).threshold);
-    }
-
     public void makeList(Seq<ResearchType> researchTypes){
+        researchable.clear();
         researchTypes.each(type -> {
             Varsr.research.researchMap.get(type).each(m -> {
                 researchable.add(m.item);
@@ -55,9 +53,10 @@ public class FieldBlockListDialog extends CustomBaseDialog {
             hide();
             show(tile);
         }
-        else makeList(tile);
+        else if(tile.build != null && tile.build.block instanceof ResearchCenter) makeList(((ResearchCenter) tile.build.block).researchTypes());
     }
 
+    /*
     public void makeList(Seq<String> fieldNames, int threshold) {
         researchable.clear();
         Vars.content.blocks().each(b -> {
@@ -73,8 +72,11 @@ public class FieldBlockListDialog extends CustomBaseDialog {
         });
     }
 
+     */
+
     public void show(Tile tile) {
-        makeList(tile);
+        if(!(tile.build instanceof Building && tile.build.block instanceof ResearchCenter)) return;
+        makeList(((ResearchCenter) tile.build.block).researchTypes());
         setup();
         super.show();
     }
@@ -98,7 +100,7 @@ public class FieldBlockListDialog extends CustomBaseDialog {
                 list.left();
 
                 researchable.each(type -> {
-                    if(!(type instanceof UnlockableContent)) return;
+                    if(!(type instanceof UnlockableContent) || Varsr.research.getCenter(type.researchTypes()) == null) return;
                     UnlockableContent unlock = (UnlockableContent) type;
                     if (!unlocked(unlock) || type.getResearchModule().isHidden) return;
                     final boolean isResearched = Varsr.research.researched(player.team(), type, type.researchTypes());
@@ -122,7 +124,10 @@ public class FieldBlockListDialog extends CustomBaseDialog {
                         } else if (unlocked(unlock)) Varsr.ui.unlock.show(unlock);
                     });
                     boolean finalIsResearched1 = isResearched;
-                    image.addListener(new Tooltip(t -> t.background(arc.Core.atlas.drawable("button")).add((finalIsResearched1 ? "The " : "Unlock the ") + unlock.localizedName + (finalIsResearched1 ? "" : "?"))));
+                    image.addListener(new Tooltip(t -> {
+                        t.background(Texr.button).add((finalIsResearched1 ? "The " : "Unlock the ") + unlock.localizedName + (finalIsResearched1 ? "" : "?"));
+                        t.row();
+                    }));
 
                     if ((++count[0]) % cols == 0) {
                         list.row();

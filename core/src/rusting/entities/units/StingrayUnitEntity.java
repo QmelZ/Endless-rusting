@@ -50,6 +50,10 @@ public class StingrayUnitEntity extends AntiquimGuardianUnitEntity{
                 }
                 else b.type.create(this, team, x, y, angleTo(b) + 180);
             }
+            else {
+                if (b.damage >= 5) b.damage -= 5;
+                else b.time = b.lifetime;
+            }
         }
     }
 
@@ -62,7 +66,7 @@ public class StingrayUnitEntity extends AntiquimGuardianUnitEntity{
         trailSeq.get(1).update(x + Tmp.v1.x, y + Tmp.v1.y);
         if(shieldCharge >= 2000) {
             shieldCharge += addableShieldCharge;
-            addableShieldCharge = 750;
+            addableShieldCharge = 1500;
             shieldCharge = 0;
             tmpFloat2 = 120;
             Fxr.stingrayShieldPop.at(x, y, rotation, this);

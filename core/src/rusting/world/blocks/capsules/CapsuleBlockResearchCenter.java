@@ -12,6 +12,7 @@ import rusting.Varsr;
 import rusting.content.RustingResearchTypes;
 import rusting.ctype.ResearchType;
 import rusting.interfaces.ResearchCenter;
+import rusting.interfaces.ResearchableObject;
 
 public class CapsuleBlockResearchCenter extends Block implements ResearchCenter {
 
@@ -25,6 +26,10 @@ public class CapsuleBlockResearchCenter extends Block implements ResearchCenter 
         configurable = true;
         group = BlockGroup.power;
         researchTypes.add(RustingResearchTypes.capsule);
+
+        config(String.class, (CapsuleBlockResearchCenterBuild entity, String key) -> {
+            Varsr.research.unlock(entity.team, (ResearchableObject) Vars.content.blocks().find(b -> b.name == key));
+        });
     }
 
     @Override
@@ -35,7 +40,7 @@ public class CapsuleBlockResearchCenter extends Block implements ResearchCenter 
     public void buildDialog(Tile tile){
         Vars.control.input.frag.config.hideConfig();
         if(!(tile.build instanceof CapsuleBlockResearchCenterBuild)) return;
-        Varsr.ui.blocklist.show(tile);
+        Varsr.ui.research.show(tile);
     }
 
     public class CapsuleBlockResearchCenterBuild extends Building {

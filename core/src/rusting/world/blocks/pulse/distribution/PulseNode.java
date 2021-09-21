@@ -17,6 +17,7 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.world.Tile;
 import mindustry.world.meta.Stat;
+import rusting.Varsr;
 import rusting.content.Palr;
 import rusting.interfaces.PulseBlockc;
 import rusting.interfaces.ResearchableBlock;
@@ -38,12 +39,15 @@ public class PulseNode extends PulseBlock implements ResearchableBlock {
     //How many nodes you can connect to
     public int connectionsPotential = 1;
     //Range of the node
-    public double laserRange = 15;
+    public float laserRange = 15;
     //Colour of the laser
-    public Color laserColor = chargeColourStart;
+    public Color laserColor = Palr.pulseLaser;
 
     //used as a placeholder to avoid unnecessary variable creation
     protected static BuildPlan otherReq;
+
+    private static int tmpInteger = 0;
+    private static float tmpFloat = 0;
 
     public PulseNode(String name) {
         super(name);
@@ -58,23 +62,47 @@ public class PulseNode extends PulseBlock implements ResearchableBlock {
 
 
         config(Integer.class, (PulseNodeBuild entity, Integer i) -> {
-            Building other = world.build(i);
-            if(!(other instanceof PulseBlockc)) return;
-            if(entity.connections.contains(i)){
-                //unlink
-                entity.connections.remove(i);
+            Tile t = world.tile(i);
+            //must have been added via schem, add to previous connections
+            if(t.build == null) {
+                entity.previousConnections.add(i);
+                return;
             }
+            Building other = t.build;
+            if(!(other instanceof PulseBlockc)) return;
+            if(Varsr.world.onTile(other, entity.connections)){
+                //unlink
+                tmpInteger = i;
+                tmpFloat = world.build(i).dst(entity);
+
+                //find closest integer in the Seq and remove it
+                entity.connections.each(integer -> {
+                    float dst = tmpFloat;
+                    float tmpdst = world.build(integer).dst(other);
+                    if(tmpdst < dst){
+                        tmpInteger = integer;
+                        tmpFloat = tmpdst;
+                    }
+                });
+
+                //get the index of the int, else the game will think it's removing an integer with the index of the current integer
+                entity.connections.remove(entity.connections.indexOf(tmpInteger));
+            }
+
+            //connect to the block if posible
             else if(nodeCanConnect(entity, other)){
                 entity.connections.add(i);
             }
+            //catch any errors with the main blocks of code
             else entity.previousConnections.add(i);
         });
 
         config(Point2[].class, (PulseNodeBuild entity, Point2[] points) -> {
-            String outputString = "";
 
             for (Point2 point: points){
-                entity.configure(Point2.pack(point.x + entity.tile.x, point.y + entity.tile.y));
+                if(point != null){
+                    entity.configure(Point2.pack(point.x + entity.tile.x, point.y + entity.tile.y));
+                }
             }
         });
     }
@@ -82,7 +110,7 @@ public class PulseNode extends PulseBlock implements ResearchableBlock {
     @Override
     public void setStats(){
         super.setStats();
-        this.stats.add(Stat.range, (float) laserRange);
+        this.stats.add(Stat.range, laserRange);
         this.stats.add(Stat.reload, pulseReloadTime /60);
     }
 
@@ -113,21 +141,23 @@ public class PulseNode extends PulseBlock implements ResearchableBlock {
         if(req.config instanceof Point2[]){
             Point2[] ps = (Point2[]) req.config;
             for(Point2 point : ps){
-                int px = req.x + point.x, py = req.y + point.y;
-                otherReq = null;
-                list.each(other -> {
-                    if(other.x == px && other.y == py && other.block instanceof PulseBlock) otherReq = other;
-                });
+                if(point != null && req != null) {
+                    int px = req.x + point.x, py = req.y + point.y;
+                    otherReq = null;
+                    list.each(other -> {
+                        if (other.x == px && other.y == py && other.block instanceof PulseBlock) otherReq = other;
+                    });
 
-                if(!(otherReq == null || otherReq.block == null) && req.block instanceof PulseNode) drawLaser(req.drawx(), req.drawy(), otherReq.drawx(), otherReq.drawy(), laserOffset, otherReq.block instanceof PulseBlock ? ((PulseBlock) otherReq.block).laserOffset : otherReq.block.size - 5, 0.5f, chargeColourStart, chargeColourEnd);
-
+                    if (!(otherReq == null || otherReq.block == null) && req.block instanceof PulseNode)
+                        drawLaser(req.drawx(), req.drawy(), otherReq.drawx(), otherReq.drawy(), laserOffset, otherReq.block instanceof PulseBlock ? ((PulseBlock) otherReq.block).laserOffset : otherReq.block.size - 5, 0.5f, chargeColourStart, chargeColourEnd);
+                }
             }
             Draw.color();
         }
     }
 
     public static boolean nodeCanConnect(PulseNodeBuild build, Building target){
-        return (!(target instanceof PulseBlockc) || ((PulseBlockc) target).connectableTo()) && !build.connections.contains(target.pos()) && build.connections.size < ((PulseNode) (build.block)).connectionsPotential && ((PulseNode) build.block).laserRange * 8 >= Mathf.dst(build.x, build.y, target.x, target.y);
+        return ((target instanceof PulseBlockc) && ((PulseBlockc) target).connectableTo()) && !build.connections.contains(target.pos()) && build.connections.size < ((PulseNode) (build.block)).connectionsPotential && ((PulseNode) build.block).laserRange * 8 >= Mathf.dst(build.x, build.y, target.x, target.y);
     }
 
     protected void getPotentialLinks(PulseNode.PulseNodeBuild build, Team team, Seq<Building> others){
@@ -171,7 +201,7 @@ public class PulseNode extends PulseBlock implements ResearchableBlock {
                 return false;
             }
 
-            if(nodeCanConnect(this, other) || connections.contains(other.pos())){
+            if(nodeCanConnect(this, other) || Varsr.world.onTile(other, connections)){
                 configure(other.pos());
 
                 return false;
@@ -219,6 +249,10 @@ public class PulseNode extends PulseBlock implements ResearchableBlock {
             connections.each(l -> {
                 Building j = world.build(l);
                 //need to double check, jic, because I've experienced crashes while a generator was pumping out energy
+                if(!(j instanceof PulseBlockc)){
+                    connections.remove(connections.indexOf(l));
+                    return;
+                }
                 if(chargef() <= 0 || j == null) return;
                 if(index[0] > connectionsPotential) connections.remove(l);
                 float energyTransmitted = Math.min(pulseModule.pulse, energyTransmission);
@@ -256,16 +290,19 @@ public class PulseNode extends PulseBlock implements ResearchableBlock {
             super.draw();
             connections.each(l -> {
                 Building other = world.build(l);
-                if(other == null || other.isNull() || !other.isAdded()) return;
-                drawLaser((PulseBlockc) other, chargef(), laserColor, chargeColourEnd);
+                if(other == null || other.isNull() || !other.isAdded() || !(other instanceof PulseBlockc)) return;
+                drawLaser((PulseBlockc) other, laserColor);
             });
         }
 
         @Override
         public Point2[] config(){
-            Point2[] out = new Point2[connections.size];
+            Point2[] out = new Point2[connections.size + previousConnections.size];
             for(int i = 0; i < connections.size; i++){
                 out[i] = Point2.unpack(connections.get(i)).sub(tile.x, tile.y);
+            }
+            for(int i = 0; i < previousConnections.size; i++){
+                out[i] = Point2.unpack(previousConnections.get(i)).sub(tile.x, tile.y);
             }
             return out;
         }

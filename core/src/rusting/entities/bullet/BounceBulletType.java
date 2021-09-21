@@ -2,6 +2,7 @@ package rusting.entities.bullet;
 
 import arc.Core;
 import arc.struct.Seq;
+import arc.util.Time;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
@@ -20,6 +21,9 @@ public class BounceBulletType extends ConsBulletType {
     public int trailLength = 5;
     //How thick trail is
     public float trailWidth = 1;
+    float range = -1;
+
+    public boolean useRange = true;
 
     public BounceBulletType(float speed, float damage, String sprite) {
         super(speed, damage, sprite);
@@ -27,7 +31,7 @@ public class BounceBulletType extends ConsBulletType {
         this.speed = speed;
         this.damage = damage;
         this.pierceBuilding = this.pierce = this.bounceBuildings = this.bounceUnits = true;
-        this.trailWidth = width/5;
+        this.trailWidth = width * 0.38f;
         this.shrinkX = 0.8f;
     }
 
@@ -35,6 +39,21 @@ public class BounceBulletType extends ConsBulletType {
         super.init(b);
         b.data = new Seq<Trail>();
         ((Seq<Trail>)b.data).add(new Trail(trailLength));
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        if(useRange && range == -1){
+            useRange = false;
+            range = range();
+            useRange = true;
+        }
+    }
+
+    @Override
+    public float range() {
+        return useRange ? range : super.range();
     }
 
     @Override
@@ -54,9 +73,7 @@ public class BounceBulletType extends ConsBulletType {
         super.hit(b, x, y);
         Teamc teamc = Units.closestEnemy(b.team, x, y, hitSize * 2 + 4, e -> b.collides(e));
         if(!(teamc instanceof Unit)) return;
-        Unit unit = null;
-        float difX = Math.abs(b.vel.x - x), difY = Math.abs(b.vel.y - y);
-        unit = (Unit)teamc;
+        Unit unit = (Unit)teamc;
         if ((bounceCap == -1 || b.collided.size <= bounceCap ) && bounceUnits){
             float rotation = b.vel.angle();
             b.vel.setAngle(360 + rotation - (rotation - b.angleTo(unit)) * 2);
@@ -64,6 +81,9 @@ public class BounceBulletType extends ConsBulletType {
             b.vel.add(unit.vel);
             bounceEffect.at(x, y, b.angleTo(x + b.vel.x, y + b.vel.y));
         }
+        Time.run(1, () -> {
+            b.collided.clear();
+        });
     }
 
 

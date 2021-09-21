@@ -70,6 +70,7 @@ public class RustingStatusEffects implements ContentList {
         amberstriken = new CrystalStatusEffect("amberstriken"){{
             speedMultiplier = 0.35F;
             transitionDamage = 10f;
+            hitSizeMax = 16;
             effect = Fx.plasticburn;
             init(() -> {
                 if(Version.number > 6) return;
@@ -94,6 +95,7 @@ public class RustingStatusEffects implements ContentList {
         umbrafliction = new CrystalStatusEffect("umbrafliction"){{
             transitionDamage = 45;
             speedMultiplier = 0.15F;
+            hitSizeMax = 21;
             effect = Fxr.blackened;
             init(() -> {
                 if(Version.number > 6) return;

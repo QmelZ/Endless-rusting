@@ -74,7 +74,7 @@ public interface PulseBlockc{
         return null;
     }
 
-    default void drawLaser(PulseBlockc building, float lerpPercent, Color laserCol, Color laserCol2) {
+    default void drawLaser(PulseBlockc building, Color laserCol) {
 
     }
 

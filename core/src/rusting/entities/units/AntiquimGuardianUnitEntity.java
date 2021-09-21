@@ -3,10 +3,9 @@ package rusting.entities.units;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.gen.Groups;
-import mindustry.gen.UnitEntity;
 import rusting.content.Fxr;
 
-public class AntiquimGuardianUnitEntity extends UnitEntity {
+public class AntiquimGuardianUnitEntity extends BaseUnitEntity {
     public float iframes = 0;
 
     @Override

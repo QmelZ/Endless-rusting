@@ -13,30 +13,27 @@ import rusting.world.modules.ResearchModule;
 
 public interface ResearchableObject {
 
+    default String name(){
+        return "defaukt";
+    }
+
     default Seq<ResearchType> researchTypes(){
         return null;
     }
 
     default TextureRegion researchUIcon(){
-        return Core.atlas.find("");
+        return Core.atlas.find(name());
     }
 
     default void centerResearchRequirements(ItemStack[] stack){
-        centerResearchRequirements(true, true, stack);
+        centerResearchRequirements(true, stack);
     }
 
-    default void centerResearchRequirements(boolean requiresResearching, ItemStack[] stack){
-        centerResearchRequirements(true, requiresResearching, stack);
-    }
-
-    //backwards compatibility with my own code.
-    // I can't believe I've come to this and I haven't even hit rock bottom yet.
-    // When do I get to keep my stats?
     default ResearchModule getResearchModule(){
         return null;
     }
 
-    default void centerResearchRequirements(boolean reset, boolean requiresResearching, ItemStack[] stack){
+    default void centerResearchRequirements(boolean requiresResearching, ItemStack[] stack){
         if(getResearchModule() == null) return;
         getResearchModule().needsResearching = requiresResearching;
         getResearchModule().centerResearchRequirements = stack;
@@ -44,7 +41,6 @@ public interface ResearchableObject {
         if(this instanceof UnlockableContent){
             string[0] += ((UnlockableContent) this).localizedName + "'s stack contains: ";
         }
-        Varsr.logStack(string[0], stack);
     }
 
     default boolean researched(Team team){

@@ -21,6 +21,7 @@ import mindustry.type.UnitType;
 import mindustry.world.blocks.storage.CoreBlock.CoreBuild;
 import rusting.content.*;
 import rusting.graphics.Drawr;
+import rusting.type.statusEffect.CrystalStatusEffect;
 
 public class EndlessRusting extends Mod{
 
@@ -111,18 +112,31 @@ public class EndlessRusting extends Mod{
         Varsr.content.load();
         immunityUnits = Seq.with(RustingUnits.stingray);
         empImmune = Seq.with(RustingUnits.marrow, RustingUnits.metaphys, RustingUnits.ribigen, RustingUnits.spinascene, RustingUnits.trumpedoot);
+        Seq<UnitType> walls = Seq.with(RustingUnits.pulseBarrenBezerker);
+        final Seq<StatusEffect> statusEffectSeq = Seq.with();
+
+        walls.each(w -> {
+            statusEffectSeq.clear();
+            statusEffectSeq.addAll(w.immunities);
+            w.immunities.clear();
+            Vars.content.statusEffects().each(s -> {
+                if(!statusEffectSeq.contains(s)) w.immunities.add(s);
+            });
+        });
 
         Vars.content.statusEffects().each(s -> {
             //chek for NaN damage
             if(!s.name.contains("endless-rusting") && !s.name.contains("pixelcraft") && (s.disarm == true || s.damage == s.damage && s.damage >= 1 || s.speedMultiplier <= 0.85f || s.healthMultiplier < 0.85f || s.damageMultiplier < 0.85f)) immunityUnits.each(unit -> unit.immunities.add(s));
             if(hasPower(s.name) || hasPower(s.localizedName) || s.description != null && hasPower(s.description)) empImmune.each(u -> u.immunities.add(s));
-
         });
         RustingUnits.stingray.immunities.remove(StatusEffects.melting);
         RustingUnits.stingray.immunities.remove(StatusEffects.tarred);
 
-
-
+        Vars.content.units().each(u -> {
+            CrystalStatusEffect.crystalStatusEffectSeq.each(s -> {
+                if(u.hitSize > s.hitSizeMax) u.immunities.add(s);
+            });
+        });
     }
 
     private static boolean hasPower(String string){

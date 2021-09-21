@@ -12,7 +12,6 @@ public class BossStingrayAI extends FlyingAI {
     @Override
     protected void updateWeapons() {
 
-        super.updateWeapons();
         if(targets.length != unit.mounts.length) targets = new Teamc[unit.mounts.length];
 
         float rotation = unit.rotation - 90;

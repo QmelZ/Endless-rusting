@@ -6,6 +6,7 @@ import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.math.Angles;
 import arc.math.Mathf;
+import arc.struct.Seq;
 import arc.util.Time;
 import mindustry.entities.units.WeaponMount;
 import mindustry.game.Team;
@@ -18,12 +19,16 @@ public class CrystalStatusEffect extends ConsStatusEffect {
     public TextureRegion crystalRegion;
     public float colorOpacity;
     public Color drawColor;
+    //max hitsize before untis become auto immune
+    public float hitSizeMax = -1;
     Color crystalDrawColor;
+    public static Seq<CrystalStatusEffect> crystalStatusEffectSeq = Seq.with();
 
     @Override
     public void load() {
         super.load();
         crystalRegion = Core.atlas.find(name + "-crystal");
+        crystalStatusEffectSeq.add(this);
     }
 
     public CrystalStatusEffect(String name) {
@@ -101,5 +106,7 @@ public class CrystalStatusEffect extends ConsStatusEffect {
             }
         }
         Drawf.light(Team.derelict, unit.x, unit.y, unit.type.hitSize, crystalDrawColor, colorOpacity);
+
+        Draw.reset();
     }
 }

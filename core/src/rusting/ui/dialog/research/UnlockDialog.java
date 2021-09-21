@@ -8,6 +8,7 @@ import arc.scene.ui.layout.Table;
 import arc.util.Scaling;
 import mindustry.Vars;
 import mindustry.ctype.UnlockableContent;
+import mindustry.gen.Building;
 import mindustry.gen.Sounds;
 import mindustry.type.ItemStack;
 import mindustry.ui.Cicon;
@@ -16,8 +17,6 @@ import mindustry.world.blocks.storage.CoreBlock.CoreBuild;
 import rusting.Varsr;
 import rusting.interfaces.ResearchableObject;
 import rusting.ui.dialog.CustomBaseDialog;
-import rusting.world.blocks.pulse.PulseBlock;
-import rusting.world.blocks.pulse.utility.PulseResearchBlock.PulseResearchBuild;
 
 import static mindustry.Vars.player;
 
@@ -34,12 +33,12 @@ public class UnlockDialog extends CustomBaseDialog {
 
         clear();
         addCloseButton();
-        Tile tile = PulseBlock.getCenterTeam(player.team()).tile;
+        Tile tile = Varsr.research.getCenter(((ResearchableObject) content).researchTypes()).tile;
 
         cont.margin(30);
         unlockIcon.set(content.icon(Cicon.tiny));
         unlockImage = new Image(unlockIcon).setScaling(Scaling.fit);
-        ItemStack[] rCost = ((PulseBlock) content).getResearchModule().centerResearchRequirements;
+        ItemStack[] rCost = ((ResearchableObject) content).getResearchModule().centerResearchRequirements;
         Table itemsCost = new Table();
 
         itemsCost.table(table -> {
@@ -64,7 +63,7 @@ public class UnlockDialog extends CustomBaseDialog {
             table.center();
             table.button("Unlock?", () -> {
                 if(content instanceof ResearchableObject){
-                    PulseResearchBuild building = (PulseResearchBuild) tile.build;
+                    Building building = tile.build;
                     CoreBuild coreBlock = building.team.core();
                     boolean canResearch = false;
 
@@ -77,8 +76,7 @@ public class UnlockDialog extends CustomBaseDialog {
                         }
 
                         //research the block
-                        building.configure(((ResearchableObject) content).getResearchModule().id);
-                        Varsr.research.unlock(building.team, (ResearchableObject) content);
+                        building.configure(((ResearchableObject) content).name());
                         Sounds.unlock.at(player.x, player.y);
                     }
                 }

@@ -17,6 +17,7 @@ import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.Ranged;
+import mindustry.type.ItemStack;
 import mindustry.ui.Bar;
 import mindustry.ui.Cicon;
 import mindustry.world.Block;
@@ -40,7 +41,7 @@ public class PulseBlock extends Block implements ResearchableBlock {
     //research types for the block
     public Seq<ResearchType> researchTypes = new Seq<ResearchType>();
     //research module with more specific information
-    public ResearchModule researchModule = new ResearchModule();
+    public ResearchModule researchModule;
 
     private boolean tmpBool = false;
 
@@ -69,6 +70,8 @@ public class PulseBlock extends Block implements ResearchableBlock {
     public BulletType projectile = RustingBullets.craeShard;
     //chance modifier for projectile spawning
     public float projectileChanceModifier = 1;
+    //offset for projectiles spawned
+    public float projectileOffset = 1;
     //how far away the laser is from the block, is used for drawing to and from block,
     public float laserOffset = 3;
     //custom consumer module used purely to store values
@@ -130,6 +133,11 @@ public class PulseBlock extends Block implements ResearchableBlock {
     }
 
     @Override
+    public String name() {
+        return name;
+    }
+
+    @Override
     public TextureRegion researchUIcon() {
         return icon(Cicon.medium);
     }
@@ -141,6 +149,7 @@ public class PulseBlock extends Block implements ResearchableBlock {
 
     @Override
     public ResearchModule getResearchModule() {
+        if(researchModule == null) researchModule = new ResearchModule(ItemStack.with(), this);
         return researchModule;
     }
 
@@ -218,7 +227,7 @@ public class PulseBlock extends Block implements ResearchableBlock {
 
         @Override
         public PulseModule pulseModule() {
-            return PulseBlockc.super.pulseModule();
+            return pulseModule;
         }
 
         @Override
@@ -289,7 +298,8 @@ public class PulseBlock extends Block implements ResearchableBlock {
 
         public void overloadEffect(){
             //for now, sprays projectiles around itself, and damages itself.
-            if(!Vars.headless && Mathf.chance(overloadChargef() * projectileChanceModifier)) Call.createBullet(projectile, team, x, y, Mathf.random(360), projectile.damage, (float) ((Mathf.random(0.5f) + 0.3) * size), 1);
+            Tmp.v1.trns(Mathf.random(360), projectileOffset);
+            if(!Vars.headless && Mathf.chance(overloadChargef() * projectileChanceModifier)) Call.createBullet(projectile, team, x + Tmp.v1.x, y + Tmp.v1.y, Tmp.v1.angle(), projectile.damage, Mathf.random(0.5f) + 0.3f * size, 1);
         }
 
         public boolean overloaded(){
@@ -317,14 +327,13 @@ public class PulseBlock extends Block implements ResearchableBlock {
         public void updateTile() {
             super.updateTile();
             if(shake >= timeOffset){
-                xOffset = (float) (block.size * 0.3 * Mathf.range(2));
-                yOffset = (float) (block.size * 0.3 * Mathf.range(2));
+                xOffset = block.size * 0.3f * Mathf.range(2);
+                yOffset = block.size * 0.3f * Mathf.range(2);
                 alphaDraw = Mathf.absin(Time.time/100, chargef());
             }
             else shake++;
             pulseModule.pulse = Math.max(pulseModule.pulse - powerLoss, 0);
             if(overloaded()) overloadEffect();
-
         }
 
         @Override
@@ -335,15 +344,14 @@ public class PulseBlock extends Block implements ResearchableBlock {
             Draw.reset();
         }
 
-        @Override
-        public void drawLaser(PulseBlockc building, float lerpPercent, Color laserCol, Color laserCol2) {
+        public void drawLaser(PulseBlockc building, Color laserCol) {
             Draw.z(Layer.power);
             if(!(building instanceof Building)) return;
             Building build = (Building) building;
             float angle = angleTo(build.x, build.y) - 90;
             float sourcx = x + Angles.trnsx(angle, 0, laserOffset), sourcy = y + Angles.trnsy(angle, 0, laserOffset);
             float edgex = build.x + Angles.trnsx(angle + 180, 0, building.laserOffset()), edgey = build.y + Angles.trnsy(angle + 180, 0, building.laserOffset());
-            Draw.color(laserCol, laserCol2, lerpPercent);
+            Draw.color(laserCol);
             Lines.stroke(1.35f);
             Lines.line(sourcx, sourcy, edgex, edgey);
             Fill.circle(edgex, edgey, 0.85f);
@@ -368,7 +376,7 @@ public class PulseBlock extends Block implements ResearchableBlock {
                 Draw.rect(chargeRegion, x, y, 270);
                 if(Core.settings.getBool("settings.er.pulseglare")){
                     Draw.alpha(chargef() * chargef() * 0.5f);
-                    Draw.rect(chargeRegion, x, y, (float) (chargeRegion.height * 1.5/4), (float) (chargeRegion.width * 1.5/4), 270);
+                    Draw.rect(chargeRegion, x, y, chargeRegion.height * 1.5f/4, chargeRegion.width * 1.5f/4, 270);
                 }
                 if(Core.settings.getBool("settings.er.additivepulsecolours")) Draw.blend();
             }

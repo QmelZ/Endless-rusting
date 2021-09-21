@@ -3,21 +3,24 @@ package rusting.entities.units;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Damage;
 import mindustry.game.Team;
-import mindustry.gen.UnitEntity;
+import mindustry.gen.*;
 import mindustry.graphics.Layer;
 import mindustry.type.StatusEffect;
 import rusting.content.*;
 
 import static mindustry.Vars.state;
 
-public class CraeUnitEntity extends UnitEntity {
+public class CraeUnitEntity extends BaseUnitEntity {
 
+    //blacklisted effects for the sake of the ai
+    private static Seq<String> blacklistedStatusEffects = Seq.with("betamindy-amnesia");
     private float shake = 0;
     public float xOffset = 0, yOffset = 0;
     public float alphaDraw = 0;
@@ -49,9 +52,26 @@ public class CraeUnitEntity extends UnitEntity {
     @Override
     public void apply(StatusEffect status, float time){
         if(status != StatusEffects.none && status != null){
-            if(this.isImmune(status)) status.effect.at(x, y);
+            if(this.isImmune(status) || blacklistedStatusEffects.contains(status.name)) status.effect.at(x, y);
             else if(status.damage * 60 * 4 < unitType().health && status.speedMultiplier > 0.15f && status.reloadMultiplier > 0.15 && status.damageMultiplier > 0.15 && status.healthMultiplier > 0.55) super.apply(status, time);
             else if(status.permanent == true && status.damage > 0) this.heal(Math.abs(status.damage) * 60);
+        }
+    }
+
+    public boolean technicallyImmune(StatusEffect effect) {
+        return type.immunities.contains(effect) || blacklistedStatusEffects.contains(effect.name) || !(effect.damage * 60 * 4 < unitType().health && effect.speedMultiplier > 0.15f && effect.reloadMultiplier > 0.15 && effect.damageMultiplier > 0.15 && effect.healthMultiplier > 0.55);
+    }
+
+    @Override
+    public void collision(Hitboxc other, float x, float y) {
+        super.collision(other, x, y);
+        if(other instanceof Bullet){
+            Bullet otherBullet = (Bullet) other;
+            if(technicallyImmune(otherBullet.type.status) && otherBullet.type.reflectable) {
+                if (otherBullet.owner instanceof Healthc) ((Healthc) otherBullet.owner).damagePierce(otherBullet.type.damage/5);
+                otherBullet.type.create(otherBullet.owner, team, x, y, angleTo(otherBullet), otherBullet.vel.len()/otherBullet.type.speed,  otherBullet.fout()).collided = (otherBullet.collided);
+                otherBullet.remove();
+            }
         }
     }
 

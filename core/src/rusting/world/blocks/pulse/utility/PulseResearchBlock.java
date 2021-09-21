@@ -3,17 +3,18 @@ package rusting.world.blocks.pulse.utility;
 import arc.Core;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
-import mindustry.ctype.UnlockableContent;
 import mindustry.game.Team;
 import mindustry.gen.Icon;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import rusting.Varsr;
+import rusting.content.RustingResearchTypes;
+import rusting.ctype.ResearchType;
 import rusting.interfaces.ResearchCenter;
+import rusting.interfaces.ResearchableObject;
 import rusting.world.blocks.pulse.PulseBlock;
 
 import static mindustry.Vars.player;
@@ -21,20 +22,26 @@ import static mindustry.Vars.state;
 
 public class PulseResearchBlock extends PulseBlock implements ResearchCenter{
 
-    public int threshold = 2;
     public Seq<Block> blocks = new Seq();
     public Seq<String> fieldNames = new Seq();
+    public Seq<ResearchType> researchTypes = Seq.with();
 
     public PulseResearchBlock(String name) {
         super(name);
+        researchTypes.add(RustingResearchTypes.pulse);
         configurable = true;
+        logicConfigurable = false;
         destructible = false;
 
-        config(int.class, (PulseResearchBuild entity, Integer id) -> {
-            Varsr.research.unlock(entity.team, id);
-            Log.info("HAI!");
+        config(String.class, (PulseResearchBuild entity, String key) -> {
+            Varsr.research.unlock(entity.team, (ResearchableObject) Vars.content.blocks().find(b -> b.name == key));
         });
 
+    }
+
+    @Override
+    public Seq<ResearchType> researchTypes() {
+        return researchTypes;
     }
 
     @Override
@@ -49,8 +56,7 @@ public class PulseResearchBlock extends PulseBlock implements ResearchCenter{
 
     @Override
     public boolean isHidden(){
-        return PulseBlock.validCenter(player.team()) || super.isHidden();
-    }
+        return !buildVisibility.visible() && !state.rules.revealedBlocks.contains(this);}
 
     @Override
     public void drawPlace(int x, int y, int rotation, boolean valid){
@@ -67,16 +73,6 @@ public class PulseResearchBlock extends PulseBlock implements ResearchCenter{
         return super.canPlaceOn(tile, team);
     }
 
-    public static boolean researched(UnlockableContent content, Team team){
-            return getCenterTeam(team) != null && getCenterTeam(team).researchedBlocks.contains(content.localizedName) || content instanceof PulseBlock && !((PulseBlock) content).getResearchModule().needsResearching || state.rules.infiniteResources;
-    }
-
-    public static boolean researched(UnlockableContent content, PulseResearchBuild building){
-        boolean returnBool = false;
-        returnBool = building.researchedBlocks.contains(content.localizedName) || state.rules.infiniteResources;
-        return returnBool;
-    }
-
     public void buildDialog(Tile tile){
         Vars.control.input.frag.config.hideConfig();
         if(!(tile.build instanceof PulseResearchBuild)) return;
@@ -86,17 +82,9 @@ public class PulseResearchBlock extends PulseBlock implements ResearchCenter{
     public class PulseResearchBuild extends PulseBlockBuild{
         public Seq<String> researchedBlocks = new Seq<>();
 
-        @Override
-        public void created() {
-            super.created();
-        }
-
         public void buildConfiguration(Table table){
             super.buildConfiguration(table);
             table.button(Icon.pencil, () -> {
-                buildDialog(tile);
-            }).size(40f);
-            table.button(Icon.eraser, () -> {
                 buildDialog(tile);
             }).size(40f);
         }

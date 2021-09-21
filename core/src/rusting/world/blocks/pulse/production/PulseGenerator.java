@@ -27,7 +27,12 @@ public class PulseGenerator extends PulseNode {
         resistance = 0;
     }
 
-    public class PulseGeneratorBuild extends PulseNode.PulseNodeBuild{
+    @Override
+    public boolean outputsItems() {
+        return false;
+    }
+
+    public class PulseGeneratorBuild extends PulseNodeBuild{
         public float currentProductionTime = 0;
 
         @Override

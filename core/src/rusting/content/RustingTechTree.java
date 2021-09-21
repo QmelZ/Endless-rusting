@@ -48,7 +48,7 @@ public class RustingTechTree implements ContentList {
                     });
                 });
 
-                node(pulseCondensery, Seq.with(new SectorComplete(crystallineCrags), new Research(paileanCorridors), new Produce(melonaleum)), () -> {});
+                node(pulseCondensary, Seq.with(new SectorComplete(crystallineCrags), new Research(paileanCorridors), new Produce(melonaleum)), () -> {});
 
                 node(archangel, Seq.with(new SectorComplete(abystrikenCrevasse)), () -> {
 
@@ -153,6 +153,26 @@ public class RustingTechTree implements ContentList {
             });
         });
 
+        extendNode(groundFactory, () -> {
+            node(fraeFactory, Seq.with(new SectorComplete(volenChannels), new Produce(RustingItems.halsinte)), () -> {
+                node(RustingUnits.marrow, () -> {
+                    node(RustingUnits.metaphys, () -> {
+                        node(RustingUnits.ribigen, Seq.with(new SectorComplete(pulsatingGroves)), () -> {
+                            node(RustingUnits.spinascene, () -> {
+                                debugNode(RustingUnits.trumpedoot, Seq.with(new SectorComplete(preservatory)), () -> {
+
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+
+        extendNode(repairPoint, () -> {
+            node(hotSpringSprayer, Seq.with(new SectorComplete(volenChannels)), () -> {});
+        });
+
         extendNode(Items.copper, () -> {
             nodeProduce(RustingItems.taconite, () -> {
 
@@ -219,11 +239,11 @@ public class RustingTechTree implements ContentList {
 
         extendNode(groundZero,  () -> {
             node(incipiensGrounds, () -> {
-                    node(preservatory, Seq.with(new SectorComplete(paileanCorridors), new Research(terraConveyor)), () -> {
-                        node(hangout, Seq.with(new SettingLockedObjective("settings.er.teleporterbuilt", "Finish a relic of the old times, the Pulse Teleporter.")), () -> {
+                node(preservatory, Seq.with(new SectorComplete(paileanCorridors), new Research(terraConveyor)), () -> {
+                    node(hangout, Seq.with(new SettingLockedObjective("settings.er.teleporterbuilt", "Finish a relic of the old times, the Pulse Teleporter.")), () -> {
 
-                        });
                     });
+                });
 
                 node(plantaePresevereDomae, Seq.with(new SectorComplete(incipiensGrounds), new Research(navalFactory)), () -> {
                     node(volenChannels, Seq.with(new SectorComplete(plantaePresevereDomae), new Research(hail), new Research(lancer), new Research(UnitTypes.horizon), new Produce(Items.pyratite)), () -> {
@@ -245,7 +265,7 @@ public class RustingTechTree implements ContentList {
 
                 node(paileanCorridors, Seq.with(new SectorComplete(incipiensGrounds), new Research(pneumaticDrill), new Research(itemBridge), new Produce(Items.graphite), new Produce(Items.silicon)), () -> {
                     node(abystrikenCrevasse, Seq.with(new SectorComplete(paileanCorridors), new Research(pulseResearchCenter), new Research(ripple), new Research(titaniumConveyor)), () -> {
-                        node(crystallineCrags, Seq.with(new SectorComplete(abystrikenCrevasse), new Research(octain), new Research(thermalGenerator), new Produce(melonaleum)), () -> {
+                        node(crystallineCrags, Seq.with(new SectorComplete(abystrikenCrevasse), new Research(octain), new Research(diffract), new Research(thermalGenerator), new Produce(melonaleum)), () -> {
 
                         });
                     });

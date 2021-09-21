@@ -132,6 +132,7 @@ public class PulseGenericCrafter extends PulseBlock {
 
                 craftEffect.at(x, y);
                 progress %= 1f;
+                craft();
             }
 
             if(outputItem != null && timer(timerDump, dumpTime / timeScale)){
@@ -151,6 +152,11 @@ public class PulseGenericCrafter extends PulseBlock {
         @Override
         public boolean shouldAmbientSound(){
             return cons.valid() & customConsumeValid();
+        }
+
+        //called whenever an item is crafted, here for convenience sake
+        public void craft(){
+
         }
 
         @Override

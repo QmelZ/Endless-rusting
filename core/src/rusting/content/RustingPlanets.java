@@ -34,9 +34,9 @@ public class RustingPlanets implements ContentList {
             generator = new AntiquumPlanetGenerator();
             meshLoader = () -> new HexMesh(this, 6);
             hasAtmosphere = true;
-            atmosphereColor = Color.valueOf("3c1b8f");
-            atmosphereRadIn = 0.06f;
-            atmosphereRadOut = 0.9f;
+            atmosphereColor = Palr.camaintLightning;
+            atmosphereRadIn = 0.036f;
+            atmosphereRadOut = 0.35f;
             startSector = 36;
             alwaysUnlocked = true;
         }};
