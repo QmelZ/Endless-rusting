@@ -1,12 +1,19 @@
 package rusting.content;
 
+import arc.Core;
+import arc.Events;
+import arc.struct.ObjectMap;
 import arc.struct.Seq;
+import arc.util.Log;
+import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.content.TechTree.TechNode;
 import mindustry.ctype.ContentList;
 import mindustry.ctype.UnlockableContent;
+import mindustry.game.EventType;
 import mindustry.type.ItemStack;
 import rusting.Varsr;
+import rusting.game.RustedObjectives.DestroyBlocksObjective;
 
 import static mindustry.content.Blocks.*;
 import static mindustry.content.SectorPresets.groundZero;
@@ -17,12 +24,40 @@ import static rusting.game.RustedObjectives.SettingLockedObjective;
 
 public class RustingTechTree implements ContentList {
     static TechTree.TechNode context = null;
+    private String blockNameKey = "";
 
     @Override
     public void load(){
 
+        Events.on(EventType.BlockDestroyEvent.class, e -> {
+            if(Vars.state.isCampaign() && e.tile.build != null && e.tile.build.team != Vars.state.rules.defaultTeam) {
+
+                int amount = Core.settings.get(blockNameKey, 0) instanceof Integer ? Core.settings.getInt(blockNameKey, 0) + 1 : 0;
+
+                blockNameKey = "settings.er.destroy " + e.tile.build.block.name;
+
+                Core.settings.put(blockNameKey, amount);
+                Log.info(blockNameKey);
+
+                if(Vars.state.hasSector() && Vars.state.getSector().preset != null) {
+                    blockNameKey += "." + Vars.state.getSector().preset.name;
+                    Core.settings.put(blockNameKey, amount);
+                }
+                Log.info(blockNameKey);
+            }
+        });
+
         extendNode(coreShard, () -> {
             node(pulseResearchCenter, Seq.with(new SectorComplete(paileanCorridors)), () -> {
+                node(fraeResarchCenter, Seq.with(new Produce(RustingItems.melonaleum), new SectorComplete(pulsatingGroves)), () -> {
+                    node(cameoCrystallisingBasin, () -> {
+                        node(cameoPaintMixer, Seq.with(new Produce(RustingLiquids.cameaint)), () -> {
+                            node(camaintAmalgamator, Seq.with(new SectorComplete(saltyShoals)), () -> {
+
+                            });
+                        });
+                    });
+                });
                 node(pulseCollector, Seq.with(new SectorComplete(abystrikenCrevasse)), () -> {
 
                     node(pulseNode, () -> {
@@ -102,15 +137,17 @@ public class RustingTechTree implements ContentList {
                 node(terraMoundLarge, () -> {
 
                 });
+
+                node(hailsiteBarrier, Seq.with(new DestroyBlocksObjective(ObjectMap.of(hailsiteBarrier, 15, hailsiteBarrierLarge, 3), saltyShoals)), () -> {
+
+                });
             });
         });
 
         extendNode(graphitePress, () -> {
             node(bulasteltForgery, Seq.with(new SectorComplete(plantaePresevereDomae)), () -> {
                 node(desalinationMixer, Seq.with(new Produce(RustingItems.halsinte), new SectorComplete(volenChannels)), () -> {
-                    node(cameoCrystallisingBasin, Seq.with(new Produce(RustingItems.melonaleum), new SectorComplete(sulphuricSea)), () -> {
 
-                    });
                 });
             });
         });
@@ -130,9 +167,7 @@ public class RustingTechTree implements ContentList {
 
             node(refract, Seq.with(new SectorComplete(plantaePresevereDomae)), () -> {
                 node(diffract, () -> {
-                    node(reflect, () -> {
 
-                    });
                 });
             });
         });
@@ -146,9 +181,14 @@ public class RustingTechTree implements ContentList {
         });
 
         extendNode(mender, () -> {
-            node(thrum, Seq.with(new SectorComplete(plantaePresevereDomae)), () -> {
+            node(thrum, Seq.with(new SectorComplete(plantaePresevereDomae), new DestroyBlocksObjective(ObjectMap.of(coreShard, 1))), () -> {
                 node(spikent, Seq.with(new SectorComplete(pulsatingGroves)), () -> {
 
+                });
+                node(pilink, Seq.with(new Research(pulseResearchCenter)), () -> {
+                    node(tether, Seq.with(new Produce(RustingItems.cameoShardling), new DestroyBlocksObjective(ObjectMap.of(antiquaeGuardianBuilder, 1), sulphuricSea)), () -> {
+
+                    });
                 });
             });
         });
@@ -258,7 +298,9 @@ public class RustingTechTree implements ContentList {
                                 return Varsr.username + ", defeat and destroy the bases listed above, and your final campaign challenge (For now) in the mod awaits.";
                             }
                         }), () -> {
+                            node(saltyShoals, Seq.with(new SectorComplete(sulphuricSea), new Research(RustingItems.halsinte)), () -> {
 
+                            });
                         });
                     });
                 });

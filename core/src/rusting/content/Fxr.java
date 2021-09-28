@@ -86,6 +86,17 @@ public class Fxr{
             });
         }),
 
+        healingColdWaterSmoke = new Effect(423f, 80f, e -> {
+            color(RustingLiquids.melomae.color, Color.gray, e.finpow());
+            Draw.alpha(e.finpow() * 0.75f + 0.25f);
+
+            Draw.z(Mathf.lerp(Layer.groundUnit + 1, Layer.flyingUnit + 4, Math.min(e.fin() * 2, 1)));
+
+            randLenVectors(e.id, 2, e.finpow() * 12, e.rotation, 360, (x, y) -> {
+                Fill.circle(e.x + x, e.y + y + Math.max(e.finpow() - 0.3f, 0)/7 * 10 * 9 * Tmp.v1.set(x, y).len()/10f * 9, e.fout() * 1.6f);
+            });
+        }),
+
         singingFlame = new Effect(18, e ->{
             color(Pal.lightPyraFlame, Pal.darkPyraFlame, e.fin() * e.fin());
             float vx = e.x, vy = e.y;
@@ -607,12 +618,12 @@ public class Fxr{
         TextureRegion region = ((TextureRegion) e.data);
         Draw.alpha(Math.min(e.fout() * 10, 1));
         randLenVectors(e.id, 1, e.finpow() * 16, e.rotation, 360, (x, y) -> {
-            Draw.rect(region, e.x + x, e.y + Mathf.clamp(10 - e.fslope() * e.fslope() * 10, -9, 1), e.rotation);
+            Draw.rect(region, e.x + x, e.y + Mathf.clamp(10 - e.fslope() * e.fslope() * 10, -9, 0), e.rotation);
         });
     }),
 
     regionDropERr = new Effect(35, e -> {
-        TextureRegion region = Core.atlas.find("error");
+        TextureRegion region = Core.atlas.find("endless-rusting-PLACEHOLDER1");
         Draw.alpha(Math.min(e.fout() * 10, 1));
         randLenVectors(e.id, 1, e.finpow() * 16, e.rotation, 360, (x, y) -> {
             Draw.rect(region, e.x + x, e.y + Mathf.clamp(10 - e.fslope() * e.fslope() * 10, -9, 1), e.rotation);

@@ -13,8 +13,16 @@ import rusting.world.modules.ResearchModule;
 
 public interface ResearchableObject {
 
+    default String categoryName(){
+        return researchTypes().size > 0 ? researchTypes().get(0).localizedName : "misc";
+    }
+
     default String name(){
         return "defaukt";
+    }
+
+    default String lcoalizedName(){
+        return "defaukt nam";
     }
 
     default Seq<ResearchType> researchTypes(){
@@ -44,10 +52,12 @@ public interface ResearchableObject {
     }
 
     default boolean researched(Team team){
-        return getResearchModule().needsResearching && Vars.state.rules.infiniteResources || Varsr.research.getTeamModule(team, this).researched;
+        return !getResearchModule().needsResearching || Vars.state.rules.infiniteResources || Varsr.research.getTeamModule(team, this).researched;
     }
 
     default void hideFromUI(){
         getResearchModule().isHidden = true;
     }
+
+    default boolean hidden(){return getResearchModule().isHidden;}
 }

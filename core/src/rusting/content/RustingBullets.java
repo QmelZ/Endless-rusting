@@ -56,7 +56,7 @@ public class RustingBullets implements ContentList{
         //flames
         longThorFlame, longPyraFlame,
         //harpoons
-        cameoSmallHarpoon, melonaleumSmallHarpoon, ddd;
+        cameoSmallHarpoon, buulasteltSmallHarpoon, melonaleumSmallHarpoon, ddd, eee, fff;
         ;
 
     @Override
@@ -1140,7 +1140,6 @@ public class RustingBullets implements ContentList{
             backColor = Palr.pulseChargeEnd;
             status = shieldShatter;
             drag = -0.001f;
-
         }};
 
         craeLightGlaiveRight = new BoomerangBulletType(2, 15, "endless-rusting-glave"){{
@@ -1520,6 +1519,21 @@ public class RustingBullets implements ContentList{
             bleedEffect = causticBurning;
         }};
 
+        buulasteltSmallHarpoon = new BlockHarpoonBulletType(3.15f, 5, EndlessRusting.modname + "-bulastelt-small-harpoon") {{
+            consUpdate = velbasedHoming;
+            trueSpeed = 0;
+            lifetime = 450;
+            width = 8;
+            height = 8;
+            lightning = 0;
+            homingPower = 0.05f;
+            homingRange = 0;
+            drag = 0.01f;
+            hitSound = Sounds.bang;
+            bleedEffect = StatusEffects.corroded;
+            dischargeLightning = false;
+        }};
+
         melonaleumSmallHarpoon = new BlockHarpoonBulletType(3, 13, EndlessRusting.modname + "-melomae-harpoon"){{
             lifetime = 68.4f;
             homingPower = 0.05f;
@@ -1534,12 +1548,45 @@ public class RustingBullets implements ContentList{
             bleedEffect = balancedPulsation;
         }};
 
-        ddd = new ConsBulletType(0, 0, "none"){{
+        ddd = new ConsBulletType(5, 0, "none"){{
             consHit = b -> {
                 GraphicEffects.glitch();
             };
         }};
 
+        eee = new BoomerangBulletType(2.5f, 500, "none"){{
+            other = eee;
+
+            reloadMultiplier = 1.35f;
+
+            width = 12;
+            height = 14;
+            lifetime = 300;
+            rotateMag = 3;
+            rotScaleMin = 0f;
+            rotScaleMax = 0.7f;
+            bounceCap = 1;
+            rotateRight = true;
+            reverseBoomerangRotScale = true;
+            hitEffect = Fx.hitFuse;
+            despawnEffect = Fx.plasticburn;
+            frontColor = Palr.pulseChargeStart;
+            backColor = Palr.pulseChargeStart;
+            trailEffect = Fxr.whoosh;
+            status = shieldShatter;
+            trailChance = 0.35f;
+            drag = -0.001f;
+            buildingDamageMultiplier = 10;
+        }};
+
+        fff = new ConsBulletType(3, 150, "none"){{
+            consUpdate = velbasedHoming;
+            homingPower = 0.01f;
+            homingRange = 0;
+            lifetime = 1500;
+            buildingDamageMultiplier = 0.001f;
+            pierceBuilding = true;
+        }};
         //UnitTypes.gamma.weapons.each(w -> w.bullet = ddd);
     }
 }

@@ -64,8 +64,8 @@ public class GraphicEffects {
         Vars.content.bullets().each(b -> {
             if(b instanceof BasicBulletType){
                 BasicBulletType bullet = (BasicBulletType) b;
-                bullet.frontRegion = Core.atlas.find("error");
-                bullet.backRegion = Core.atlas.find("error");
+                bullet.frontRegion = Core.atlas.find("endless-rusting-PLACEHOLDER1");
+                bullet.backRegion = Core.atlas.find("endless-rusting-PLACEHOLDER2");
             }
             b.trailEffect = Fxr.regionDropERr;
             b.shootEffect = Fxr.regionDropERr;

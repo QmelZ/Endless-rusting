@@ -23,9 +23,6 @@ public class BulletSpawnBulletType extends ConsBulletType{
     public float finalFragBullets = 1;
 
     public float scaleDrawIn = 4, scaleDrawOut = 4, drawSize = 4;
-    public boolean useRange = false;
-    public float range = 0;
-    public float trueSpeed = 0;
 
     public static class BulletSpawner{
         public BulletType bullet = Bullets.standardCopper;

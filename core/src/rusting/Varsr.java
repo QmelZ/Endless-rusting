@@ -18,8 +18,7 @@ import mindustry.gen.Building;
 import mindustry.type.ItemStack;
 import mindustry.world.Tile;
 import mindustry.world.meta.BuildVisibility;
-import rusting.content.RustingAchievements;
-import rusting.content.RustingStatusEffects;
+import rusting.content.*;
 import rusting.core.RustedContentLoader;
 import rusting.core.Rusting;
 import rusting.core.holder.ItemScoreHolder;
@@ -162,6 +161,7 @@ public class Varsr implements Loadable {
             if(Vars.player.unit() != null) lerpedPlayerElevation = Mathf.lerp(lerpedPlayerElevation, Vars.player.unit().elevation, 0.1f);
             SpeedupAbility.speedupBullets.each(b -> {
                 SpeedupAbility.speedupBullets.remove(b);
+                if(Mathf.chance(0.15f * Time.delta)) Fxr.blackened.at(b.x, b.y);
                 b.time += Time.delta;
             });
         });

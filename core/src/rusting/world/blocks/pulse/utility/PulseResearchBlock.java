@@ -76,7 +76,7 @@ public class PulseResearchBlock extends PulseBlock implements ResearchCenter{
     public void buildDialog(Tile tile){
         Vars.control.input.frag.config.hideConfig();
         if(!(tile.build instanceof PulseResearchBuild)) return;
-        Varsr.ui.blocklist.show(tile);
+        Varsr.ui.research.show();
     }
 
     public class PulseResearchBuild extends PulseBlockBuild{

@@ -63,14 +63,14 @@ public class Drawr {
     }
 
     public static Pixmap blend(PixmapRegion map, PixmapRegion information, float percent, boolean clearAlpha){
-        return blend(map, information, percent, clearAlpha, new Vec2(0, 0), new Vec2(0, 0), new Vec2(
+        return blend(map, information, percent, clearAlpha, new Vec2(
                 Math.max(map.width, information.width),
                 Math.max(map.height, information.height)
         ));
     }
 
     //I got bored with the names, so I started treating these like maps
-    public static Pixmap blend(PixmapRegion map, PixmapRegion information, float percent, boolean clearAlpha, Vec2 mapPosition, Vec2 informationPosition, Vec2 size){
+    public static Pixmap blend(PixmapRegion map, PixmapRegion information, float percent, boolean clearAlpha, Vec2 size){
         Pixmap stencil = new Pixmap((int) size.x, (int) size.y, map.pixmap.getFormat());
         for (int x = 0; x < map.width; x ++){
             for (int y = 0; y < map.height; y ++){
@@ -80,7 +80,7 @@ public class Drawr {
                 //dot
                 //tod
                 //To do
-                int info = map.getPixel(x, y);
+                int info = information.getPixel(x, y);
                 Color lerpPoint = new Color(point).lerp(new Color(info), percent);
                 if(clearAlpha) lerpPoint.a = lerpPoint.a < 0.5 ? 0 : 1;
                 stencil.draw(x, y, lerpPoint);

@@ -2,6 +2,7 @@ package rusting.world.blocks.production;
 
 import arc.graphics.g2d.TextureRegion;
 import arc.struct.Seq;
+import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.type.ItemStack;
 import mindustry.ui.Cicon;
@@ -30,6 +31,12 @@ public class ResearchableCrafter extends GenericCrafter implements ResearchableO
         return name;
     }
 
+    //use for ui
+    @Override
+    public String lcoalizedName() {
+        return localizedName;
+    }
+
     @Override
     public TextureRegion researchUIcon() {
         return icon(Cicon.medium);
@@ -49,6 +56,11 @@ public class ResearchableCrafter extends GenericCrafter implements ResearchableO
     @Override
     public boolean isHidden() {
         return !Varsr.research.researched(player.team(), this, researchTypes) || super.isHidden();
+    }
+
+    @Override
+    public boolean hidden() {
+        return getResearchModule().isHidden || !unlocked && Vars.state.isCampaign();
     }
 
     @Override

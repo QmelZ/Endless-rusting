@@ -121,7 +121,7 @@ public class InfectedsGeneratorCore extends PulseGenerator{
         @Override
         public void overloadEffect() {
             float inaccuracy = 10 + 250 * (1 - shootWarmup)/2;
-            if(canShoot() && isShooting()){
+            if(canShoot() && isShooting() && shootingMode){
                 lastShootRot = angleTo(targetPos);
                 float minShootWarmup = Math.max(shootWarmup * 2, 0.55f);
                 if(reload >= reloadTime) {
@@ -139,7 +139,7 @@ public class InfectedsGeneratorCore extends PulseGenerator{
         public void buildConfiguration(Table table) {
             super.buildConfiguration(table);
             table.button(Tex.checkOn, () -> {
-                shootingMode |= shootingMode;
+                shootingMode = !shootingMode;
             });
         }
 

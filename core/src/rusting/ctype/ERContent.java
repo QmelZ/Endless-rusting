@@ -16,8 +16,7 @@ public abstract class ERContent implements Comparable<Content>, Disposable{
     public ModContentInfo minfo = new ModContentInfo();
 
     public ERContent(){
-        id = 0;
-        //id = (short) Varsr.content.getBy(getContentType()).size;
+        id = (short) Varsr.content.getBy(getContentType()).size;
         //Vars.content.handleContent(this);
     }
 

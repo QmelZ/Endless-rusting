@@ -52,10 +52,10 @@ public class RustedContentLoader {
     public void load(){
 
         each(c -> {
-            if (c instanceof UnlockableERContent) {
-                UnlockableERContent content = (UnlockableERContent) c;
+            if (c instanceof MappableERContent) {
+                MappableERContent content = (MappableERContent) c;
                 content.load();
-                content.loadIcon();
+                if(c instanceof UnlockableERContent) ((UnlockableERContent) c).loadIcon();
             }
         });
     }

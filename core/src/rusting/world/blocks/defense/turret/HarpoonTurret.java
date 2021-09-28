@@ -2,6 +2,7 @@ package rusting.world.blocks.defense.turret;
 
 import arc.Core;
 import arc.func.Cons;
+import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
@@ -17,7 +18,9 @@ import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.Layer;
+import mindustry.graphics.Pal;
 import mindustry.type.Item;
+import mindustry.type.UnitType;
 import rusting.content.Fxr;
 import rusting.entities.bullet.BlockHarpoonBulletType;
 import rusting.graphics.Drawr;
@@ -30,6 +33,7 @@ public class HarpoonTurret extends AutoreloadItemTurret {
     public float basePullStrength = 0;
     public float pullStrength = 70;
     public float retractSpeed = 2;
+    private float chainShadowOffset = 1/12;
 
     private Seq<Item> keys = Seq.with();
 
@@ -153,6 +157,7 @@ public class HarpoonTurret extends AutoreloadItemTurret {
                 harpoonPosition.x = harpoonBullet.x;
                 harpoonPosition.y = harpoonBullet.y;
                 if(harpoonBullet.lifetime != 0) lastBulletLifetime = harpoonBullet.fout();
+                rotation = angleTo(harpoonBullet);
             }
             else if(harpoonStuck){
                 if(stuckOn == null || stuckOn.dead == true) {
@@ -168,7 +173,7 @@ public class HarpoonTurret extends AutoreloadItemTurret {
                         if(Tmp.v1.set(stuckOn.x, stuckOn.y).add(stuckOn.vel).dst(x, y) > range){
                             harpoonStuck = false;
                             harpoonShot = false;
-                            harpoonRetracting = true;
+                            harpoonRetracting = false;
                             if(hasHarpoon()) {
                                 BlockHarpoonBulletType bullet = getHarpoon();
                                 stuckOn.damagePierce(bullet.tearDamage);
@@ -189,7 +194,7 @@ public class HarpoonTurret extends AutoreloadItemTurret {
                                     bullet.updateUnitEffect(this, stuckOn);
 
                                     if (damageInterval >= 10) {
-                                        stuckOn.damagePierce(bullet.ripDamage * Mathf.clamp(1 - (dst(stuckOn) - detachRange) / (range - detachRange), 0, 1));
+                                        stuckOn.damagePierce(bullet.ripDamage * Mathf.clamp((dst(stuckOn) - detachRange) / (range - detachRange), 0, 1));
                                         damageInterval -= 10;
                                     } else damageInterval += Time.delta;
                                 }
@@ -244,10 +249,23 @@ public class HarpoonTurret extends AutoreloadItemTurret {
             }
 
             if(drawHarpoon && bullet != null){
+
+                //to be used for the end of the chain's shadow and the harpoon itslef
+                float e;
+                if(stuckOn != null) e = Math.max(stuckOn.elevation, -1);
+                    //draw the shadow like a unit
+                else e = chainShadowOffset;
+
                 if(harpoonStuck || harpoonShot || harpoonRetracting){
                     tr.trns(rotation, shootLength - 3);
+                    Draw.color(Pal.shadow);
+                    Drawr.drawChain(bullet.chainRegion, x + tr.x + tr2.x + UnitType.shadowTX * chainShadowOffset, y + tr.y + tr2.y + UnitType.shadowTY * chainShadowOffset, drawHarpoonPos.x + UnitType.shadowTX * e, drawHarpoonPos.y + UnitType.shadowTY * e, -90);
+                    Draw.color(Color.white);
                     Drawr.drawChain(bullet.chainRegion, x + tr.x + tr2.x, y + tr.y + tr2.y, drawHarpoonPos.x, drawHarpoonPos.y, -90);
+                    //change the colour of the chains and make it draw like a unit's shadow
                 }
+                Draw.color(Pal.shadow);
+                Draw.rect(bullet.frontRegion, drawHarpoonPos.x + UnitType.shadowTX * e, drawHarpoonPos.y + UnitType.shadowTY * e, rotation - 90);
                 Draw.color(bullet.backColor);
                 Draw.alpha(alpha);
                 Draw.rect(bullet.backRegion, drawHarpoonPos.x, drawHarpoonPos.y, bullet.width, bullet.height,  harpoonRotation);

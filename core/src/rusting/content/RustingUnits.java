@@ -24,6 +24,7 @@ import rusting.entities.units.*;
 public class RustingUnits implements ContentList{
     //Steal from BetaMindy
     private static Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new Entry[]{
+            prov(youshoudntbehere.class, youshoudntbehere::new),
             prov(StingrayUnitEntity.class, StingrayUnitEntity::new),
             prov(CraeUnitEntity.class, CraeUnitEntity::new),
             prov(BaseUnitEntity.class, BaseUnitEntity::new),
@@ -87,6 +88,8 @@ public class RustingUnits implements ContentList{
     //Acrimynal's drone army
     public static AcriUnitType
             observantly, kindling, sharpen;
+    public static UnitType
+            SYSTEM_DELETED_UNIT;
 
     @Override
     public void load() {
@@ -811,7 +814,7 @@ public class RustingUnits implements ContentList{
             circleTarget = true;
 
             accel = 0.025f;
-            drag = 0.0031f;
+            drag = 0.0081f;
             speed = 2.35f;
             rotateSpeed = 7.5f;
             itemCapacity = 15;
@@ -827,6 +830,7 @@ public class RustingUnits implements ContentList{
                         x = 8.5f;
                         y = -0.5f;
                         reload = 2;
+                        shootCone = 15;
                         top = false;
                         alternate = false;
                         bullet = new ContinuousLaserBulletType(5){{
@@ -849,6 +853,7 @@ public class RustingUnits implements ContentList{
                         x = 8.5f;
                         y = -0.5f;
                         reload = 2;
+                        shootCone = 15;
                         firstShotDelay = 2;
                         top = false;
                         alternate = false;
@@ -868,6 +873,68 @@ public class RustingUnits implements ContentList{
                             colors = new Color[]{Palr.chillDecalDark.cpy().a(.2f), Palr.chillDecalDark.cpy().a(.5f), Palr.chillDecalDark.cpy().mul(1.2f), Palr.chillDecalLight};
                         }};
                     }}
+            );
+        }};
+
+        EntityMapping.nameMap.put("SYSTEM_DELETED_UNIT", youshoudntbehere::new);
+        SYSTEM_DELETED_UNIT = new UnitType("SYSTEM_DELETED_UNIT"){{
+            health = 50000;
+            armor = 10;
+            speed = 2;
+            accel = 100;
+            drag = 99;
+            defaultController = FlyingAI::new;
+            constructor = youshoudntbehere::new;
+
+            singleTarget = true;
+
+            weapons.addAll(
+                new Weapon("none"){{
+                    bullet = RustingBullets.ddd;
+                    shots = 3;
+                    spacing = 15;
+                    reload = 1500;
+                    x = 0;
+                    y = 15;
+                    mirror = false;
+                    rotate = false;
+                    shootCone = 360;
+                }},
+                new Weapon("none"){{
+                    bullet = RustingBullets.eee;
+                    shots = 35;
+                    spacing = 175;
+                    shotDelay = 10;
+                    reload = 500;
+                    x = 5;
+                    y = 0;
+                    mirror = false;
+                    rotate = false;
+                    shootCone = 360;
+                }},
+                new Weapon("none"){{
+                    bullet = RustingBullets.eee;
+                    shots = 35;
+                    spacing = 175;
+                    shotDelay = 10;
+                    firstShotDelay = 5;
+                    reload = 500;
+                    x = -5;
+                    y = 0;
+                    mirror = false;
+                    rotate = false;
+                    shootCone = 360;
+                }},
+                new Weapon("none"){{
+                    bullet = RustingBullets.fff;
+                    shots = 4;
+                    spacing = 90;
+                    reload = 150;
+                    mirror = false;
+                    rotate = false;
+                    y = -10.5f;
+                    x = 6;
+                }}
             );
         }};
     }
