@@ -152,6 +152,12 @@ public class RustingTechTree implements ContentList {
             });
         });
 
+        extendNode(thermalGenerator, () -> {
+            node(waterBoilerGenerator, Seq.with(new SectorComplete(plantaePresevereDomae)), () -> {
+                
+            });
+        });
+        
         extendNode(duo, () -> {
             node(prikend, Seq.with(new SectorComplete(plantaePresevereDomae)), () -> {
                 node(prsimdeome, () -> {
