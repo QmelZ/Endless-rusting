@@ -138,6 +138,7 @@ public class PulseNode extends PulseBlock implements ResearchableBlock {
 
     @Override
     public void drawRequestConfigTop(BuildPlan req, Eachable<BuildPlan> list){
+        Log.info(req.rotation);
         if(req.config instanceof Point2[]){
             Point2[] ps = (Point2[]) req.config;
             for(Point2 point : ps){

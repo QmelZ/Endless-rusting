@@ -203,19 +203,19 @@ public class AntiquumPlanetGenerator extends SerpuloPlanetGenerator {
         float scl = 1f;
         float addscl = 1.3f;
 
-        if (noise.octaveNoise3D(2, 0.5, scl, sector.tile.v.x, sector.tile.v.y, sector.tile.v.z) * nmag + poles > 0.25f * addscl) {
+        if (replacementSim.octaveNoise3D(2, 0.5, scl, sector.tile.v.x, sector.tile.v.y, sector.tile.v.z) * nmag + poles > 0.25f * addscl) {
             ores.add(Blocks.oreCoal);
         }
 
-        if (noise.octaveNoise3D(2, 0.5, scl, sector.tile.v.x + 1, sector.tile.v.y, sector.tile.v.z) * nmag + poles > 0.5f * addscl) {
+        if (replacementSim.octaveNoise3D(2, 0.5, scl, sector.tile.v.x + 1, sector.tile.v.y, sector.tile.v.z) * nmag + poles > 0.5f * addscl) {
             ores.add(Blocks.oreTitanium);
         }
 
-        if (noise.octaveNoise3D(2, 0.5, scl, sector.tile.v.x + 2, sector.tile.v.y, sector.tile.v.z) * nmag + poles > 0.7f * addscl) {
+        if (replacementSim.octaveNoise3D(2, 0.5, scl, sector.tile.v.x + 2, sector.tile.v.y, sector.tile.v.z) * nmag + poles > 0.7f * addscl) {
             ores.add(Blocks.oreThorium);
         }
 
-        if (noise.octaveNoise3D(2, 0.5, scl, sector.tile.v.x + 3, sector.tile.v.y, sector.tile.v.z) * nmag + poles > 0.7f * addscl && rand.chance(0.15)) {
+        if (replacementSim.octaveNoise3D(2, 0.5, scl, sector.tile.v.x + 3, sector.tile.v.y, sector.tile.v.z) * nmag + poles > 0.7f * addscl && rand.chance(0.15)) {
             ores.add(RustingBlocks.melonaleum);
         }
 

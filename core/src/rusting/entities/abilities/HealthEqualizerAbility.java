@@ -26,23 +26,18 @@ public class HealthEqualizerAbility extends MountAbility{
 
         super.update(unit);
 
-        //increase reload while ally is valid and angle repair points towards unit
-        if(validate(ally, unit) && ally.damaged()){
+        //increase reload while ally is valid and angle repair points towards unit. If retarget retarget.
+        if(!(ret >= retargetTime) && validate(ally, unit) && ally.damaged()){
             angle(ally.angleTo(unit.x, unit.y) + 90);
             timer = Math.min(timer + Time.delta, reload);
             timeSinceHeal = 0;
         }
         else {
-            //don't retarget if it hasn't been long enough
-
-            if(ret >= retargetTime) {
-
-                //retarget, or invalidate target
-                ret = 0;
-                Unit TempUnit = findAlly(unit);
-                if(TempUnit != null) ally = TempUnit;
-                else ally = null;
-            }
+            //retarget, or invalidate target
+            ret = 0;
+            Unit TempUnit = findAlly(unit);
+            if(TempUnit != null) ally = TempUnit;
+            else ally = null;
             if(timeSinceHeal >= 360) angle(angle() + 1);
             else timeSinceHeal++;
         }
@@ -82,7 +77,7 @@ public class HealthEqualizerAbility extends MountAbility{
     }
 
     public Unit findAlly(Unit unit){
-        Unit closestDamaged = Units.closest(unit.team, unit.x, unit.y, range, u -> u != ally && u != unit && u.healthf() <= unit.healthf() && u.damaged());
+        Unit closestDamaged = Units.closest(unit.team, unit.x, unit.y, range, u -> u != unit && u.healthf() <= unit.healthf() && u.damaged());
         if(validate(closestDamaged, unit) && (ally != null ? (unit.dst(closestDamaged.x, closestDamaged.y) < unit.dst(ally.x, ally.y) || !ally.damaged() && closestDamaged.damaged() || closestDamaged.healthf() < ally.healthf()) : true)) return closestDamaged;
         return null;
     }

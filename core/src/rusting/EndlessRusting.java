@@ -45,7 +45,6 @@ public class EndlessRusting extends Mod{
 
         Events.on(EventType.ContentInitEvent.class, e -> {
             Varsr.content.init();
-
         });
 
         Events.on(EventType.UnitCreateEvent.class,

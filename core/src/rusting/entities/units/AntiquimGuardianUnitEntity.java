@@ -2,15 +2,20 @@ package rusting.entities.units;
 
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import mindustry.Vars;
+import mindustry.game.Team;
 import mindustry.gen.Groups;
 import rusting.content.Fxr;
 
 public class AntiquimGuardianUnitEntity extends BaseUnitEntity {
     public float iframes = 0;
+    private Team currentTeam;
 
     @Override
     public void update() {
         super.update();
+        if(currentTeam != null && team != currentTeam && this != Vars.player.unit() && Vars.state.isCampaign()) team = currentTeam;
+        currentTeam = team;
     }
 
     @Override

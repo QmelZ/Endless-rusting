@@ -40,7 +40,7 @@ public class CapsuleBlockResearchCenter extends Block implements ResearchCenter 
     public void buildDialog(Tile tile){
         Vars.control.input.frag.config.hideConfig();
         if(!(tile.build instanceof CapsuleBlockResearchCenterBuild)) return;
-        Varsr.ui.research.show(tile);
+        Varsr.ui.research.show();
     }
 
     public class CapsuleBlockResearchCenterBuild extends Building {

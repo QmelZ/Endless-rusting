@@ -4,8 +4,7 @@ import arc.func.Prov;
 import arc.graphics.Color;
 import arc.struct.ObjectIntMap;
 import arc.struct.ObjectMap.Entry;
-import mindustry.ai.types.FlyingAI;
-import mindustry.ai.types.MinerAI;
+import mindustry.ai.types.*;
 import mindustry.content.*;
 import mindustry.core.Version;
 import mindustry.ctype.ContentList;
@@ -24,6 +23,7 @@ import rusting.entities.units.*;
 public class RustingUnits implements ContentList{
     //Steal from BetaMindy
     private static Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new Entry[]{
+            prov(youshoudntbehere.class, youshoudntbehere::new),
             prov(StingrayUnitEntity.class, StingrayUnitEntity::new),
             prov(CraeUnitEntity.class, CraeUnitEntity::new),
             prov(BaseUnitEntity.class, BaseUnitEntity::new),
@@ -76,17 +76,22 @@ public class RustingUnits implements ContentList{
     }
 
     public static CraeUnitType
-            duono, duoly, duanga;
+        duono, duoly, duanga;
     public static UnitType
-            marrow, metaphys, ribigen, spinascene, trumpedoot,
+        marrow, metaphys, ribigen, spinascene, trumpedoot,
             fahrenheit, celsius;
     public static UnitType
-            pulseBarrenBezerker;
+        pulseBarrenBezerker;
     public static UnitType
         stingray;
     //Acrimynal's drone army
     public static AcriUnitType
-            observantly, kindling, sharpen;
+        observantly, kindling, sharpen;
+    //crux
+    public static UnitType
+        fusee;
+    public static UnitType
+        SYSTEM_DELETED_UNIT;
 
     @Override
     public void load() {
@@ -231,11 +236,14 @@ public class RustingUnits implements ContentList{
         fahrenheit = new UnitType("fahrenheit"){{
 
             flying = false;
+            canBoost = true;
             hitSize = 5;
             health = 110;
             speed = 1.2f;
             accel = 0.045f;
             drag = 0.025f;
+
+            defaultController = SuicideAI::new;
 
             constructor = BaseUnit::new;
             weapons.add(
@@ -250,12 +258,30 @@ public class RustingUnits implements ContentList{
                         speed = 1.3f;
                         splashDamageRadius = 58f;
                         instantDisappear = true;
-                        splashDamage = 45f;
-                        killShooter = true;
+                        splashDamage = 5;
                         hittable = false;
                         collidesAir = true;
                         fragBullets = 13;
                         fragBullet = RustingBullets.craeBoltKill;
+                    }};
+                }},
+                new Weapon("none") {{
+                    x = 0;
+                    y = 0;
+                    shootCone = 360;
+                    mirror = false;
+                    bullet = new BombBulletType(0f, 0f, "clear"){{
+                        hitEffect = Fx.pulverize;
+                        lifetime = 10f;
+                        speed = 1.3f;
+                        splashDamageRadius = 58f;
+                        instantDisappear = true;
+                        splashDamage = 15;
+                        killShooter = true;
+                        hittable = false;
+                        collidesAir = true;
+                        fragBullets = 5;
+                        fragBullet = RustingBullets.mhemaeShardling;
                     }};
                 }}
             );
@@ -811,7 +837,7 @@ public class RustingUnits implements ContentList{
             circleTarget = true;
 
             accel = 0.025f;
-            drag = 0.0031f;
+            drag = 0.0081f;
             speed = 2.35f;
             rotateSpeed = 7.5f;
             itemCapacity = 15;
@@ -827,6 +853,7 @@ public class RustingUnits implements ContentList{
                         x = 8.5f;
                         y = -0.5f;
                         reload = 2;
+                        shootCone = 15;
                         top = false;
                         alternate = false;
                         bullet = new ContinuousLaserBulletType(5){{
@@ -849,6 +876,7 @@ public class RustingUnits implements ContentList{
                         x = 8.5f;
                         y = -0.5f;
                         reload = 2;
+                        shootCone = 15;
                         firstShotDelay = 2;
                         top = false;
                         alternate = false;
@@ -868,6 +896,68 @@ public class RustingUnits implements ContentList{
                             colors = new Color[]{Palr.chillDecalDark.cpy().a(.2f), Palr.chillDecalDark.cpy().a(.5f), Palr.chillDecalDark.cpy().mul(1.2f), Palr.chillDecalLight};
                         }};
                     }}
+            );
+        }};
+
+        EntityMapping.nameMap.put("SYSTEM_DELETED_UNIT", youshoudntbehere::new);
+        SYSTEM_DELETED_UNIT = new UnitType("SYSTEM_DELETED_UNIT"){{
+            health = 50000;
+            armor = 10;
+            speed = 2;
+            accel = 100;
+            drag = 99;
+            defaultController = FlyingAI::new;
+            constructor = youshoudntbehere::new;
+
+            singleTarget = true;
+
+            weapons.addAll(
+                new Weapon("none"){{
+                    bullet = RustingBullets.ddd;
+                    shots = 3;
+                    spacing = 15;
+                    reload = 1500;
+                    x = 0;
+                    y = 15;
+                    mirror = false;
+                    rotate = false;
+                    shootCone = 360;
+                }},
+                new Weapon("none"){{
+                    bullet = RustingBullets.eee;
+                    shots = 35;
+                    spacing = 175;
+                    shotDelay = 10;
+                    reload = 500;
+                    x = 5;
+                    y = 0;
+                    mirror = false;
+                    rotate = false;
+                    shootCone = 360;
+                }},
+                new Weapon("none"){{
+                    bullet = RustingBullets.eee;
+                    shots = 35;
+                    spacing = 175;
+                    shotDelay = 10;
+                    firstShotDelay = 5;
+                    reload = 500;
+                    x = -5;
+                    y = 0;
+                    mirror = false;
+                    rotate = false;
+                    shootCone = 360;
+                }},
+                new Weapon("none"){{
+                    bullet = RustingBullets.fff;
+                    shots = 4;
+                    spacing = 90;
+                    reload = 150;
+                    mirror = false;
+                    rotate = false;
+                    y = -10.5f;
+                    x = 6;
+                }}
             );
         }};
     }

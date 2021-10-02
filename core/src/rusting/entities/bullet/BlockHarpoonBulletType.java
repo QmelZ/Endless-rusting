@@ -23,6 +23,8 @@ public class BlockHarpoonBulletType extends ConsBulletType{
     public float ripDamage = 5;
     //damage when the harpoon is riped out
     public float tearDamage = 65;
+    //if the harpoon should spawn lightning when lodged into a target.
+    public boolean dischargeLightning = true;
 
     //effect applied to a unit that it's stuck in every time it's damaged
     public StatusEffect bleedEffect = StatusEffects.none;
@@ -64,7 +66,7 @@ public class BlockHarpoonBulletType extends ConsBulletType{
     }
 
     public void updateUnitEffect(HarpoonTurretBuild build, Unit unit){
-        if(Mathf.randomBoolean(dischargeChance)) Lightning.create(build.team, lightningColor, lightningDamage < 0 ? damage : lightningDamage, unit.x, unit.y, unit.rotation() + Mathf.range(lightningCone/2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
+        if(dischargeLightning && Mathf.randomBoolean(dischargeChance)) Lightning.create(build.team, lightningColor, lightningDamage < 0 ? damage : lightningDamage, unit.x, unit.y, unit.rotation() + Mathf.range(lightningCone/2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
     }
 
     //retract harpoon

@@ -137,6 +137,12 @@ public class PulseBlock extends Block implements ResearchableBlock {
         return name;
     }
 
+    //used for ui
+    @Override
+    public String lcoalizedName() {
+        return localizedName;
+    }
+
     @Override
     public TextureRegion researchUIcon() {
         return icon(Cicon.medium);
@@ -156,6 +162,11 @@ public class PulseBlock extends Block implements ResearchableBlock {
     @Override
     public boolean isHidden(){
         return !Varsr.research.researched(player.team(), this, researchTypes) || super.isHidden();
+    }
+
+    @Override
+    public boolean hidden() {
+        return getResearchModule().isHidden || !unlocked && Vars.state.isCampaign();
     }
 
     @Override

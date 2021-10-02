@@ -27,6 +27,8 @@ public class HotSpring extends Block {
     public float passiveEffectChance = 0.05f;
     public float unitOnEffectChance = 0.15f;
     public Effect smokeEffect = Fxr.healingWaterSmoke;
+    public StatusEffect apply = StatusEffects.none;
+    public float applyDuration = 1800;
     public Seq<StatusEffect> washOff = Seq.with(StatusEffects.freezing, StatusEffects.burning, StatusEffects.wet, StatusEffects.sapped, StatusEffects.sporeSlowed, StatusEffects.corroded, RustingStatusEffects.hailsalilty, RustingStatusEffects.shieldShatter);
     //ratio
     public float steamProduced = 55;
@@ -82,6 +84,7 @@ public class HotSpring extends Block {
             if(steam >= 1){
                 unit.heal(healthPerSecond * Mathf.clamp(steam, 0, 1)/60 * Time.delta);
                 washOff.each(s -> unit.unapply(s));
+                unit.apply(apply, applyDuration);
                 if(Mathf.chance(unitOnEffectChance)) smokeEffect.at(x, y, 0);
                 steam = Math.max(steam - Time.delta, 0);
             }

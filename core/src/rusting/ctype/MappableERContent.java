@@ -1,5 +1,6 @@
 package rusting.ctype;
 
+import arc.Core;
 import rusting.Varsr;
 
 public abstract class MappableERContent extends ERContent{
@@ -10,5 +11,11 @@ public abstract class MappableERContent extends ERContent{
     public MappableERContent(String name){
         this.name = name;
         Varsr.content.handleContent(this);
+    }
+
+    @Override
+    public void load() {
+        super.load();
+        localizedName = Core.bundle.get(getContentType().name + "." + name + ".name", name);
     }
 }
