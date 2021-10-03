@@ -1,5 +1,6 @@
 package rusting.game;
 
+import arc.Core;
 import arc.Events;
 import arc.assets.Loadable;
 import arc.struct.Seq;
@@ -7,6 +8,7 @@ import mindustry.Vars;
 import mindustry.core.GameState.State;
 import mindustry.game.EventType;
 import mindustry.io.JsonIO;
+import rusting.Varsr;
 
 //Thanks Glen, going to be fun playing around with this :D
 public class ScriptedSectorHandler implements Loadable {
@@ -42,8 +44,13 @@ public class ScriptedSectorHandler implements Loadable {
     }
 
     public void end(){
-        Vars.state.rules.tags.put("er.sectorevents", JsonIO.json.toJson(nodes, Seq.class));
-        nodes.clear();
+        try{
+            Vars.ui.editor.editor.tags.put("er.sectorevents", JsonIO.json.toJson(nodes, Seq.class));
+            nodes.clear();
+        }
+        catch (Error e){
+            Vars.ui.showException(Varsr.username + ", "+  Core.bundle.get("er.failsave"), e);
+        }
     }
 
     public void update(){

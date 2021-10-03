@@ -2,6 +2,7 @@ package rusting.content;
 
 import arc.graphics.Color;
 import arc.struct.*;
+import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.ctype.ContentList;
 import mindustry.entities.Effect;

@@ -22,8 +22,12 @@ import static mindustry.Vars.*;
 //Using Serpulo Gen but with a different set of blocks until I figure out how to use noise.
 public class AntiquumPlanetGenerator extends SerpuloPlanetGenerator {
 
+    public AntiquumPlanetGenerator(){
+
+    }
     public SimplexReplacementv6 replacementSim = new SimplexReplacementv6();
 
+    //changes with username
     public static int seed = 69;
     BaseGenerator basegen = new BaseGenerator();
     float scl = 7;
