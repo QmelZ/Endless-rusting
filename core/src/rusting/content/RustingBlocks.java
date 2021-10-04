@@ -2,7 +2,6 @@ package rusting.content;
 
 import arc.graphics.Color;
 import arc.struct.*;
-import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.ctype.ContentList;
 import mindustry.entities.Effect;
@@ -142,8 +141,8 @@ public class RustingBlocks implements ContentList{
         //drylon
         spraien,
         //platonic elements represented by four turrets.
-        octain, triagon, cuin,
-        //turrets relating almost directly to Pixelcraf with their name but change things up a bit. Classified under elemental in the turret's sprite folder
+        octain, triagon, cuin, icosahen,
+        //turrets relating almost directly to Pixelcraft with their name but change things up a bit. Classified under elemental in the turret's sprite folder
         horaNoctis, holocaust,
         //bomerang related turrets
         refract, diffract, reflect,
@@ -1509,6 +1508,24 @@ public class RustingBlocks implements ContentList{
             coolantMultiplier = 0.85f;
             shootType = Bullets.artilleryIncendiary;
             shootEffect = Fx.flakExplosion;
+        }};
+
+        icosahen = new LiquidBeamTurret("icosahen"){{
+            requirements(Category.turret, ItemStack.with());
+            buildVisibility = BuildVisibility.hidden;
+            size = 2;
+            reloadTime = 50;
+            shots = 4;
+            burstSpacing = 3;
+            pressureCap = 11.5f;
+            ammo(
+                    Liquids.water, Bullets.waterShot,
+                    Liquids.slag, Bullets.slagShot,
+                    Liquids.oil, Bullets.oilShot,
+                    Liquids.cryofluid, Bullets.cryoShot,
+                    RustingLiquids.melomae, RustingBullets.melomaeShot,
+                    RustingLiquids.cameaint, RustingBullets.cameoShot
+            );
         }};
 
         horaNoctis = new AutoreloadItemTurret("hora-noctis"){{
