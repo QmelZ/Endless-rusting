@@ -4,24 +4,29 @@ import arc.Events;
 import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.game.EventType;
+import mindustry.game.EventType.Trigger;
 import mindustry.gen.Building;
 import mindustry.world.Tile;
-import rusting.world.blocks.environment.DamagingFloor;
+import rusting.world.blocks.environment.UpdateFloor;
 
 public class Worldr {
 
     public Worldr(){
-        
-        corrosiveTiles.clear();
+
+        Events.on(Trigger.update.getClass(), e -> {
+            if(Vars.state.isPaused() || !Vars.state.isPlaying()) return;
+            udpateTiles.each(t -> ((UpdateFloor) t.floor()).update(t));
+        });
         
         Events.on(EventType.WorldLoadEvent.class, e -> {
+            udpateTiles.clear();
             Vars.world.tiles.eachTile(t -> {
-                if(t.floor() instanceof DamagingFloor) corrosiveTiles.add(t);
+                if(t.floor() instanceof UpdateFloor) udpateTiles.add(t);
             });
         });
     }
 
-    public Seq<Tile> corrosiveTiles = Seq.with();
+    public Seq<Tile> udpateTiles = Seq.with();
     private boolean returnBool = false;
 
     public boolean onTile(Building building, Seq<Integer> list){

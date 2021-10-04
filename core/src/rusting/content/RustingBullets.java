@@ -38,7 +38,7 @@ public class RustingBullets implements ContentList{
         //liquid
         melomaeShot, melomaeShotLong, heavyMelomaeShot, cameoShot, heavyCameoShot,
         //missile/weaving bullets
-        craeWeaver, bigCraeWeaver, paveWeaver,
+        craeWeaver, bigCraeWeaver, paveWeaver, nonweavingPaveWeaver,
         //lightning bullets
         craeBolt, craeBoltKill,
         //laser bolt bullets
@@ -815,7 +815,7 @@ public class RustingBullets implements ContentList{
             width = 15;
             height = 18;
             lifetime = 42;
-            healPercent = 1f;
+            healPercent = 2f;
             shrinkX = 1;
             trailLength = 8;
             collidesTeam = true;
@@ -829,10 +829,32 @@ public class RustingBullets implements ContentList{
             trailChance = 0.15f;
             trailWidth = 5;
             weaveMag = 2;
-            weaveScale = 5;
+            weaveScale = 3;
             homingPower = 0.325f;
             knockback = 0.25f;
             bounciness = 0.57;
+        }};
+
+        nonweavingPaveWeaver = new BounceBulletType(5, 0, "bullet"){{
+            width = 15;
+            height = 18;
+            lifetime = 42;
+            healPercent = 2f;
+            shrinkX = 1;
+            trailLength = 8;
+            collidesTeam = true;
+            shootEffect = Fx.heal;
+            hitEffect = Fx.plasticburn;
+            despawnEffect = Fx.plasticburn;
+            backColor = Pal.heal;
+            frontColor = Color.white;
+            trailColor = frontColor;
+            trailEffect = Fx.shootHeal;
+            trailChance = 0.15f;
+            homingPower = 0.325f;
+            knockback = 0.25f;
+            bounciness = 0.57;
+            drag = -0.0005f;
         }};
 
         craeBolt = new LightningBulletType(){{

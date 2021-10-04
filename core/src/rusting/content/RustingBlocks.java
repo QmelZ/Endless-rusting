@@ -1,22 +1,16 @@
 package rusting.content;
 
-import arc.Events;
 import arc.graphics.Color;
 import arc.struct.*;
-import arc.util.Log;
-import arc.util.Time;
-import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.ctype.ContentList;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.BulletType;
-import mindustry.game.EventType.Trigger;
 import mindustry.gen.Sounds;
 import mindustry.graphics.CacheLayer;
 import mindustry.graphics.Pal;
 import mindustry.type.*;
 import mindustry.world.Block;
-import mindustry.world.blocks.ConstructBlock.ConstructBuild;
 import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.distribution.Conveyor;
@@ -28,11 +22,11 @@ import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.blocks.units.Reconstructor;
 import mindustry.world.blocks.units.UnitFactory;
 import mindustry.world.meta.*;
-import rusting.Varsr;
 import rusting.core.holder.PanelHolder;
 import rusting.core.holder.ShootingPanelHolder;
 import rusting.entities.bullet.BounceBulletType;
 import rusting.entities.bullet.BulletSpawnBulletType;
+import rusting.world.blocks.OverrideColourStaticWall;
 import rusting.world.blocks.capsules.CapsuleBlockResearchCenter;
 import rusting.world.blocks.defense.ProjectileAttackWall;
 import rusting.world.blocks.defense.turret.*;
@@ -63,14 +57,14 @@ public class RustingBlocks implements ContentList{
         capsuleCenterTest,
         //environment
         //liquids
-        melainLiquae, coroLiquae, classemLiquae,
+        melainLiquae, coroLiquae, impurenBurneLiquae, impurenBurneLiquaeDeep, classemLiquae,
         //sunken metal floor
-        sunkenMetalFloor, sunkenMetalFloor2, sunkenMetalFloor3,
+        sunkenMetalFloor, sunkenMetalFloor2, sunkenMetalFloor3, sunkenBasalt, sunkenHotrock, sunkenMagmarock,
         //floor
         //frae plating
         fraePlating, fraePlating2, fraePlating3, fraePlating4, fraePlating5, fraeAgedMetal, fraePulseCapedWall,
         //mhem plating
-        mhemPlating, mhemPlating3, mhemPlating4, mhemPlating5, mhemAgedMetal,
+        mhemPlating, mhemPlating3, mhemPlating4, mhemPlating5, mhemAgedFraeBlock, mhemAgedMetal,
         //damaged frae plating
         damagedFraePlating, damagedFraePlating2,
         //pailean
@@ -81,6 +75,10 @@ public class RustingBlocks implements ContentList{
         salineStolnene, salineBarreren,
         //classem
         classemStolnene, classemPathen, classemPulsen, classemWallen, classemBarrreren,
+        //impuren
+        impurenSanden,
+        //moisten
+        moistenStolnene, moistenLushen, moistenWallen, moistenVinen,
         //dripive
         dripiveGrassen, dripiveWallen,
         //volen, drier variants of normal stone, could be used for warmer looking maps. Not resprited stone floors, I promise
@@ -143,15 +141,15 @@ public class RustingBlocks implements ContentList{
         //drylon
         spraien,
         //platonic elements represented by four turrets.
-        octain, triagon, cuin,
-        //turrets relating almost directly to Pixelcraf with their name but change things up a bit. Classified under elemental in the turret's sprite folder
+        octain, triagon, cuin, icosahen,
+        //turrets relating almost directly to Pixelcraft with their name but change things up a bit. Classified under elemental in the turret's sprite folder
         horaNoctis, holocaust,
         //bomerang related turrets
         refract, diffract, reflect,
         //region unit
         hotSpringSprayer, coldSpringSprayer, fraeFactory, antiquaeGuardianBuilder, absentReconstructor, dwindlingReconstructor,
         //logic
-        halsinteLamp, gelBasin, raehLog, fraeLog;
+        halsinteLamp, gelBasin, mhemLog, raehLog, fraeLog;
 
     public static void addLiquidAmmo(Block turret, Liquid liquid, BulletType bullet){
         ((LiquidTurret) turret).ammoTypes.put(liquid, bullet);
@@ -163,27 +161,8 @@ public class RustingBlocks implements ContentList{
         });
     }
 
-    //amount of damage that floors wil do to buildings
-    private static float lastFloorDamage = 0;
-
     public void load(){
         //region environment
-
-        Events.on(Trigger.update.getClass(), e -> {
-            if(Vars.state.isPaused()) return;
-            Varsr.world.corrosiveTiles.each(t -> {
-                if(t.floor() instanceof DamagingFloor && t.build != null) {
-                    lastFloorDamage = ((DamagingFloor) t.floor()).damage;
-                    //below 0.1 progress, don't damage. Scale damage accordingly to progress done afterwards.
-                    if(t.build instanceof ConstructBuild) {
-                        if(((ConstructBuild) t.build).progress < 0.2f) lastFloorDamage = 0;
-                        else lastFloorDamage *= Math.max(((ConstructBuild) t.build).progress - 0.1f, 0) / 900;
-                    }
-                    t.build.damage(lastFloorDamage * Time.delta);
-                    Log.info(lastFloorDamage);
-                }
-            });
-        });
 
         melainLiquae = new Floor("melain-liquae"){{
             speedMultiplier = 0.5f;
@@ -209,6 +188,31 @@ public class RustingBlocks implements ContentList{
             isLiquid = true;
             cacheLayer = CacheLayer.water;
             albedo = 0.35f;
+        }};
+
+        impurenBurneLiquae = new DamagingFloor("impuren-burnen-liquae"){{
+            speedMultiplier = 1.34f;
+            variants = 0;
+            status = StatusEffects.burning;
+            statusDuration = 15;
+            liquidDrop = null;
+            isLiquid = true;
+            cacheLayer = CacheLayer.water;
+            albedo = 0.65f;
+            damage = 0.55f;
+        }};
+
+        impurenBurneLiquaeDeep = new DamagingFloor("impuren-burnen-liquae-deep"){{
+            speedMultiplier = 1.34f;
+            variants = 0;
+            status = StatusEffects.burning;
+            statusDuration = 15;
+            liquidDrop = null;
+            isLiquid = true;
+            drownTime = 350;
+            cacheLayer = CacheLayer.water;
+            albedo = 0.65f;
+            damage = 0.75f;
         }};
 
         classemLiquae = new Floor("classem-liquae"){{
@@ -247,6 +251,33 @@ public class RustingBlocks implements ContentList{
         sunkenMetalFloor3 = new Floor("sunken-metal-floor3"){{
             speedMultiplier = 0.85f;
             variants = 0;
+            status = StatusEffects.wet;
+            statusDuration = 90f;
+            liquidDrop = Liquids.water;
+            isLiquid = true;
+            cacheLayer = CacheLayer.water;
+            albedo = 0.5f;
+        }};
+
+        sunkenBasalt = new Floor("sunken-basalt"){{
+            status = StatusEffects.wet;
+            statusDuration = 90f;
+            liquidDrop = Liquids.water;
+            isLiquid = true;
+            cacheLayer = CacheLayer.water;
+            albedo = 0.5f;
+        }};
+
+        sunkenHotrock = new EffectFloor("sunken-hotrock"){{
+            status = StatusEffects.wet;
+            statusDuration = 90f;
+            liquidDrop = Liquids.water;
+            isLiquid = true;
+            cacheLayer = CacheLayer.water;
+            albedo = 0.5f;
+        }};
+
+        sunkenMagmarock = new EffectFloor("sunken-magmarock"){{
             status = StatusEffects.wet;
             statusDuration = 90f;
             liquidDrop = Liquids.water;
@@ -309,6 +340,10 @@ public class RustingBlocks implements ContentList{
         mhemPlating5 = new Floor("mhem-aged-plating5"){{
             variants = 0;
             blendGroup = mhemPlating;
+        }};
+
+        mhemAgedFraeBlock = new StaticWall("mhem-aged-frae-block"){{
+            variants = 1;
         }};
 
         mhemAgedMetal = new StaticWall("mhem-aged-metal-block"){{
@@ -386,6 +421,28 @@ public class RustingBlocks implements ContentList{
             wall = classemBarrreren;
         }};
 
+        impurenSanden = new DamagingFloor("impuren-sanden"){{
+            speedMultiplier = 1.15f;
+            variants = 3;
+            itemDrop = Items.sand;
+            status = StatusEffects.burning;
+            attributes.set(Attribute.heat, 0.15f);
+            wall = volenWallen;
+            damage = 0.005f;
+        }};
+
+        moistenStolnene = new Floor("moisten-stolnene"){{
+            variants = 6;
+            status = StatusEffects.muddy;
+            attributes.set(Attribute.water, 0.25f);
+            wall = moistenWallen;
+        }};
+
+        moistenLushen = new Floor("moisten-lushen"){{
+            attributes.set(Attribute.water, 0.35f);
+            wall = moistenVinen;
+        }};
+
         dripiveGrassen = new Floor("dripive-grassen"){{
             speedMultiplier = 0.95f;
             attributes.set(Attribute.water, 1.14f);
@@ -416,6 +473,15 @@ public class RustingBlocks implements ContentList{
         }};
 
         classemBarrreren = new StaticWall("classem-barreren"){{
+            variants = 2;
+        }};
+
+        moistenWallen = new OverrideColourStaticWall("moisten-wallen"){{
+            variants = 3;
+            overrideMapColour = Color.valueOf("#716765");
+        }};
+
+        moistenVinen = new StaticWall("moisten-vinen"){{
             variants = 2;
         }};
 
@@ -1106,7 +1172,7 @@ public class RustingBlocks implements ContentList{
             rotateSpeed = 8;
             alphaFalloff = 0.35f;
             healing = 35;
-            healRadius = 18;
+            healRadius = 25;
             targetAir = true;
             targetGround = true;
             shootType = RustingBullets.paveBolt;
@@ -1444,6 +1510,24 @@ public class RustingBlocks implements ContentList{
             shootEffect = Fx.flakExplosion;
         }};
 
+        icosahen = new LiquidBeamTurret("icosahen"){{
+            requirements(Category.turret, ItemStack.with());
+            buildVisibility = BuildVisibility.hidden;
+            size = 2;
+            reloadTime = 50;
+            shots = 4;
+            burstSpacing = 3;
+            pressureCap = 11.5f;
+            ammo(
+                    Liquids.water, Bullets.waterShot,
+                    Liquids.slag, Bullets.slagShot,
+                    Liquids.oil, Bullets.oilShot,
+                    Liquids.cryofluid, Bullets.cryoShot,
+                    RustingLiquids.melomae, RustingBullets.melomaeShot,
+                    RustingLiquids.cameaint, RustingBullets.cameoShot
+            );
+        }};
+
         horaNoctis = new AutoreloadItemTurret("hora-noctis"){{
             requirements(Category.turret, with());
             buildVisibility = BuildVisibility.hidden;
@@ -1638,6 +1722,10 @@ public class RustingBlocks implements ContentList{
         //endregion
 
         //region, *sigh* logic
+
+        mhemLog = new UnbreakableMessageBlock("mhem-log"){{
+            buildVisibility = BuildVisibility.shown;
+        }};
 
         raehLog = new UnbreakableMessageBlock("raeh-log"){{
             buildVisibility = BuildVisibility.shown;

@@ -35,7 +35,9 @@ public class AreaHealerBeamTurret extends HealerBeamTurret{
 
         @Override
         public void healTargets() {
-            Vars.indexer.eachBlock(team, LTP.x, LTP.y, healRadius, b -> b.damaged(), b -> {
+            //clamp off distance
+            Tmp.v1.set(LTP.x, LTP.y).sub(x, y).clamp(0, range).add(x, y);
+            Vars.indexer.eachBlock(team, Tmp.v1.x, Tmp.v1.y, healRadius, b -> b.damaged(), b -> {
                 healBuilding(b);
             });
         }

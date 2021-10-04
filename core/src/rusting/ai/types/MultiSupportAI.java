@@ -14,7 +14,7 @@ import mindustry.type.Item;
 import mindustry.world.Tile;
 import mindustry.world.meta.BlockFlag;
 import rusting.entities.units.CraeUnitType;
-import rusting.world.blocks.pulse.PulseBlock.PulseBlockBuild;
+import rusting.interfaces.PulseBlockc;
 
 import static mindustry.Vars.indexer;
 import static mindustry.Vars.state;
@@ -87,7 +87,7 @@ public class MultiSupportAI extends FlyingAI {
                 indexer.eachBlock(unit, unit.type.range * 2,
                     other ->
                         other.damaged() ||
-                        canGenPulse && other instanceof PulseBlockBuild && ((PulseBlockBuild) other).canRecievePulse(pulseAmount),
+                        canGenPulse && other instanceof PulseBlockc && ((PulseBlockc) other).canRecievePulse(pulseAmount),
                     other -> {
                         if(targetBuildingAlly[0] == null) targetBuildingAlly[0] = other;
                     }
@@ -172,6 +172,11 @@ public class MultiSupportAI extends FlyingAI {
         }
     }
 
+    @Override
+    protected boolean invalid(Teamc target) {
+        return !(target instanceof Building && ((Building) target).damaged()) && super.invalid(target);
+    }
+
     public Teamc findTarget(float x, float y, float range, boolean air, boolean ground) {
         Teamc t = null;
         Teamc targ1 = null;
@@ -201,6 +206,9 @@ public class MultiSupportAI extends FlyingAI {
                     t = targ2;
                 }
             }
+        }
+        else if(indexer.findTile(unit.team, x, y, unit.type.range, b -> b.damaged()) != null){
+            return indexer.findTile(unit.team, x, y, unit.type.range, b -> b.damaged());
         }
         else if(unit.team == state.rules.waveTeam && this.targetFlag(x, y, BlockFlag.core, false) == null){
             Teamc result = null;

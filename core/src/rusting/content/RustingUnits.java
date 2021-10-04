@@ -4,8 +4,7 @@ import arc.func.Prov;
 import arc.graphics.Color;
 import arc.struct.ObjectIntMap;
 import arc.struct.ObjectMap.Entry;
-import mindustry.ai.types.FlyingAI;
-import mindustry.ai.types.MinerAI;
+import mindustry.ai.types.*;
 import mindustry.content.*;
 import mindustry.core.Version;
 import mindustry.ctype.ContentList;
@@ -77,19 +76,22 @@ public class RustingUnits implements ContentList{
     }
 
     public static CraeUnitType
-            duono, duoly, duanga;
+        duono, duoly, duanga;
     public static UnitType
-            marrow, metaphys, ribigen, spinascene, trumpedoot,
+        marrow, metaphys, ribigen, spinascene, trumpedoot,
             fahrenheit, celsius;
     public static UnitType
-            pulseBarrenBezerker;
+        pulseBarrenBezerker;
     public static UnitType
         stingray;
     //Acrimynal's drone army
     public static AcriUnitType
-            observantly, kindling, sharpen;
+        observantly, kindling, sharpen;
+    //crux
     public static UnitType
-            SYSTEM_DELETED_UNIT;
+        fusee;
+    public static UnitType
+        SYSTEM_DELETED_UNIT;
 
     @Override
     public void load() {
@@ -234,11 +236,14 @@ public class RustingUnits implements ContentList{
         fahrenheit = new UnitType("fahrenheit"){{
 
             flying = false;
+            canBoost = true;
             hitSize = 5;
             health = 110;
             speed = 1.2f;
             accel = 0.045f;
             drag = 0.025f;
+
+            defaultController = SuicideAI::new;
 
             constructor = BaseUnit::new;
             weapons.add(
@@ -253,12 +258,30 @@ public class RustingUnits implements ContentList{
                         speed = 1.3f;
                         splashDamageRadius = 58f;
                         instantDisappear = true;
-                        splashDamage = 45f;
-                        killShooter = true;
+                        splashDamage = 5;
                         hittable = false;
                         collidesAir = true;
                         fragBullets = 13;
                         fragBullet = RustingBullets.craeBoltKill;
+                    }};
+                }},
+                new Weapon("none") {{
+                    x = 0;
+                    y = 0;
+                    shootCone = 360;
+                    mirror = false;
+                    bullet = new BombBulletType(0f, 0f, "clear"){{
+                        hitEffect = Fx.pulverize;
+                        lifetime = 10f;
+                        speed = 1.3f;
+                        splashDamageRadius = 58f;
+                        instantDisappear = true;
+                        splashDamage = 15;
+                        killShooter = true;
+                        hittable = false;
+                        collidesAir = true;
+                        fragBullets = 5;
+                        fragBullet = RustingBullets.mhemaeShardling;
                     }};
                 }}
             );

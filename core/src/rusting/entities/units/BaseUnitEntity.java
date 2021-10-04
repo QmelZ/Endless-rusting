@@ -7,6 +7,10 @@ import rusting.content.RustingUnits;
 
 public class BaseUnitEntity extends UnitEntity {
 
+    @Override
+    public String toString() {
+        return "BaseUnitEntity#" + id;
+    }
 
     @Override
     public void read(Reads r) {

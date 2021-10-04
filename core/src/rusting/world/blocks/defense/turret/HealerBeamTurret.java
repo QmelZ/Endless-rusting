@@ -207,7 +207,7 @@ public class HealerBeamTurret extends PowerTurret {
 
         @Override
         protected void findTarget() {
-            Building tempTarget = Vars.indexer.findTile(team, x, y, range, Building::damaged);
+            Building tempTarget = Vars.indexer.findTile(team, x, y, range, Building::damaged, true);
             if(tempTarget != null) target = tempTarget;
         }
 

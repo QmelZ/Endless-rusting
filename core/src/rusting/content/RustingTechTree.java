@@ -4,7 +4,6 @@ import arc.Core;
 import arc.Events;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
-import arc.util.Log;
 import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.content.TechTree.TechNode;
@@ -37,13 +36,11 @@ public class RustingTechTree implements ContentList {
                 blockNameKey = "settings.er.destroy " + e.tile.build.block.name;
 
                 Core.settings.put(blockNameKey, amount);
-                Log.info(blockNameKey);
 
                 if(Vars.state.hasSector() && Vars.state.getSector().preset != null) {
                     blockNameKey += "." + Vars.state.getSector().preset.name;
                     Core.settings.put(blockNameKey, amount);
                 }
-                Log.info(blockNameKey);
             }
         });
 
@@ -52,6 +49,9 @@ public class RustingTechTree implements ContentList {
                 node(fraeResarchCenter, Seq.with(new Produce(RustingItems.melonaleum), new SectorComplete(pulsatingGroves)), () -> {
                     node(cameoCrystallisingBasin, () -> {
                         node(cameoPaintMixer, Seq.with(new Produce(RustingLiquids.cameaint)), () -> {
+                            nodeProduce(RustingLiquids.cameaint, () -> {
+
+                            });
                             node(camaintAmalgamator, Seq.with(new SectorComplete(saltyShoals)), () -> {
 
                             });
@@ -152,12 +152,6 @@ public class RustingTechTree implements ContentList {
             });
         });
 
-        extendNode(thermalGenerator, () -> {
-            node(waterBoilerGenerator, Seq.with(new SectorComplete(plantaePresevereDomae)), () -> {
-                
-            });
-        });
-        
         extendNode(duo, () -> {
             node(prikend, Seq.with(new SectorComplete(plantaePresevereDomae)), () -> {
                 node(prsimdeome, () -> {
@@ -224,7 +218,7 @@ public class RustingTechTree implements ContentList {
 
                 nodeProduce(RustingItems.halsinte, () -> {
                     nodeProduce(RustingItems.cameoShardling, () -> {
-
+                        nodeProduce(RustingItems.camaintAmalgam);
                     });
                 });
 
@@ -235,7 +229,7 @@ public class RustingTechTree implements ContentList {
         });
 
         extendNode(Liquids.water, () -> {
-            nodeProduce(RustingLiquids.melomae, Seq.with(new Produce(RustingLiquids.melomae)), () -> {
+            nodeProduce(RustingLiquids.melomae, () -> {
 
             });
         });
