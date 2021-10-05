@@ -36,7 +36,7 @@ public class RustingBullets implements ContentList{
         //artillery
         mhemQuadStorm, craeQuadStorm, lightfractureTitanim, lightfractureBulat,
         //liquid
-        melomaeShot, melomaeShotLong, heavyMelomaeShot, cameoShot, heavyCameoShot,
+        waterBeamShot, slagBeamShot, cryoBeamShot, oilBeamShot, melomaeShot, melomaeShotLong, heavyMelomaeShot, melomaeBeamShot, cameoShot, heavyCameoShot, cameoBeamShot,
         //missile/weaving bullets
         craeWeaver, bigCraeWeaver, paveWeaver, nonweavingPaveWeaver,
         //lightning bullets
@@ -692,6 +692,39 @@ public class RustingBullets implements ContentList{
             ammoMultiplier = 9;
         }};
 
+        waterBeamShot = new PressurizedLiquidBulletType(Liquids.water){{
+            damage = 9;
+            trailEffect = Fx.plasticburn;
+            trailSpacing = 7.5f;
+            fragBullet = Bullets.waterShot;
+            fragBullets = 4;
+        }};
+
+        slagBeamShot = new PressurizedLiquidBulletType(Liquids.slag){{
+            damage = 35;
+            reloadMultiplier = 0.85f;
+            trailEffect = Fx.plasticburn;
+            trailSpacing = 7.5f;
+            fragBullet = Bullets.slagShot;
+            fragBullets = 3;
+        }};
+
+        cryoBeamShot = new PressurizedLiquidBulletType(Liquids.cryofluid){{
+            damage = 18;
+            trailEffect = Fx.plasticburn;
+            trailSpacing = 7.5f;
+            fragBullet = Bullets.cryoShot;
+            fragBullets = 2;
+        }};
+
+        oilBeamShot = new PressurizedLiquidBulletType(Liquids.oil){{
+            damage = 14;
+            trailEffect = Fx.plasticburn;
+            trailSpacing = 7.5f;
+            fragBullet = Bullets.oilShot;
+            fragBullets = 2;
+        }};
+
         melomaeShot = new LiquidBulletType(RustingLiquids.melomae){{
             pierce = true;
             reflectable = false;
@@ -734,6 +767,14 @@ public class RustingBullets implements ContentList{
             statusDuration = 60f * 4f;
         }};
 
+        melomaeBeamShot = new PressurizedLiquidBulletType(RustingLiquids.melomae){{
+            damage = 22;
+            trailEffect = Fx.plasticburn;
+            trailSpacing = 7.5f;
+            fragBullet = melomaeShot;
+            fragBullets = 3;
+        }};
+
         cameoShot = new LiquidBulletType(RustingLiquids.cameaint){{
             reloadMultiplier = 1.2f;
             knockback = 1.2f;
@@ -751,6 +792,15 @@ public class RustingBullets implements ContentList{
             drag = 0.001f;
             ammoMultiplier = 0.4f;
             statusDuration = 60f * 4f;
+        }};
+
+        cameoBeamShot = new PressurizedLiquidBulletType(RustingLiquids.cameaint){{
+            damage = 15;
+            reloadMultiplier = 1.45f;
+            trailEffect = Fx.plasticburn;
+            trailSpacing = 7.5f;
+            fragBullet = cameoShot;
+            fragBullets = 3;
         }};
 
         craeWeaver = new BounceBulletType(3, 21, "bullet"){{

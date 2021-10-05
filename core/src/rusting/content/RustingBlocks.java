@@ -1514,17 +1514,19 @@ public class RustingBlocks implements ContentList{
             requirements(Category.turret, ItemStack.with());
             buildVisibility = BuildVisibility.hidden;
             size = 2;
-            reloadTime = 50;
+            health = 145 * size * size;
+            reloadTime = 250;
+            range = 135;
             shots = 4;
             burstSpacing = 3;
             pressureCap = 11.5f;
             ammo(
-                    Liquids.water, Bullets.waterShot,
-                    Liquids.slag, Bullets.slagShot,
-                    Liquids.oil, Bullets.oilShot,
-                    Liquids.cryofluid, Bullets.cryoShot,
-                    RustingLiquids.melomae, RustingBullets.melomaeShot,
-                    RustingLiquids.cameaint, RustingBullets.cameoShot
+                    Liquids.water, RustingBullets.waterBeamShot,
+                    Liquids.slag, RustingBullets.slagBeamShot,
+                    Liquids.cryofluid, RustingBullets.cryoBeamShot,
+                    Liquids.oil, RustingBullets.oilBeamShot,
+                    RustingLiquids.melomae, RustingBullets.melomaeBeamShot,
+                    RustingLiquids.cameaint, RustingBullets.cameoBeamShot
             );
         }};
 

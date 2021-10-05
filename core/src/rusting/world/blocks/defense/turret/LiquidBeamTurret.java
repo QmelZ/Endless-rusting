@@ -4,6 +4,7 @@ import arc.math.Mathf;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.entities.bullet.BulletType;
+import mindustry.gen.Posc;
 import mindustry.world.blocks.defense.turrets.LiquidTurret;
 
 public class LiquidBeamTurret extends LiquidTurret {
@@ -30,7 +31,7 @@ public class LiquidBeamTurret extends LiquidTurret {
         public void update() {
             super.update();
             pressure = Mathf.lerpDelta(pressure, isShooting() ? pressureCap : 0, isShooting() ? pressureBuildSpeed : pressureLoseSpeed);
-            reload += pressure;
+            reload += pressure * efficiency() * (hasAmmo() ? peekAmmo().reloadMultiplier : 0.5f);
         }
 
         @Override
@@ -48,6 +49,11 @@ public class LiquidBeamTurret extends LiquidTurret {
         public void read(Reads r, byte revision) {
             super.read(r, revision);
             pressure = r.f();
+        }
+
+        @Override
+        public void targetPosition(Posc pos) {
+            targetPos.set(pos.x(), pos.y());
         }
     }
 }
