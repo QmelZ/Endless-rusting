@@ -15,8 +15,10 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 16
+    -name: chmod +x gradlew
+        run: chmod +x gradlew
     - name: Build mod jar
-        run: chmod +x gradlew && ./gradlew jar
+        run:  ./gradlew jar
     - name: Upload built jar file
       uses: actions/upload-artifact@v2
       with:
