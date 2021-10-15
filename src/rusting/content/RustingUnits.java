@@ -1,24 +1,39 @@
 package rusting.content;
 
 import arc.func.Prov;
+import arc.graphics.Blending;
 import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
+import arc.math.Mathf;
+import arc.math.geom.Vec2;
 import arc.struct.ObjectIntMap;
 import arc.struct.ObjectMap.Entry;
+import arc.struct.Seq;
+import arc.util.Time;
+import arc.util.Tmp;
 import mindustry.ai.types.*;
 import mindustry.content.*;
 import mindustry.core.Version;
 import mindustry.ctype.ContentList;
+import mindustry.entities.Effect;
 import mindustry.entities.abilities.StatusFieldAbility;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
-import mindustry.graphics.Pal;
+import mindustry.graphics.*;
+import mindustry.logic.Ranged;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
+import mindustry.world.blocks.defense.turrets.Turret.TurretBuild;
 import rusting.EndlessRusting;
 import rusting.ai.types.BossStingrayAI;
 import rusting.ai.types.MultiSupportAI;
 import rusting.entities.abilities.*;
+import rusting.entities.bullet.*;
 import rusting.entities.units.*;
+import rusting.interfaces.Targeting;
+
+import static arc.graphics.g2d.Draw.color;
 
 public class RustingUnits implements ContentList{
     //Steal from BetaMindy
@@ -79,7 +94,7 @@ public class RustingUnits implements ContentList{
         duono, duoly, duanga;
     public static UnitType
         marrow, metaphys, ribigen, spinascene, trumpedoot,
-            fahrenheit, celsius;
+            fahrenheit, celsius, kelvin;
     public static UnitType
         pulseBarrenBezerker;
     public static UnitType
@@ -237,11 +252,11 @@ public class RustingUnits implements ContentList{
 
             flying = false;
             canBoost = true;
-            hitSize = 5;
-            health = 110;
-            speed = 1.2f;
-            accel = 0.045f;
-            drag = 0.025f;
+            hitSize = 7;
+            health = 235;
+            speed = 1.05f;
+            accel = 0.45f;
+            drag = 0.25f;
 
             defaultController = SuicideAI::new;
 
@@ -250,6 +265,7 @@ public class RustingUnits implements ContentList{
                 new Weapon("none") {{
                     x = 0;
                     y = 0;
+                    reload = 35;
                     shootCone = 360;
                     mirror = false;
                     bullet = new BombBulletType(0f, 0f, "clear"){{
@@ -268,6 +284,7 @@ public class RustingUnits implements ContentList{
                 new Weapon("none") {{
                     x = 0;
                     y = 0;
+                    reload = 35;
                     shootCone = 360;
                     mirror = false;
                     bullet = new BombBulletType(0f, 0f, "clear"){{
@@ -281,44 +298,293 @@ public class RustingUnits implements ContentList{
                         hittable = false;
                         collidesAir = true;
                         fragBullets = 5;
-                        fragBullet = RustingBullets.mhemaeShardling;
+                        fragBullet = RustingBullets.mhemaeShard;
                     }};
                 }}
             );
+
+            immunities.addAll(StatusEffects.burning, RustingStatusEffects.amberstriken, RustingStatusEffects.umbrafliction);
         }};
+
+        Effect lanceEffect = new Effect(32, e -> {
+
+            Draw.blend(Blending.additive);
+            Draw.z(Layer.effect + 1);
+
+            Fill.light(e.x, e.y, 8, 8 + e.fout() * 3, Tmp.c1.set(Palr.pulseLaser).a(e.fout()/2), Tmp.c2.set(Palr.chillDecalLight).a(0));
+
+            Draw.blend();
+            Draw.z(Layer.effect);
+
+            for(int i : Mathf.signs){
+                color(Palr.chillDecalDark);
+                Drawf.tri(e.x, e.y, 4f * e.fout(), 24 + e.fout() * 9, e.rotation + 90f * i);
+                color(Palr.pulseLaser);
+                Drawf.tri(e.x, e.y, 2f * e.fout(), 16 + e.fout() * 3, e.rotation + 90f * i);
+
+                color(Palr.chillDecalDark);
+                Drawf.tri(e.x, e.y, 4f * e.fout(), 24 + e.fout() * 9, e.rotation + 75f * i);
+                color(Palr.pulseLaser);
+                Drawf.tri(e.x, e.y, 2f * e.fout(), 16 + e.fout() * 3, e.rotation + 75f * i);
+            }
+        });
 
         EntityMapping.nameMap.put("celsius", BaseUnit::new);
         celsius = new UnitType("celsius"){{
-
             flying = false;
-            hitSize = 9;
-            health = 110;
-            speed = 1.2f;
-            accel = 0.045f;
-            drag = 0.025f;
-
+            canBoost = true;
+            hitSize = 11;
+            health = 460;
+            armor = 5;
+            speed = 0.725f;
+            accel = 0.55f;
+            drag = 0.35f;
+            boostMultiplier = 2.5f;
             constructor = BaseUnit::new;
+
             weapons.add(
-                    new Weapon("none") {{
-                        x = 0;
-                        y = 0;
-                        shootCone = 360;
+                new Weapon("none"){
+                    {
                         mirror = false;
-                        bullet = new BombBulletType(0f, 0f, "clear"){{
-                            hitEffect = Fx.pulverize;
-                            lifetime = 10f;
-                            speed = 1.3f;
-                            splashDamageRadius = 58f;
-                            instantDisappear = true;
-                            splashDamage = 45f;
+                        rotate = true;
+                        shootY = 0;
+                        shootX = 0;
+                        rotateSpeed = 360;
+                        shootCone = 360;
+                        reload = 50;
+                        shake = 5;
+                        shootSound = Sounds.bang;
+                        bullet = new ConsBulletType(0, 350, "none"){{
+                            useRange = true;
+                            range = 75;
                             killShooter = true;
-                            hittable = false;
-                            collidesAir = true;
-                            fragBullets = 13;
-                            fragBullet = RustingBullets.craeBoltKill;
+                            collides = false;
+                            splashDamage = 45;
+                            splashDamageRadius = 75;
+                            consHit = (b) -> {
+                                for(int i = 0; i < 15; i++){
+                                    Vec2 pos = new Vec2(b.x, b.y);
+                                    Time.run(i * 3 + Mathf.random(4), () -> {
+                                        RustingBullets.mhemaeShardling.create(b.owner, b.team, pos.x, pos.y, Mathf.random() * 360, 5, Mathf.random() * 0.15f + 1, 1, 0);
+                                    });
+                                }
+                            };
+                            lifetime = 0;
+                            instantDisappear = true;
+                            fragBullets = 1;
+                            fragBullet = new BulletSpawnBulletType(0, 100, "none") {{
+                                bullets = Seq.with(
+                                        new BulletSpawner() {{
+                                            bullet = RustingBullets.celsiusLance;
+                                            shootEffect = lanceEffect;
+                                            reloadTime = 45;
+                                            intervalIn = 50;
+                                            intervalOut = 50;
+                                            idleInaccuracy = 0;
+                                            manualAiming = false;
+                                            bulletTargeting = true;
+                                            shootWhenIdle = false;
+                                        }},
+                                        new BulletSpawner() {{
+                                            bullet = new LightningBulletType(){{
+                                                damage = 13;
+                                                lightningDamage = 12f;
+                                                lightningLength = 15;
+                                                lightningColor = Palr.lightstriken;
+                                                status = StatusEffects.shocked;
+                                            }};
+                                            shootEffect = Fx.sparkShoot;
+                                            reloadTime = 25;
+                                            intervalIn = 50;
+                                            intervalOut = 50;
+                                            idleInaccuracy = 360;
+                                            manualAiming = false;
+                                            bulletTargeting = false;
+                                            shootWhenIdle = true;
+                                        }},
+                                        new BulletSpawner() {{
+                                            bullet = new LightningBulletType(){{
+                                                damage = 5;
+                                                lightningDamage = 4f;
+                                                lightningLength = 9;
+                                                lightningColor = Palr.lightstriken;
+                                                status = StatusEffects.shocked;
+                                            }};
+                                            shootEffect = Fx.sparkShoot;
+                                            reloadTime = 7.5f;
+                                            intervalIn = 135;
+                                            intervalOut = 95;
+                                            idleInaccuracy = 360;
+                                            manualAiming = false;
+                                            bulletTargeting = false;
+                                            shootWhenIdle = true;
+                                        }}
+                                );
+
+                                frontColor = Palr.chillDecalLight;
+                                backColor = Palr.chillDecalDark;
+                                despawnEffect = Fx.sparkShoot;
+                                lifetime = 650;
+                                width = height = 11f;
+                                splashDamage = 33f;
+                                splashDamageRadius = 35f * 0.75f;
+                                shootEffect = Fx.shootBig;
+                                scaleDrawIn = 9;
+                                scaleDrawOut = 4;
+
+                                shrinkX = 0.15f;
+                                shrinkY = 0.63f;
+
+
+                                drawSize = 4;
+                            }};
                         }};
                     }}
             );
+
+            immunities.addAll(StatusEffects.burning, RustingStatusEffects.amberstriken, RustingStatusEffects.umbrafliction);
+
+        }};
+
+        EntityMapping.nameMap.put("kelvin", BaseUnit::new);
+        kelvin = new UnitType("kelvin"){{
+
+            flying = false;
+            canBoost = true;
+            hitSize = 11;
+            health = 980;
+            armor = 5;
+            speed = 0.725f;
+            accel = 0.55f;
+            drag = 0.35f;
+            boostMultiplier = 2.5f;
+            constructor = BaseUnit::new;
+            weapons.add(
+                new Weapon("none"){{
+                    x = 8.5f;
+                    y = 1f;
+                    shootY = 7;
+                    shootX = -1.5f;
+                    shootCone = 35;
+                    reload = 250;
+                    shake = 5;
+                    shootSound = Sounds.bang;
+                    bullet = new ConsBulletType(0.725f, 35, "shell"){{
+                        width = 15;
+                        height = 15;
+                        lifetime = 150;
+                        scaleVelocity = true;
+                        shootEffect = Fx.shootBig;
+                        trailChance = 0.15f;
+                        trailEffect = Fx.artilleryTrail;
+                        backColor = Palr.darkPyraBloom;
+                        frontColor = Palr.lightstriken;
+                        trailColor = Palr.darkPyraBloom;
+                        hitEffect = Fxr.instaltSummonerExplosion;
+                        hitShake = 4;
+                        hitSound = Sounds.explosion;
+                        fragBullet = new BounceBulletType( 2.5f,16, "bullet"){{
+                            consUpdate = bullet -> {
+                                Tmp.v1.set(bullet.x, bullet.y);
+                                //handle modded cases of bullet owners first
+                                if(bullet.owner instanceof Targeting){
+                                    Tmp.v1.set(((Targeting) bullet.owner).targetPos());
+                                }
+                                else if(bullet.owner instanceof TurretBuild) {
+                                    Tmp.v1.set(((TurretBuild) bullet.owner).targetPos.x, ((TurretBuild) bullet.owner).targetPos.y);
+                                }
+                                else if (bullet.owner instanceof Unitc){
+                                    Tmp.v1.set(((Unitc) bullet.owner).aimX(), ((Unitc) bullet.owner).aimY());
+                                }
+                                Tmp.v3.set(((Posc) bullet.owner()).x(), ((Posc) bullet.owner()).y());
+                                Tmp.v1.sub(Tmp.v3).clamp(0, ((Ranged) bullet.owner).range()).add(Tmp.v3);
+                                bullet.vel.add(Tmp.v2.trns(bullet.angleTo(Tmp.v1), bullet.type.homingPower * Time.delta)).clamp(0, bullet.type.speed);
+
+                                Fxr.burningFlame.at(bullet.x, bullet.y, bullet.rotation());
+                                //essentualy goes to owner aim pos, without stopping homing and no lifetime reduction
+                            };
+                            pierceBuilding = false;
+                            despawnEffect = Fx.fireSmoke;
+                            hitEffect = Fx.fire;
+                            bounceEffect = Fxr.shootMhemFlame;
+                            incendAmount = 10;
+                            status = StatusEffects.burning;
+                            statusDuration = 350;
+                            maxRange = 156;
+                            width = 6;
+                            height = 8;
+                            hitSize = 12;
+                            lifetime = 350;
+                            homingPower = 0.15f;
+                            homingRange = 0;
+                            homingDelay = 35;
+                            hitEffect = Fx.hitFuse;
+                            trailLength = 0;
+                            bounciness = 0.85f;
+                            bounceCap = 0;
+                            pierceCap = 1;
+                            weaveScale = 4;
+                            weaveMag = 3;
+                            knockback = 3;
+                            drag = 0.0015f;
+                        }};
+                        fragBullets = 4;
+                    }};
+                }},
+                new Weapon("endless-rusting-kelvin-launcher") {{
+                    x = 8.5f;
+                    y = 1f;
+                    shootY = 7;
+                    shootX = -1.5f;
+                    shootCone = 360;
+                    inaccuracy = 23;
+                    shots = 5;
+                    shotDelay = 2.5f;
+                    reload = 65;
+                    top = false;
+                    shootSound = Sounds.spark;
+                    soundPitchMin = 0.65f;
+                    soundPitchMax = 0.85f;
+                    bullet = new ConsBulletType(5, 1, "bullet"){{
+                        useRange = true;
+                        range = 175.5f;
+                        width = 8;
+                        height = 11;
+                        scaleVelocity = true;
+                        trailChance = 0.15f;
+                        trailEffect = Fx.artilleryTrail;
+                        backColor = Palr.chillDecalDark;
+                        frontColor = Palr.lightstriken;
+                        trailColor = Palr.chillDecalDark;
+                        speed = 5;
+                        lifetime = 22.5f;
+                        shootEffect = new Effect(15, e -> {
+                            color(Palr.chillDecalDark);
+
+                            for(int i : Mathf.signs){
+                                Drawf.tri(e.x, e.y, 4f * e.fout(), 29f, e.rotation + 90f * i * (e.fout() * 0.2f + 0.8f));
+                            }
+
+                            Draw.alpha(e.fout());
+                            Fill.circle(e.x, e.y, (1 - e.finpow()) * 8);
+                        });
+                        fragBullets = 1;
+                        consDespawned = (b) -> {
+                            if(!(b.owner instanceof Unit)) return;
+                            Unit u = (Unit) b.owner;
+
+                            float rotation = b.angleTo(u.aimX(), u.aimY());
+
+
+                            RustingBullets.kelvinLance.create(u, b.x, b.y, rotation);
+                            lanceEffect.at(b.x, b.y, rotation);
+                        };
+                    }};
+                }}
+            );
+
+            immunities.addAll(StatusEffects.burning, RustingStatusEffects.amberstriken, RustingStatusEffects.umbrafliction);
+
         }};
 
         EntityMapping.nameMap.put("pulse-barren-bezerker", BaseUnit::new);
@@ -397,7 +663,7 @@ public class RustingUnits implements ContentList{
                     shotDelay = 5;
                     bullet = RustingBullets.horizonInstalt;
                     shootSound = Sounds.bang;
-                    reload = 125;
+                    reload = 115;
                 }}
             );
 

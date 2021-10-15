@@ -23,7 +23,7 @@ import rusting.type.statusEffect.*;
 
 public class RustingStatusEffects implements ContentList {
     public static StatusEffect
-            weather, hpooned, fuesin, amberstriken, umbrafliction, macrosis, macotagus, balancedPulsation, hailsalilty, causticBurning, shieldShatter, corruptShield, fragmentaein, guardiansBlight;
+            weather, hpooned, fuesin, amberstriken, umbrafliction, macrosis, macotagus, balancedPulsation, hailsalilty, causticBurning, potassiumDeficiency, shieldShatter, corruptShield, fragmentaein, guardiansBlight;
     public static Cons
             corruptShieldCons;
 
@@ -203,6 +203,16 @@ public class RustingStatusEffects implements ContentList {
 
         }};
 
+        potassiumDeficiency = new ConsStatusEffect("potassium-deficiency"){{
+            speedMultiplier = 1.35f;
+            dragMultiplier = 1.65f;
+            buildSpeedMultiplier = 0.35f;
+            damageMultiplier = 0.85f;
+            
+            effect = Fx.plasticburn;
+            effectChance = 0.025f;
+        }};
+
         shieldShatter = new ConsStatusEffect("shield-shatter"){{
             transitionDamage = 15;
             speedMultiplier = 0.85f;
@@ -221,7 +231,7 @@ public class RustingStatusEffects implements ContentList {
             });
 
             updateCons = (unit, time) -> {
-                if(unit.shield() > 0) unit.damage(Mathf.clamp(unit.shield(), 25/60, unit.shield()) * Time.delta);
+                if(unit.shield() > 0) unit.damage(Mathf.clamp(unit.shield(), unit.shield(), 25/60) * Time.delta);
             };
         }};
 

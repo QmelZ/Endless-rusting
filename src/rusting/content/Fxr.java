@@ -10,11 +10,13 @@ import arc.util.Tmp;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
 import mindustry.entities.Effect;
+import mindustry.entities.bullet.BasicBulletType;
 import mindustry.game.Team;
 import mindustry.gen.Unit;
 import mindustry.graphics.*;
 import rusting.entities.units.CraeUnitEntity;
 import rusting.entities.units.CraeUnitType;
+import rusting.math.Mathr;
 
 import static arc.graphics.g2d.Draw.alpha;
 import static arc.graphics.g2d.Draw.color;
@@ -109,11 +111,8 @@ public class Fxr{
 
         burningFlame = new Effect(15, e ->{
             color(Palr.lightstriken, Pal.lightPyraFlame, Palr.darkPyraBloom, e.fin() * e.fin());
-            float vx = e.x, vy = e.y;
-            float finalVx = vx;
-            float finalVy = vy;
             randLenVectors(e.id, 4, 2f + e.fin() * 21f, e.rotation + 180, 17, (x, y) -> {
-                Fill.circle(finalVx + x, finalVy + y, 0.2f + e.fout() * 1.5f);
+                Fill.circle(e.x + x, e.y + y, 0.2f + e.fout() * 1.5f);
             });
         }),
 
@@ -357,8 +356,8 @@ public class Fxr{
             Lines.square(Tmp.v2.x, Tmp.v2.y, 42 * e.fin(), Mathf.absin(Time.delta/5, 360) + 180);
         }),
 
-    craeNukeHit = new Effect(125, 125, e -> {
-        e.scaled(10f, b -> {
+        craeNukeHit = new Effect(125, 125, e -> {
+            e.scaled(10f, b -> {
             color(Color.white, Palr.pulseShieldEnd, b.fin());
             stroke(b.fout() * b.fslope() * 3f + 0.2f);
             Lines.circle(b.x, b.y, (1 - b.finpow()) * 60f);
@@ -611,6 +610,24 @@ public class Fxr{
             Draw.color(Palr.pulseBullet, Items.titanium.color, (x + y)/39 % 1);
             Fill.square(e.x + x, e.y + y - e.fin() * 36, e.fout() * 2.35f, e.fout() * 360);
         });
+    }),
+
+    motionBlurBullet = new Effect(110, e -> {
+        if(e.data instanceof BasicBulletType){
+            for (int i : Mathf.signs) {
+                BasicBulletType type = (BasicBulletType) e.data;
+
+                Tmp.v1.trns(e.rotation - 90 * i, Mathr.helix(3, type.width * 3, Math.max(0, (e.finpow() - 0.5f) * 2)));
+
+
+                Draw.color(type.backColor);
+                Draw.alpha(0.8f - e.finpow() * 0.8f);
+                Draw.rect(type.backRegion, e.x + Tmp.v1.x, e.y + Tmp.v1.y, type.width, type.height, e.rotation - 90);
+                Draw.color(type.frontColor);
+                Draw.alpha(0.8f - e.finpow() * 0.8f);
+                Draw.rect(type.frontRegion, e.x + Tmp.v1.x, e.y + Tmp.v1.y, type.width, type.height, e.rotation - 90);
+            }
+        }
     }),
 
     regionDrop = new Effect(125, e -> {

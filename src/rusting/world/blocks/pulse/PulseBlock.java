@@ -281,6 +281,11 @@ public class PulseBlock extends Block implements ResearchableBlock {
             return tmpBool;
         }
 
+        @Override
+        public void addPulse() {
+            pulseModule.pulse = pulseStorage + overloadCapacity;
+        }
+
         public void addPulse(float pulse){
             addPulse(pulse, null);
         }

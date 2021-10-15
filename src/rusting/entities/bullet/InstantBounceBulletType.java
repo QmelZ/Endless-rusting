@@ -1,6 +1,8 @@
 package rusting.entities.bullet;
 
 import arc.math.Angles;
+import arc.math.Mathf;
+import arc.math.geom.Geometry;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
@@ -8,14 +10,13 @@ import mindustry.content.Fx;
 import mindustry.entities.Damage;
 import mindustry.gen.*;
 import rusting.content.Fxr;
-import rusting.graphics.GraphicEffects;
 
 import java.util.Arrays;
 
 public class InstantBounceBulletType extends BounceBulletType implements instantBullet{
 
     public float length = 100;
-    public float trailFadeIn = 25, trailFadeOut = 125;
+    public float trailSpacing = 15;
 
     public InstantBounceBulletType(float speed, float damage, String sprite) {
         super(speed, damage, sprite);
@@ -30,6 +31,8 @@ public class InstantBounceBulletType extends BounceBulletType implements instant
         this.trailChance = 0;
         this.width = 2;
         this.lightOpacity = 0;
+        this.trueSpeed = 1;
+        this.useTrueSpeed = false;
     }
 
     @Override
@@ -57,7 +60,7 @@ public class InstantBounceBulletType extends BounceBulletType implements instant
             ((Healthc) b.owner()).kill();
         }
 
-        if(instantDisappear){
+        if(instantDisappear) {
             b.time = lifetime;
         }
 
@@ -66,6 +69,7 @@ public class InstantBounceBulletType extends BounceBulletType implements instant
         hitUnit(b, b.x, b.y, bounceCap, new float[][]{{b.x}, {b.y}});
 
     }
+
 
     public void hitUnit(Bullet b, float ix, float iy, float durability, float[][] points){
 
@@ -123,9 +127,13 @@ public class InstantBounceBulletType extends BounceBulletType implements instant
 
             points[1] = Arrays.copyOf(points[1], points[1].length + 1);
             points[1][points[1].length - 1] = y;
+
             b.x = x;
             b.y = y;
 
+            Geometry.iterateLine(0, x, y, ix, iy, trailSpacing, (gx, gy) -> {
+                Fxr.motionBlurBullet.at(gx, gy, Mathf.angle(ix - b.x, iy - b.y) + 180, this);
+            });
             //prevents function being called more than once per second per bullet
             final float[][][] finalPoint = {points};
             if(lifetime - b.time > 5) Time.run(5, () -> {
@@ -133,14 +141,21 @@ public class InstantBounceBulletType extends BounceBulletType implements instant
             });
             else{
                 despawnEffect.at(x, y);
-                GraphicEffects.trailEffect(trailColor, x, y, 2.5f, 2, 1, trailFadeIn, trailFadeOut, points);
+
                 b.remove();
             }
         }
         else {
+            float ox, oy;
+            if(targ != null && targ instanceof Posc){
 
-            float ox = b.x + Angles.trnsx(b.rotation(), b.fdata);
-            float oy = b.y + Angles.trnsy(b.rotation(), b.fdata);
+                ox = targ.x();
+                oy = targ.y();
+            }
+            else {
+                ox = b.x + Angles.trnsx(b.rotation(), b.fdata);
+                oy = b.y + Angles.trnsy(b.rotation(), b.fdata);
+            }
 
             points[0] = Arrays.copyOf(points[0], points[0].length + 1);
             points[0][points[0].length - 1] = ox;
@@ -148,12 +163,12 @@ public class InstantBounceBulletType extends BounceBulletType implements instant
             points[1] = Arrays.copyOf(points[1], points[1].length + 1);
             points[1][points[1].length - 1] = oy;
 
+            Geometry.iterateLine(0, x, y, ox, oy, trailSpacing, (gx, gy) -> {
+                Fxr.motionBlurBullet.at(gx, gy, Mathf.angle(ix - ox, iy - oy) + 180, this);
+            });
+
             despawnEffect.at(ox, oy);
-            GraphicEffects.trailEffect(trailColor, ox, oy, 2.5f, 2, 1, trailFadeIn, trailFadeOut, points);
-            if(b.owner != null && b.owner instanceof Posc) {
-                Posc owner = (Posc) b.owner;
-                GraphicEffects.trailEffect(trailColor, owner.x(), owner.y(), 2.5f, 2, 1, trailFadeIn, trailFadeOut, points);
-            }
+
             b.remove();
         }
     }

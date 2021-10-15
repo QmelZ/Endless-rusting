@@ -97,7 +97,7 @@ public class ResearchDialog extends CustomBaseDialog{
 
         cont.clear();
         cont.margin(25);
-        cont.left();
+        cont.center();
 
         rebuildList();
 

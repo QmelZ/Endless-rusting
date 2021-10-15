@@ -1,5 +1,6 @@
 package rusting.content;
 
+import arc.graphics.Color;
 import mindustry.Vars;
 import mindustry.ctype.ContentList;
 import mindustry.game.Team;
@@ -16,11 +17,17 @@ public class RustingTeams implements ContentList {
             "let voidInfected = extend(Team, 116, \"Void Infected\", Color.valueOf(\"#3d3742\"), {});" +
             "Team.baseTeams = Arrays.copyOf(Team.baseTeams, Team.baseTeams.length + 4);" +
             "Team.baseTeams[Team.baseTeams.length - 1] = acrillimyl;" +
-            "Team.baseTeams[Team.baseTeams.length - 2] = natives;" +
+            "Team.baseTeams[Team.baseTeams.length -m 2] = natives;" +
             "Team.baseTeams[Team.baseTeams.length - 3] = pulseInfected;" +
             "Team.baseTeams[Team.baseTeams.length - 4] = voidInfected;"
         );
+
         antiquumNatives = Team.get(113);
+        antiquumNatives.name = "antiquum-natives";
+        antiquumNatives.palette[0].set(antiquumNatives.color.set(Color.valueOf("#70696c")));
+        antiquumNatives.palette[1] = antiquumNatives.color.cpy().mul(0.75f);
+        antiquumNatives.palette[2] = antiquumNatives.color.cpy().mul(0.5f);
+
         acrillimyl = Team.get(114);
         //acrillimyl = new Team(180, "Acrillimyl", Color.valueOf("#b6cad6"));
     }

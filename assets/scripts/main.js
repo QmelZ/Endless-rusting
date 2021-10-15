@@ -10,9 +10,61 @@ Events.on(ClientLoadEvent,
     }
 );
 
-let pulseInfected = extend(Team, 115, 
-                           name: "Pulse Infected",
-                           color: Color.valueOf("#5c79d0"), 
-                           {pallet: [Color.valueOf("#646eb2"), Color.valueOf("#6977d6"), ("#8199e1")]}
-                          );
-Vars.mods.getScripts().runConsole("Object.asign(Team.all[116], {name: \"Void Infected\", color: Color.valueOf(\"#33355b\"), palete: [Color.valueOf(\"#6a5c88\"), Color.valueOf(\"#ac8ac1\"), Color.valueOf(\"#33355b\")]});")
+/*
+const outOfPlace = extend(Planet, "out of place", Planets.sun, 3, 3, {
+    bloom: true,
+    accessible: false,
+    meshLoader: () => extend(SunMesh, this, 4, 5, 0.3, 1.7, 1.2, 1, 1.1,
+        Color.valueOf("ff7a38"),
+        Color.valueOf("ff9638"),
+        Color.valueOf("ffc64c"),
+        Color.valueOf("ffc6z4c"),
+        Color.valueOf("ffe371"),
+        Color.valueOf("f4ee8e"), 
+       {}
+    )
+});
+
+*/
+
+/*
+
+function setSand(arr){
+
+    for(let i = 0; i < arr.length; i++){
+      arr[i].item = Items.sand;
+    }
+
+}
+
+Vars.content.blocks().each(b => {
+
+    setSand(b.requirements);
+
+    try{
+       setSand(b.consumes.getItem().items);
+       b.outputItem.item = Items.sand
+    }
+    catch(e){
+
+    }
+
+    try{
+       if(b != Blocks.air) b.itemDrop = Items.sand;
+    }
+    catch(Idontcare){
+
+    }
+});
+
+Vars.content.items().each(i => {
+    
+    if(i != Items.sand){
+        i.localizedName = "[red]An inferior item, " + i.localizedName;
+        i.description += "\n\nAnd this is entirely wrong.";
+        if(i.details != null) i.details += "\n\nlmao look at all this shit";
+    }
+    else{
+        i.localizedName = "[white]Our lord and saviour Sand";
+    }
+})

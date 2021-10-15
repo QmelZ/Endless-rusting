@@ -2,7 +2,6 @@ package rusting.entities.bullet;
 
 import arc.Core;
 import arc.struct.Seq;
-import arc.util.Time;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
@@ -58,6 +57,9 @@ public class BounceBulletType extends ConsBulletType {
 
     @Override
     public void update(Bullet b){
+        if(b.timer.get(1, 15)){{
+            b.collided.clear();
+        }}
         super.update(b);
         if(Core.settings.getBool("settings.er.drawtrails")) ((Seq<Trail>)b.data).each(t -> t.update(b.x, b.y));
     }
@@ -81,9 +83,6 @@ public class BounceBulletType extends ConsBulletType {
             b.vel.add(unit.vel);
             bounceEffect.at(x, y, b.angleTo(x + b.vel.x, y + b.vel.y));
         }
-        Time.run(1, () -> {
-            b.collided.clear();
-        });
     }
 
 

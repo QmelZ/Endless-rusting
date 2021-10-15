@@ -9,6 +9,8 @@ import arc.struct.Seq;
 import arc.util.Nullable;
 import arc.util.Time;
 import mindustry.content.Bullets;
+import mindustry.content.Fx;
+import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
@@ -25,16 +27,27 @@ public class BulletSpawnBulletType extends ConsBulletType{
     public float scaleDrawIn = 4, scaleDrawOut = 4, drawSize = 4;
 
     public static class BulletSpawner{
+        //Bullelt to shoot. Shoudn't be null
         public BulletType bullet = Bullets.standardCopper;
+        //how much time it takes to shoot the bullet
         public float reloadTime = 1;
+        //time between the bullet first spawning and despawning that the spawner can't fire
         public float intervalIn = 0, intervalOut = 0;
-        //inaccuracy
+        //inaccuracy when shooting at the target
         public float inaccuracy = 0;
         //random spray that happens when theres no rotation value set
         public float idleInaccuracy = 360;
+        //effect played
+        public Effect shootEffect = Fx.none;
         //allows owner to aim for the bullet.
         public boolean manualAiming = true;
+        //allows bullet to aim. only comes after manualAiming is false or owner is dead
+        public boolean bulletTargeting = true;
+        //if no targets found, shoot anyways
+        public boolean shootWhenIdle = true;
+        //sound played upon bullet shoot
         public Sound shootSound = Sounds.none;
+        //mutlipliers for bullet lifetime and speed
         public float lifetimeMultiplier = 1, speedMultiplier = 1;
     }
 
@@ -86,6 +99,7 @@ public class BulletSpawnBulletType extends ConsBulletType{
                 ((float[]) b.data)[i] += Time.delta;
             }
             else {
+                boolean foundTarget = false;
                 rotation = b.rotation() + Mathf.random(spawner.idleInaccuracy);
                 if(spawner.manualAiming){
                     if(b.owner != null && (b.owner instanceof Unit || b.owner instanceof TurretBuild)){
@@ -98,19 +112,24 @@ public class BulletSpawnBulletType extends ConsBulletType{
                             rotation = b.angleTo(((TurretBuild) b.owner).targetPos);
                             if(spawner.inaccuracy != 0) rotation += Math.random() * spawner.inaccuracy;
                         }
+                        foundTarget = true;
                     }
                 }
-                else{
-                    Teamc targ = Units.closestEnemy(b.team, b.x, b.y, spawner.bullet.range(), u -> spawner.bullet.collidesGround && !u.isFlying() || spawner.bullet.collidesAir && u.isFlying());
+                else if(spawner.bulletTargeting){
+                    Teamc targ = Units.closestTarget(b.team, b.x, b.y, spawner.bullet.range(), u -> spawner.bullet.collidesGround && !u.isFlying() || spawner.bullet.collidesAir && u.isFlying());
                     if(targ instanceof Posc){
                         rotation = b.angleTo(targ);
-                        if(spawner.inaccuracy != 0) rotation += Math.random() * spawner.inaccuracy;
+                        if(spawner.idleInaccuracy != 0) rotation += Math.random() * spawner.inaccuracy;
+                        foundTarget = true;
                     }
                 }
-                spawner.bullet.create(b.owner, b.team, b.x, b.y, rotation + spawner.inaccuracy, spawner.speedMultiplier, spawner.lifetimeMultiplier);
-                if(spawner.shootSound != Sounds.none) spawner.shootSound.at(b.x, b.y);
-                ((float[]) b.data)[i] = 0;
-                b.fdata = rotation;
+                if(spawner.shootWhenIdle || foundTarget) {
+                    spawner.bullet.create(b.owner, b.team, b.x, b.y, rotation, spawner.speedMultiplier, spawner.lifetimeMultiplier);
+                    if (spawner.shootSound != Sounds.none) spawner.shootSound.at(b.x, b.y);
+                    spawner.shootEffect.at(b.x, b.y, rotation);
+                    ((float[]) b.data)[i] = 0;
+                    b.fdata = rotation;
+                }
             }
         }
     }

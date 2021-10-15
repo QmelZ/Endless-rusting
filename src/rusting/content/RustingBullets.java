@@ -31,7 +31,7 @@ public class RustingBullets implements ContentList{
     public static BulletType
         //basic bullets
         fossilShard, cloudyShard, saltyShard,
-        craeShard, raehShard, mhemShard, mhemaeShardling, fraeShard, paveShard, pavenShardling, darkShard, unhittableDarkShard,
+        craeShard, raehShard, mhemShard, mhemaeShard, mhemaeShardling, fraeShard, paveShard, pavenShardling, darkShard, unhittableDarkShard,
         horizonShard, stingrayShard, spawnerGlass, spawnerGlassFrag, spawnerBulat, spawnerBulatFrag,
         //artillery
         mhemQuadStorm, craeQuadStorm, lightfractureTitanim, lightfractureBulat,
@@ -49,8 +49,10 @@ public class RustingBullets implements ContentList{
         craeLightRoundaboutRight, craeLightRoundaboutLeft, saltyLightRoundaboutRight, saltyLightRoundaboutLeft, denseLightRoundaboutLeft, denseLightRoundaboutRight,
         //glaivs
         craeLightGlaive, craeLightGlaiveRight, craeLightGlaiveLeft, saltyLightGlaive,
-        //instant bullets
+        //instant bouncing bullets
         horizonInstalt, nummingInstalt, timelessInstalt, gunnersInstalt,
+        //laser bullets
+        celsiusLance, kelvinLance,
         //bullet spawning bullets
         nummingVortex, cloudyVortex, boltingVortex, flamstrikenVortex, gunnersVortex, guardianVortex,
         //flames
@@ -101,6 +103,8 @@ public class RustingBullets implements ContentList{
         };
 
         velbasedHoming = bullet -> {
+
+            if(!(bullet.owner instanceof Ranged)) return;
             Tmp.v1.set(bullet.x, bullet.y);
             //handle modded cases of bullet owners first
             if(bullet.owner instanceof Targeting){
@@ -115,7 +119,7 @@ public class RustingBullets implements ContentList{
             Tmp.v3.set(((Posc) bullet.owner()).x(), ((Posc) bullet.owner()).y());
             Tmp.v1.sub(Tmp.v3).clamp(0, ((Ranged) bullet.owner).range()).add(Tmp.v3);
             bullet.vel.add(Tmp.v2.trns(bullet.angleTo(Tmp.v1), bullet.type.homingPower * Time.delta)).clamp(0, bullet.type.speed);
-            if(bullet.dst(Tmp.v3.x, Tmp.v3.y) >= ((Ranged) bullet.owner).range() + bullet.type.speed + 3) bullet.time += bullet.lifetime/10 * Time.delta;
+            if(bullet.dst(Tmp.v3.x, Tmp.v3.y) >= ((Ranged) bullet.owner).range() + bullet.type.speed + 3) bullet.time += bullet.lifetime/100 * Time.delta;
 
             //essentualy goes to owner aim pos, without stopping homing
         };
@@ -156,7 +160,7 @@ public class RustingBullets implements ContentList{
         };
 
         //low speed to make targeting work
-        horizonInstalt = new InstantBounceBulletType(0.0001f, 22, "bullet"){{
+        horizonInstalt = new InstantBounceBulletType(0.001f, 12, "endless-rusting-blunt-bullet"){{
             width = 7;
             height = 8;
             lifetime = 54;
@@ -165,6 +169,8 @@ public class RustingBullets implements ContentList{
             shootEffect = Fx.shootSmall;
             hitEffect = Fx.hitFuse;
             bounceEffect = Fx.blockExplosionSmoke;
+            backColor = Pal.missileYellowBack;
+            frontColor = Pal.missileYellowBack.cpy().lerp(Pal.lightTrail, 0.25f);
             status = shieldShatter;
             statusDuration = 450;
             knockback = 0.1f;
@@ -173,7 +179,7 @@ public class RustingBullets implements ContentList{
             bounceCap = 3;
         }};
 
-        nummingInstalt = new InstantBounceBulletType(0.0001f,  7.5f, "bullet"){{
+        nummingInstalt = new InstantBounceBulletType(0.001f,  7.5f, "endless-rusting-blunt-bullet"){{
             width = 7;
             height = 8;
             lifetime = 54;
@@ -191,7 +197,7 @@ public class RustingBullets implements ContentList{
             bounceCap = 4;
         }};
 
-        timelessInstalt = new InstantBounceBulletType(0.0001f, 38, "bullet"){{
+        timelessInstalt = new InstantBounceBulletType(0.001f, 38, "endless-rusting-blunt-bullet"){{
             width = 7;
             height = 8;
             lifetime = 192;
@@ -208,7 +214,7 @@ public class RustingBullets implements ContentList{
             bounceCap = 2;
         }};
 
-        gunnersInstalt = new InstantBounceBulletType(0.0001f, 38, "bullet"){{
+        gunnersInstalt = new InstantBounceBulletType(0.001f, 38, "endless-rusting-blunt-bullet"){{
             width = 7;
             height = 8;
             lifetime = 192;
@@ -331,7 +337,7 @@ public class RustingBullets implements ContentList{
             bounceCap = 2;
         }};
 
-        mhemaeShardling = new BounceBulletType( 2.5f,  11, "bullet"){{
+        mhemaeShard = new BounceBulletType( 2.5f,  11, "bullet"){{
             consUpdate = velbasedHomingFlame;
             despawnEffect = Fx.fireSmoke;
             hitEffect = Fx.fire;
@@ -354,6 +360,31 @@ public class RustingBullets implements ContentList{
             weaveScale = 4;
             weaveMag = 3;
             knockback = 3;
+            drag = 0.0015f;
+        }};
+
+        mhemaeShardling = new BounceBulletType(2.5f, 3, "bullet"){{
+            consUpdate = bullet -> Fxr.burningFlame.at(bullet.x, bullet.y, bullet.rotation());
+            despawnEffect = Fx.fireSmoke;
+            hitEffect = Fx.fire;
+            bounceEffect = Fxr.shootMhemFlame;
+            incendAmount = 10;
+            status = StatusEffects.burning;
+            statusDuration = 3600;
+            maxRange = 156;
+            width = 6;
+            height = 8;
+            hitSize = 12;
+            lifetime = 55;
+            homingPower = 0.15f;
+            homingRange = 0;
+            homingDelay = 35;
+            hitEffect = Fx.hitFuse;
+            trailLength = 0;
+            bounciness = 0.85f;
+            weaveScale = 4;
+            weaveMag = 3;
+            knockback = 2;
             drag = 0.0015f;
         }};
 
@@ -619,7 +650,7 @@ public class RustingBullets implements ContentList{
             shootEffect = Fx.shootBig;
             trailEffect = Fx.artilleryTrail;
             trailChance = 0.15f;
-            fragBullet = nummingVortex;
+            fragBullet = mhemShard;
             fragBullets = 1;
 
             shrinkX = 0.15f;
@@ -1308,6 +1339,18 @@ public class RustingBullets implements ContentList{
             trailEffect = Fxr.salty;
             trailWidth = 4;
             trailLength = 7;
+        }};
+
+        celsiusLance = new LaserBulletType(45){{
+            colors = new Color[]{Color.sky, Palr.chillDecalDark, Palr.chillDecalLight, Color.white};
+            width = 9;
+            length = 125;
+        }};
+
+        kelvinLance = new LaserBulletType(15){{
+            colors = new Color[]{Palr.pulseLaser, Palr.chillDecalDark, Palr.chillDecalLight, Color.white};
+            width = 6;
+            length = 65;
         }};
 
         nummingVortex = new BulletSpawnBulletType(2f, 250, "none"){{

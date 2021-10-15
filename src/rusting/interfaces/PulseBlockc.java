@@ -34,6 +34,10 @@ public interface PulseBlockc{
         return true;
     }
 
+    default void addPulse(){
+        return;
+    }
+
     default void addPulse(float pulse){
         addPulse(pulse, null);
     }

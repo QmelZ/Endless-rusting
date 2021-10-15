@@ -21,9 +21,15 @@ public class ConsBulletType extends BasicBulletType {
     public boolean useRange = false;
     public float range = 0;
     public float trueSpeed = speed;
+    public boolean useTrueSpeed = true;
 
     public ConsBulletType(float speed, float damage, String sprite){
         super(speed, damage, sprite);
+    }
+
+    @Override
+    public void init() {
+        super.init();
     }
 
     @Override
@@ -56,7 +62,7 @@ public class ConsBulletType extends BasicBulletType {
         bullet.owner = owner;
         bullet.team = team;
         bullet.time = 0f;
-        bullet.vel.trns(angle, trueSpeed * velocityScl);
+        bullet.vel.trns(angle, (useTrueSpeed ? trueSpeed : speed) * velocityScl);
         if(backMove){
             bullet.set(x - bullet.vel.x * Time.delta, y - bullet.vel.y * Time.delta);
         }else{

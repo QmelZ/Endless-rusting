@@ -48,11 +48,11 @@ public class RustingTechTree implements ContentList {
             node(pulseResearchCenter, Seq.with(new SectorComplete(paileanCorridors)), () -> {
                 node(fraeResarchCenter, Seq.with(new Produce(RustingItems.melonaleum), new SectorComplete(pulsatingGroves)), () -> {
                     node(cameoCrystallisingBasin, () -> {
-                        node(cameoPaintMixer, Seq.with(new Produce(RustingLiquids.cameaint)), () -> {
+                        node(cameoPaintMixer, Seq.with(new Produce(RustingLiquids.cameaint), new SectorComplete(saltyShoals)), () -> {
                             nodeProduce(RustingLiquids.cameaint, () -> {
 
                             });
-                            node(camaintAmalgamator, Seq.with(new SectorComplete(saltyShoals)), () -> {
+                            node(camaintAmalgamator, Seq.with(new SectorComplete(overgrownMines)), () -> {
 
                             });
                         });

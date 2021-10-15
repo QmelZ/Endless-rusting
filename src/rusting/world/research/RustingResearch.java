@@ -51,7 +51,6 @@ public class RustingResearch {
         Vars.content.each(b -> {
             if(b instanceof ResearchableObject) {
                 object = (ResearchableObject) b;
-                Log.info(object.getResearchModule().item);
             }
         });
         mapSetup = true;
@@ -104,7 +103,6 @@ public class RustingResearch {
 
     public void saveGameResearch(){
         tmpMap = ObjectMap.of();
-        Log.info("made new map");
         researchMap.each((researchType, researchModules) -> {
             researchModules.each(m -> {
                 m.teamMap.each((team, teamResearchModule) -> {
@@ -113,16 +111,10 @@ public class RustingResearch {
                 });
             });
         });
-        Log.info("done forming map");
-        Log.info(tmpMap);
-        Log.info(JsonIO.json.toJson(tmpMap));
         Vars.state.rules.tags.put("tags.er.researchedBlocks", JsonIO.json.toJson(tmpMap));
-        Log.info("goodbye...");
     };
 
     public void setupGameResearch(){
-
-        Log.info("hello!");
 
         //clean out map's team modules, ignore the ResearchType
         researchMap.each((researchType, researchModules) -> {
@@ -144,7 +136,6 @@ public class RustingResearch {
                 tmpMap.put(Integer.valueOf((String) teamid), (Seq<Integer>) seq);
             });
             if(returnBool == false) return;
-            Log.info(tmpMap);
             tmpMap.each((teamid, moduleids) -> {
                 moduleids.each(i -> {
                     getByid(i).teamMap.put(Team.get(teamid), new TeamResearchModule(){{

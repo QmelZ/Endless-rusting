@@ -84,7 +84,7 @@ public class RustingBlocks implements ContentList{
         //volen, drier variants of normal stone, could be used for warmer looking maps. Not resprited stone floors, I promise
         volenStolnene, volenWallen,
         //ore blocks
-        melonaleum, taconite,
+        melonaleum, taconite, cameoShardling,
         //crafting
         bulasteltForgery, desalinationMixer, cameoCrystallisingBasin, cameoPaintMixer, camaintAmalgamator, cameoHarvestingBasin,
         //defense
@@ -128,6 +128,8 @@ public class RustingBlocks implements ContentList{
         pulseFactory, enlightenmentReconstructor, ascendanceReconstructor, pulseDistributor,
         //controll
         pulseDirectionalController, pulseContactSender,
+        //sandbox
+        pulseSource, pulseVoid,
         //frae
         fraeResarchCenter,
         //healer turrets
@@ -439,6 +441,7 @@ public class RustingBlocks implements ContentList{
         }};
 
         moistenLushen = new Floor("moisten-lushen"){{
+            variants = 4;
             attributes.set(Attribute.water, 0.35f);
             wall = moistenVinen;
         }};
@@ -501,6 +504,12 @@ public class RustingBlocks implements ContentList{
 
         taconite = new FixedOreBlock("taconite"){{
             itemDrop = RustingItems.taconite;
+            overrideMapColor = itemDrop.color;
+            variants = 1;
+        }};
+
+        cameoShardling = new FixedOreBlock("cameo-shardling"){{
+            itemDrop = RustingItems.cameoShardling;
             overrideMapColor = itemDrop.color;
             variants = 1;
         }};
@@ -1085,7 +1094,7 @@ public class RustingBlocks implements ContentList{
         enlightenmentReconstructor = new PulseReconstructor("enlightenment-reconstructor") {{
             requirements(Category.units, with(Items.copper, 135, Items.lead, 85, Items.silicon, 45, Items.titanium, 35));
             centerResearchRequirements(with(Items.copper, 450,  Items.lead, 375, Items.silicon, 145, Items.titanium, 135, Items.pyratite, 75, RustingItems.melonaleum, 45));
-            consumes.items(ItemStack.with(Items.silicon, 35, Items.titanium, 15, RustingItems.melonaleum, 10));
+            consumes.items(ItemStack.with(Items.silicon, 35, Items.titanium, 25, RustingItems.melonaleum, 25));
             customConsumes.pulse = 25f;
             powerLoss = 0.00155f;
             minRequiredPulsePercent = 0.65f;
@@ -1103,7 +1112,7 @@ public class RustingBlocks implements ContentList{
         ascendanceReconstructor = new PulseReconstructor("ascendance-reconstructor") {{
             requirements(Category.units, with(Items.lead, 465, Items.metaglass, 245, Items.pyratite, 85, Items.titanium, 85));
             centerResearchRequirements(with(Items.lead, 1255, Items.silicon, 455, Items.titanium, 235, Items.pyratite, 145, RustingItems.melonaleum, 125));
-            consumes.items(ItemStack.with(Items.silicon, 65, Items.titanium, 25, Items.pyratite, 5, RustingItems.melonaleum, 15));
+            consumes.items(ItemStack.with(Items.silicon, 145, Items.titanium, 55, RustingItems.melonaleum, 55, RustingItems.bulastelt, 85));
             customConsumes.pulse = 65f;
             powerLoss = 0.00155f;
             minRequiredPulsePercent = 0.55f;
@@ -1118,6 +1127,8 @@ public class RustingBlocks implements ContentList{
             constructTime = 720;
         }};
 
+
+
         //region logic
 
         pulseDirectionalController = new PulseController("pulse-controller"){{
@@ -1128,6 +1139,11 @@ public class RustingBlocks implements ContentList{
         pulseContactSender = new PulseContactSender("pulse-sender"){{
             requirements(Category.effect, with(Items.lead, 465, Items.metaglass, 245, Items.pyratite, 85, Items.titanium, 85));
 
+        }};
+
+        pulseSource = new PulseSource("pulse-source"){{
+            category = Category.power;
+            buildVisibility = BuildVisibility.sandboxOnly;
         }};
 
         //endregion pulse
@@ -1223,7 +1239,7 @@ public class RustingBlocks implements ContentList{
             spread = 5;
             range = 215;
             shootLength = 5;
-            shootType = RustingBullets.mhemaeShardling;
+            shootType = RustingBullets.mhemaeShard;
         }};
 
         photosphere = new DirectAimPowerTurret("photosphere"){{
@@ -1690,7 +1706,7 @@ public class RustingBlocks implements ContentList{
             plans = Seq.with(
                 new UnitPlan(RustingUnits.marrow, 2345, with(Items.silicon, 35, Items.copper, 15, RustingItems.taconite, 25)),
                 new UnitPlan(RustingUnits.stingray, 60, with()),
-                    new UnitPlan(RustingUnits.trumpedoot, 60, with())
+                    new UnitPlan(RustingUnits.kelvin, 60, with())
             );
             size = 3;
             consumes.power(0.85f);
