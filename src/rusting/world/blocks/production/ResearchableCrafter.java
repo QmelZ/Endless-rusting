@@ -33,7 +33,7 @@ public class ResearchableCrafter extends GenericCrafter implements ResearchableO
 
     //use for ui
     @Override
-    public String lcoalizedName() {
+    public String localizedName() {
         return localizedName;
     }
 

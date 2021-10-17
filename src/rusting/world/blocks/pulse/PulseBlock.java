@@ -139,7 +139,7 @@ public class PulseBlock extends Block implements ResearchableBlock {
 
     //used for ui
     @Override
-    public String lcoalizedName() {
+    public String localizedName() {
         return localizedName;
     }
 

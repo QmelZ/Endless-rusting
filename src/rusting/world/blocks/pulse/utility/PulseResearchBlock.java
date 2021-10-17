@@ -3,6 +3,7 @@ package rusting.world.blocks.pulse.utility;
 import arc.Core;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
@@ -34,6 +35,10 @@ public class PulseResearchBlock extends PulseBlock implements ResearchCenter{
         destructible = false;
 
         config(String.class, (PulseResearchBuild entity, String key) -> {
+            Log.info(key);
+            Log.info(entity.team);
+            Log.info(Vars.content.blocks().find(b -> b.name == key));
+            Core.app.setClipboardText(key);
             Varsr.research.unlock(entity.team, (ResearchableObject) Vars.content.blocks().find(b -> b.name == key));
         });
 

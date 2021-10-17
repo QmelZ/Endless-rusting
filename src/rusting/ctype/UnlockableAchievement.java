@@ -10,7 +10,7 @@ public class UnlockableAchievement extends UnlockableERContent{
     public static Seq<UnlockableAchievement> achievements = Seq.with();
 
     public Class triggerClass = Trigger.update.getClass();
-    //note: remove from Events.on when done to avoid unescape lag, if possible put on separate thread
+    //note: remove from Events.on when done to avoid unescecary lag, if possible put on separate thread
     public Cons runUnlock = (o) -> {
 
     };

@@ -72,7 +72,7 @@ public class ResearchDialog extends CustomBaseDialog{
 
                 if(researchable.contains(m.item)) return;
 
-                Seq<ResearchType> containing = Seq.with(m.item.researchTypes().toArray());
+                Seq<ResearchType> containing = m.item.researchTypes().copy();
 
                 researchTypes.each(t -> {
                     if(containing.contains(t)) containing.remove(t);
@@ -147,7 +147,7 @@ public class ResearchDialog extends CustomBaseDialog{
 
         researchable.each(r -> {
 
-            if(r.hidden() || (search != null && search.getText().length() > 0 && !r.lcoalizedName().toLowerCase().contains(search.getText().toLowerCase()))) return;
+            if(r.hidden() || (search != null && search.getText().length() > 0 && !r.localizedName().toLowerCase().contains(search.getText().toLowerCase()))) return;
 
             if(!categorized.containsKey(r.categoryName())) categorized.put(r.categoryName(), Seq.with());
             categorized.get(r.categoryName()).add(r);
@@ -179,7 +179,7 @@ public class ResearchDialog extends CustomBaseDialog{
                     image.addListener(listener);
 
                     image.addListener(new Tooltip(tip -> {
-                        tip.background(Texr.button).add((type.researched(Vars.player.team()) ? "The " : "(Locked)\nThe ") + type.lcoalizedName());
+                        tip.background(Texr.button).add((type.researched(Vars.player.team()) ? "The " : "(Locked)\nThe ") + type.localizedName());
                         tip.row();
                     }));
 

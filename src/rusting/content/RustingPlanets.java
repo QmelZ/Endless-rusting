@@ -41,9 +41,8 @@ public class RustingPlanets implements ContentList {
             Threads.throwAppException(e);
         }
 
-        Field meshLoaderField = null;
         try {
-            meshLoaderField = classDefinition.getDeclaredField("meshLoader");
+            Field meshLoaderField = classDefinition.getDeclaredField("meshLoader");
             meshLoaderField.setAccessible(true);
             meshLoaderField.set(returnPlanet, meshLoader);
         } catch (NoSuchFieldException | IllegalAccessException e) {

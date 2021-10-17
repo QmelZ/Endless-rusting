@@ -21,7 +21,7 @@ public interface ResearchableObject {
         return "defaukt";
     }
 
-    default String lcoalizedName(){
+    default String localizedName(){
         return "defaukt nam";
     }
 
