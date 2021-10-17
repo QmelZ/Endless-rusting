@@ -35,6 +35,7 @@ public class ResearchDialog extends CustomBaseDialog{
     private TextField search;
     private Table all = new Table();
     private Table information = new Table();
+    public Table informationButtons = new Table();
 
     public Seq<ResearchType> researchTypes = Seq.with();
     public ObjectMap<String, Seq<ResearchableObject>> categorized = ObjectMap.of();
@@ -126,17 +127,24 @@ public class ResearchDialog extends CustomBaseDialog{
 
         }).size(size).left().top().padTop(35).padLeft(15);
 
-        //contains all the extra information for the block/unlocking it
-        cont.table(Texr.button, rightPane -> {
+        cont.table(rightPaneHolder -> {
+            //contains all the extra information for the block/unlocking it
+            cont.table(Texr.button, rightPane -> {
 
-            if(selected == null){
-                rightPane.add(information);
-            }
-            else{
-                rightPane.pane(information).padTop(35).growX().fillX();
-            }
+                if(selected == null){
+                    rightPane.add(information);
+                }
+                else{
+                    rightPane.pane(information).padTop(35).growX().fillX();
+                }
 
-            rebuildInformation();
+                rebuildInformation();
+
+            });
+
+            rightPaneHolder.row();
+
+            rightPaneHolder.pane(informationButtons).growX();
 
         }).width(1500 - size - 350).height(size).right().top().padTop(35).padRight(45).padLeft(350);
     }
@@ -208,6 +216,17 @@ public class ResearchDialog extends CustomBaseDialog{
 
         information.clear();
 
+        informationButtons.clear();
+
+        //setup buttons
+        informationButtons.background(Texr.button);
+
+        //show information
+        informationButtons.button(Tex.infoBanner, () -> {
+            if(!selected.researched(player.team())) return;
+            information.clear();
+        }).size(64);
+
         if(selected == null) {
             information.add("[grey]<select something for more information :D>");
             return;
@@ -265,7 +284,6 @@ public class ResearchDialog extends CustomBaseDialog{
                 table.row();
                 table.add(itemsCost);
             });
-
         }
     }
 }

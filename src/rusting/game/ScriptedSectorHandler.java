@@ -5,7 +5,6 @@ import arc.Events;
 import arc.assets.Loadable;
 import arc.struct.Seq;
 import mindustry.Vars;
-import mindustry.core.GameState.State;
 import mindustry.game.EventType;
 import mindustry.io.JsonIO;
 import rusting.Varsr;
@@ -29,6 +28,7 @@ public class ScriptedSectorHandler implements Loadable {
     }
 
     protected void registerEvents(){
+        /*
         Events.on(EventType.StateChangeEvent.class, e -> {
             if(Vars.state.isEditor()){
                 if(e.from == State.menu && e.to == State.playing){
@@ -37,6 +37,8 @@ public class ScriptedSectorHandler implements Loadable {
                 else end();
             }
         });
+
+         */
     }
 
     public void begin(){

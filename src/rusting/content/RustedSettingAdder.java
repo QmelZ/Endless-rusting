@@ -19,6 +19,7 @@ public class RustedSettingAdder {
     }
 
     public void init(){
+        /*
         boolean tmp = Core.settings.getBool("uiscalechanged", false);
         Core.settings.put("uiscalechanged", false);
 
@@ -47,6 +48,7 @@ public class RustedSettingAdder {
         };
 
         Events.on(Trigger.update.getClass(), dialogShow);
+
         */
     }
 
