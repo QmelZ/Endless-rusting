@@ -13,6 +13,8 @@ import mindustry.gen.*;
 import mindustry.type.Item;
 import mindustry.world.Tile;
 import mindustry.world.meta.BlockFlag;
+import rusting.Varsr;
+import rusting.content.RustingAISwitches;
 import rusting.entities.units.CraeUnitType;
 import rusting.interfaces.PulseBlockc;
 
@@ -20,6 +22,11 @@ import static mindustry.Vars.indexer;
 import static mindustry.Vars.state;
 
 public class MultiSupportAI extends FlyingAI {
+
+    @Override
+    protected void init() {
+        super.init();
+    }
 
     protected Interval mineTimer = new Interval(4);
     protected Interval statTimer = new Interval(25);
@@ -61,115 +68,186 @@ public class MultiSupportAI extends FlyingAI {
 
     @Override
     public void updateMovement(){
-
-        boolean continueFunction = false;
+        boolean attack = Varsr.switches.getSwitchHolder(unit.type, unit.team, RustingAISwitches.attackSwitch).isOn;
+        boolean mine = Varsr.switches.getSwitchHolder(unit.type, unit.team, RustingAISwitches.mineSwitch).isOn;
+        boolean healUnit = Varsr.switches.getSwitchHolder(unit.type, unit.team, RustingAISwitches.healUnitSwitch).isOn;
+        boolean healBlock = Varsr.switches.getSwitchHolder(unit.type, unit.team, RustingAISwitches.healBlockSwitch).isOn;
+        boolean heal = healUnit && healBlock;
         Building core = state.teams.closestCore(unit.x, unit.y, unit.team);
+
+        boolean continueFunction = true;
+        boolean move = true;
+
+        if(!mine) unit.mineTile = null;
+
         Building repairPoint = (Building) targetFlag(unit.x, unit.y, BlockFlag.repair, false);
         if((unit.healthf() < 0.45f && target != null || unit.healthf() < 0.75) && (repairPoint != null || core != null)){
             Building targetBuilding = repairPoint != null ? repairPoint : core;
             if(unit.within(targetBuilding, unit.healthf() * 10 * 7)) continueFunction = true;
             else{
                 moveTo(targetBuilding, unit.healthf() * 10 * 7, 25f);
+                move = false;
                 unit.lookAt(targetBuilding);
             }
         }
-        else if(invalid(target) && command() != UnitCommand.idle){
-            Unit targetAlly = Units.closest(unit.team, unit.x, unit.y, unit.type.range * 4, u -> u.damaged() && u != this.unit);
+
+        if(continueFunction && invalid(target) && command() != UnitCommand.idle && (healUnit || healBlock)){
             boolean foundAlly = false;
-            float findRange = minRepairRange;
-            if(targetAlly != null){
-                movePos.set(targetAlly.x, targetAlly.y);
-                findRange += targetAlly.hitSize/2 * 1.1f;
-                foundAlly = true;
+            blockAlly = null;
+            unitAlly = null;
+            float findRange = unit.type.range;
+
+            if(healUnit){
+                Unit targetAlly = Units.closest(unit.team, unit.x, unit.y, unit.type.range * 4, u -> u.damaged() && u != this.unit);
+                if(targetAlly != null){
+                    movePos.set(targetAlly.x, targetAlly.y);
+                    findRange += targetAlly.hitSize/2 * 1.1f;
+                    foundAlly = true;
+                }
+                else if(!healBlock) continueFunction = true;
             }
-            else{
-                final Building[] targetBuildingAlly = {null};
-                indexer.eachBlock(unit, unit.type.range * 2,
+            if(foundAlly == false){
+                if(target instanceof Building && ((Building) target).team == unit.team) blockAlly = (Building) target;
+                else indexer.eachBlock(unit, unit.type.range * 2,
                     other ->
                         other.damaged() ||
                         canGenPulse && other instanceof PulseBlockc && ((PulseBlockc) other).canRecievePulse(pulseAmount),
                     other -> {
-                        if(targetBuildingAlly[0] == null) targetBuildingAlly[0] = other;
+                        if(blockAlly == null) blockAlly = other;
                     }
                 );
-                if(targetBuildingAlly[0] != null) {
-                    movePos.set(targetBuildingAlly[0].x, targetBuildingAlly[0].y);
-                    findRange += targetBuildingAlly[0].block.size * 4;
+                if(blockAlly != null) {
+                    movePos.set(blockAlly.x, blockAlly.y);
+                    findRange += blockAlly.block.size * 4;
                     foundAlly = true;
                 }
             }
-            if(!foundAlly || Mathf.dst(unit.x, unit.y, movePos.x, movePos.y) <= findRange) continueFunction = true;
+
+            if(!foundAlly || Mathf.dst(unit.x, unit.y, movePos.x, movePos.y) <= minRepairRange) {
+                continueFunction = true;
+            }
             else{
-                moveTo(movePos, findRange, 5f);
+                moveTo(movePos, minRepairRange, 5f);
                 unit.lookAt(movePos);
+                continueFunction = false;
             }
         }
         else continueFunction = true;
 
-        if(continueFunction){
-            if(unit.canMine() && core != null && command() != UnitCommand.attack || invalid(target) || !unit.hasWeapons() || unit.disarmed()){
+        //if you can attack, then face the target and/or travel to it
+        if(unit.hasWeapons() && attack && continueFunction) {
+            //if not mining unit, act like a normal attack unit with enhanced ai
+            if (!mine && invalid(target) && move) {
 
-                if (unit.mineTile != null && !unit.mineTile.within(unit, Vars.miningRange)) {
-                    unit.mineTile(null);
+                //move to enemy spawn, but because this ai is often used on support units, stay further away
+                if(command() == UnitCommand.attack && state.rules.waves && unit.team == state.rules.defaultTeam){
+
+                    //go towards the enemy spawn
+                    moveTo(getClosestSpawner(), state.rules.dropZoneRadius + 150f);
+                    //no further actions required
+                    return;
                 }
 
-                if (mining) {
-                    if (mineTimer.get(timerTarget2, 60 * 4) || targetItem == null) {
-                        if(core != null) targetItem = unit.team.data().mineItems.min(i -> indexer.hasOre(i) && unit.canMine(i), i -> core.items.get(i));
-                    }
-
-                    //core full of the target item, do nothing
-                    if (targetItem != null && core != null && core.acceptStack(targetItem, 1, unit) == 0) {
-                        unit.clearItem();
-                        unit.mineTile(null);
+                //check if you can move to closest command center
+                else {
+                    Teamc build = targetFlag(unit.x, unit.y, BlockFlag.rally, false);
+                    if (command() == UnitCommand.rally && build != null && !unit.within(build, 90)) {
+                        moveTo(build, 60f);
+                        //no further actions required
                         return;
                     }
-
-                    //if inventory is full, drop it off.
-                    if (unit.stack.amount >= unit.type.itemCapacity || (targetItem != null && !unit.acceptsItem(targetItem))) {
-                        mining = false;
-                    } else {
-                        if (mineTimer.get(timerTarget, 60) && targetItem != null) {
-                            ore = indexer.findClosestOre(unit, targetItem);
-                        }
-
-                        if (ore != null) {
-                            moveTo(ore, Math.min(unit.range(), Vars.miningRange / 2f), 20f);
-
-                            if (unit.within(ore, Vars.miningRange)) {
-                                unit.mineTile = ore;
-                            }
-
-                            if (ore.block() != Blocks.air) {
-                                mining = false;
-                            }
-                        }
-                    }
-                } else {
-                    unit.mineTile = null;
-
-                    if (unit.stack.amount == 0) {
-                        mining = true;
-                        return;
-                    }
-
-                    if (unit.within(core, Math.min(unit.type.range, Vars.mineTransferRange))) {
-                        if (core != null && core.acceptStack(unit.stack.item, unit.stack.amount, unit) > 0) {
-                            Call.transferItemTo(unit, unit.stack.item, unit.stack.amount, unit.x, unit.y, core);
-                        }
-
-                        unit.clearItem();
-                        mining = true;
-                    }
-
-                    circle(core, Vars.mineTransferRange / 1.8f);
                 }
             }
-            else if(unit.hasWeapons() && !invalid(target)){
-                moveTo(target, Math.max(unit.type.range/(1 + 1 * unit.healthf()), unit.hitSize/2), 20f);
+            else if(!invalid(target)){
+                //stop mining to allow for attacking with non rotating weapons
+                unit.mineTile = null;
+
+                //if the unit is fleeing to a repair point then let it stay in range
+                if (move) moveTo(target, Math.max(unit.type.range / (1 + 1 * unit.healthf()), unit.hitSize / 2), 20f);
                 unit.lookAt(target);
+
+                //no further actions required
+                return;
             }
         }
+
+        if(continueFunction && mine) {
+            continueFunction = moveAndMine();
+        }
+    }
+
+    //mine blocks, return true if unit has done nothing
+    public boolean moveAndMine(){
+        boolean attack = Varsr.switches.getSwitchHolder(unit.type, unit.team, RustingAISwitches.attackSwitch).isOn;
+        Building core = state.teams.closestCore(unit.x, unit.y, unit.team);
+        boolean returnBool = false;
+
+        if(!unit.canMine() || core == null || !invalid(target) && attack || (!unit.hasWeapons() || unit.disarmed())) {
+            unit.mineTile(null);
+            return true;
+        }
+
+        if (unit.mineTile != null && !unit.mineTile.within(unit, Vars.miningRange)) {
+            unit.mineTile(null);
+        }
+
+        if (mining) {
+            if (mineTimer.get(timerTarget2, 60 * 4) || targetItem == null) {
+                if(core != null) targetItem = unit.team.data().mineItems.min(i -> indexer.hasOre(i) && unit.canMine(i), i -> core.items.get(i));
+            }
+
+            //core full of the target item, do nothing
+            if (targetItem != null && core != null && core.acceptStack(targetItem, 1, unit) == 0) {
+                unit.clearItem();
+                unit.mineTile(null);
+                returnBool = true;
+            }
+
+            //if inventory is full, drop it off.
+            if (unit.stack.amount >= unit.type.itemCapacity || (targetItem != null && !unit.acceptsItem(targetItem))) {
+                mining = false;
+            } else {
+                if (mineTimer.get(timerTarget, 60) && targetItem != null) {
+                    ore = indexer.findClosestOre(unit, targetItem);
+                }
+
+                if (ore != null) {
+                    moveTo(ore, Math.min(unit.range(), Vars.miningRange / 2f), 20f);
+
+                    if (unit.within(ore, Vars.miningRange)) {
+                        unit.mineTile = ore;
+                    }
+
+                    if (ore.block() != Blocks.air) {
+                        mining = false;
+                    }
+                }
+            }
+        } else {
+            unit.mineTile = null;
+
+            if (unit.stack.amount == 0) {
+                mining = true;
+                returnBool = false;
+            }
+
+            if (unit.within(core, Math.min(unit.type.range, Vars.mineTransferRange))) {
+                if (core != null && core.acceptStack(unit.stack.item, unit.stack.amount, unit) > 0) {
+                    Call.transferItemTo(unit, unit.stack.item, unit.stack.amount, unit.x, unit.y, core);
+                }
+
+                unit.clearItem();
+                mining = true;
+            }
+
+            circle(core, Vars.mineTransferRange / 1.8f);
+        }
+
+        return returnBool;
+    }
+
+    public boolean moveAndHeal(boolean healBuildings, boolean healUnits, boolean mining, boolean attacking){
+        return false;
     }
 
     @Override
@@ -178,6 +256,15 @@ public class MultiSupportAI extends FlyingAI {
     }
 
     public Teamc findTarget(float x, float y, float range, boolean air, boolean ground) {
+        boolean attack = Varsr.switches.getSwitchHolder(unit.type, unit.team, RustingAISwitches.attackSwitch).isOn;
+        boolean mine = Varsr.switches.getSwitchHolder(unit.type, unit.team, RustingAISwitches.mineSwitch).isOn;
+        boolean healUnit = Varsr.switches.getSwitchHolder(unit.type, unit.team, RustingAISwitches.healUnitSwitch).isOn;
+        boolean healBlock = Varsr.switches.getSwitchHolder(unit.type, unit.team, RustingAISwitches.healBlockSwitch).isOn;
+
+        if(!attack && !mine && healBlock){
+            return Units.findDamagedTile(unit.team, unit.x, unit.y);
+        }
+
         Teamc t = null;
         Teamc targ1 = null;
         Unit[] closestAllly = {null};
@@ -207,10 +294,10 @@ public class MultiSupportAI extends FlyingAI {
                 }
             }
         }
-        else if(indexer.findTile(unit.team, x, y, unit.type.range, b -> b.damaged()) != null){
+        else if(healBlock && indexer.findTile(unit.team, x, y, unit.type.range, b -> b.damaged()) != null){
             return indexer.findTile(unit.team, x, y, unit.type.range, b -> b.damaged());
         }
-        else if(unit.team == state.rules.waveTeam && this.targetFlag(x, y, BlockFlag.core, false) == null){
+        else if(this.targetFlag(x, y, BlockFlag.core, false) == null){
             Teamc result = null;
             if(ground) result = targetFlag(x, y, BlockFlag.generator, true);
             if(result != null) return result;
@@ -223,23 +310,9 @@ public class MultiSupportAI extends FlyingAI {
 
     @Override
     protected void updateTargeting(){
-        //unescecary
-        //if(canTargetAllies && !(blockAlly != null && blockAlly.within(unit, unit.range()))) blockAlly = Vars.indexer.findTile(unit.team, unit.x, unit.y, unit.range(), l -> l.damaged());
-        //if(canHealAllies && !(unitAlly != null && unitAlly.within(unit, unit.range()) || blockAlly == null)) blockAlly = Units.findDamagedTile(unit.team, unit.x, unit.y);
         if(unit.hasWeapons()){
             if(retarget()) target = findTarget(unit.x, unit.y, unit.range(), unit.type.targetGround, unit.type.targetAir);
             updateWeapons();
         }
     }
-
-    /*
-    @Override
-    protected void updateWeapons(){
-        if(targets.length != unit.mounts.length) targets = new Teamc[unit.mounts.length];
-
-        for(int i = 0; i < targets.length; i++) {
-
-        }
-    }
-    */
 }

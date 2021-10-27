@@ -5,7 +5,7 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.ConstructBlock.ConstructBuild;
 
 public class DamagingFloor extends UpdateFloor {
-    public float damage = 0.35f;
+    public float damage = 0.035f;
 
     private static float lastFloorDamage = 0;
 

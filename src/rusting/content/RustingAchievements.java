@@ -11,7 +11,6 @@ import rusting.ctype.UnlockableAchievement;
 import rusting.game.RustingEvents.AchievementUnlockEvent;
 
 import static mindustry.Vars.state;
-import static rusting.EndlessRusting.modname;
 
 public class RustingAchievements implements ContentList {
 
@@ -23,11 +22,11 @@ public class RustingAchievements implements ContentList {
 
     @Override
     public void load() {
-        shardlingSteps = new SectorBasedAchievement( modname + "-shardling-steps", 36, RustingPlanets.err) {{
+        shardlingSteps = new SectorBasedAchievement( "shardling-steps", 36, RustingPlanets.err) {{
 
         }};
 
-        theBoatmansCursedBoatman = new UnlockableAchievement(modname + "-the-boatmans-cursed-boatman") {{
+        theBoatmansCursedBoatman = new UnlockableAchievement("the-boatmans-cursed-boatman") {{
 
             runUnlock = (object) -> {
                 if((Vars.state.isCampaign() && state.rules.sector.id == 268) &&
@@ -44,23 +43,23 @@ public class RustingAchievements implements ContentList {
             };
         }};
 
-        powerfulLight = new UnlockableAchievement(modname + "-powerful-light"){{
+        powerfulLight = new UnlockableAchievement("powerful-light"){{
 
         }};
 
-        pulseTeleporterConstructed = new UnlockableAchievement(modname + "-pulse-teleporter-constructed") {{
+        pulseTeleporterConstructed = new UnlockableAchievement("pulse-teleporter-constructed") {{
 
         }};
 
-        planet1Clear = new UnlockableAchievement(modname + "-planet-1-clear") {{
+        planet1Clear = new UnlockableAchievement("planet-1-clear") {{
 
         }};
 
-        youMonster = new UnlockableAchievement(modname + "-you-monster"){{
+        youMonster = new UnlockableAchievement("you-monster"){{
 
         }};
 
-        GTFO = new UnlockableAchievement(modname + "-GTFO"){{
+        GTFO = new UnlockableAchievement("GTFO"){{
             triggerClass = EventType.WorldLoadEvent.class;
             runUnlock = e -> {
                 if(Varsr.debug) {

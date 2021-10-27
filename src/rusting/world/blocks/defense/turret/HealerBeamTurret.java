@@ -5,6 +5,7 @@ import arc.graphics.g2d.*;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
+import arc.struct.Seq;
 import arc.util.Time;
 import mindustry.Vars;
 import mindustry.content.Fx;
@@ -207,8 +208,10 @@ public class HealerBeamTurret extends PowerTurret {
 
         @Override
         protected void findTarget() {
-            Building tempTarget = Vars.indexer.findTile(team, x, y, range, Building::damaged, true);
-            if(tempTarget != null) target = tempTarget;
+            Seq<Building> buildings = Seq.with();
+            Vars.indexer.eachBlock(team, x, y, range, Building::damaged, build -> buildings.add(build));
+            if(buildings.size == 0) return;
+            target = buildings.sort(Building::healthf).get(0);
         }
 
         @Override

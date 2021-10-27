@@ -33,7 +33,7 @@ public class UnlockDialog extends CustomBaseDialog {
 
         clear();
         addCloseButton();
-        Tile tile = Varsr.research.getCenter(((ResearchableObject) content).researchTypes()).tile;
+        Tile tile = Varsr.research.getCenter(((ResearchableObject) content).researchTypes(), player.team()).tile;
 
         cont.margin(30);
         unlockIcon.set(content.icon(Cicon.tiny));

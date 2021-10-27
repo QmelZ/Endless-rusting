@@ -10,8 +10,7 @@ import arc.math.geom.Vec2;
 import arc.struct.ObjectIntMap;
 import arc.struct.ObjectMap.Entry;
 import arc.struct.Seq;
-import arc.util.Time;
-import arc.util.Tmp;
+import arc.util.*;
 import mindustry.ai.types.*;
 import mindustry.content.*;
 import mindustry.core.Version;
@@ -26,6 +25,7 @@ import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.world.blocks.defense.turrets.Turret.TurretBuild;
 import rusting.EndlessRusting;
+import rusting.Varsr;
 import rusting.ai.types.BossStingrayAI;
 import rusting.ai.types.MultiSupportAI;
 import rusting.entities.abilities.*;
@@ -34,6 +34,7 @@ import rusting.entities.units.*;
 import rusting.interfaces.Targeting;
 
 import static arc.graphics.g2d.Draw.color;
+import static rusting.content.RustingAISwitches.*;
 
 public class RustingUnits implements ContentList{
     //Steal from BetaMindy
@@ -245,6 +246,11 @@ public class RustingUnits implements ContentList{
                 new RegenerationAbility(3.5f/60)
             );
         }};
+
+        //make sure ai works, it uses these switches which are toggleable ingame
+        Varsr.switches.putSwitches(Seq.with(attackSwitch, mineSwitch, healUnitSwitch, healBlockSwitch), duono);
+        Varsr.switches.putSwitches(Seq.with(attackSwitch, mineSwitch, healUnitSwitch, healBlockSwitch), duoly);
+        Varsr.switches.putSwitches(Seq.with(attackSwitch, mineSwitch, healUnitSwitch, healBlockSwitch), duanga);
 
 
         EntityMapping.nameMap.put("fahrenheit", BaseUnit::new);

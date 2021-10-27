@@ -231,7 +231,7 @@ public class RustingStatusEffects implements ContentList {
             });
 
             updateCons = (unit, time) -> {
-                if(unit.shield() > 0) unit.damage(Mathf.clamp(unit.shield(), unit.shield(), 25/60) * Time.delta);
+                if(unit.shield() > 0) unit.damage(Mathf.clamp(unit.shield(), unit.shield(), 125/60) * Time.delta);
             };
         }};
 

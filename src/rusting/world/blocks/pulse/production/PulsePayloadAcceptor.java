@@ -36,7 +36,7 @@ public class PulsePayloadAcceptor extends PulseBlock {
         super.load();
         topRegion = Core.atlas.find(this.name + "-top", "factory-top-" + size);
         outRegion = Core.atlas.find(this.name + "-outRegion", "factory-out-" + size);
-        inRegion = Core.atlas.find(this.name + "-outRegion", "factory-in-" + size);
+        inRegion = Core.atlas.find(this.name + "-inRegion", "factory-in-" + size);
     }
 
     public static boolean blends(Building build, int direction){

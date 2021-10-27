@@ -125,7 +125,7 @@ public class RustingBlocks implements ContentList{
         //landmines
         pulseLandmine,
         //units
-        pulseFactory, enlightenmentReconstructor, ascendanceReconstructor, pulseDistributor,
+        pulseCommandCenter, pulseFactory, enlightenmentReconstructor, ascendanceReconstructor, pulseDistributor,
         //controll
         pulseDirectionalController, pulseContactSender,
         //sandbox
@@ -201,7 +201,7 @@ public class RustingBlocks implements ContentList{
             isLiquid = true;
             cacheLayer = CacheLayer.water;
             albedo = 0.65f;
-            damage = 0.55f;
+            damage = 0.055f;
         }};
 
         impurenBurneLiquaeDeep = new DamagingFloor("impuren-burnen-liquae-deep"){{
@@ -214,7 +214,7 @@ public class RustingBlocks implements ContentList{
             drownTime = 350;
             cacheLayer = CacheLayer.water;
             albedo = 0.65f;
-            damage = 0.75f;
+            damage = 0.075f;
         }};
 
         classemLiquae = new Floor("classem-liquae"){{
@@ -381,6 +381,7 @@ public class RustingBlocks implements ContentList{
         salineStolnene = new Floor("saline-stolnene"){{
             speedMultiplier = 0.85f;
             variants = 3;
+            status = RustingStatusEffects.hailsalilty;
             attributes.set(Attribute.water, -1f);
             attributes.set(Attribute.spores, -0.35f);
             wall = salineBarreren;
@@ -505,13 +506,13 @@ public class RustingBlocks implements ContentList{
         taconite = new FixedOreBlock("taconite"){{
             itemDrop = RustingItems.taconite;
             overrideMapColor = itemDrop.color;
-            variants = 1;
+            variants = 3;
         }};
 
         cameoShardling = new FixedOreBlock("cameo-shardling"){{
             itemDrop = RustingItems.cameoShardling;
             overrideMapColor = itemDrop.color;
-            variants = 1;
+            variants = 3;
         }};
 
         //endregion
@@ -535,6 +536,8 @@ public class RustingBlocks implements ContentList{
             size = 2;
             hasPower = false;
             hasLiquids = true;
+
+            drawer = new DrawLiquidSmelter();
 
             consumes.items(with(Items.coal, 3, RustingItems.taconite, 5));
             consumes.liquid(Liquids.water, 0.155f);
@@ -568,7 +571,7 @@ public class RustingBlocks implements ContentList{
             drawer = new DrawRotorTop();
             consumes.power(0.72f);
             consumes.items(with(Items.lead, 1, Items.copper, 3, RustingItems.halsinte, 2));
-            consumes.liquid(Liquids.water, 0.125f);
+            consumes.liquid(Liquids.water, 0.25f);
         }};
 
 
@@ -586,7 +589,7 @@ public class RustingBlocks implements ContentList{
             drawer = new DrawItemLiquid();
 
             consumes.power(7.2f);
-            consumes.liquid(RustingLiquids.cameaint, 0.2235f);
+            consumes.liquid(RustingLiquids.cameaint, 0.447f);
         }};
 
         camaintAmalgamator = new ResearchableCrafter( "camaint-amalgamator"){{
@@ -601,7 +604,7 @@ public class RustingBlocks implements ContentList{
             hasLiquids = true;
 
             consumes.power(3.25f);
-            consumes.liquid(RustingLiquids.cameaint, 0.0635f);
+            consumes.liquid(RustingLiquids.cameaint, 0.635f);
             consumes.items(with(Items.titanium, 3, RustingItems.bulastelt, 4, RustingItems.cameoShardling, 2));
         }};
 
@@ -759,7 +762,6 @@ public class RustingBlocks implements ContentList{
         infectedsGeneratorCore = new InfectedsGeneratorCore("infecteds-generator-core"){{
             requirements(Category.power, with(Items.lead, 450, Items.titanium, 650, Items.metaglass, 350, RustingItems.melonaleum, 350, RustingItems.gelChip, 540));
             centerResearchRequirements(true, with(Items.titanium, 1500, Items.metaglass, 2340, RustingItems.gelChip, 950, RustingItems.melonaleum, 1250));
-            buildVisibility = BuildVisibility.campaignOnly;
             consumes.item(RustingItems.melonaleum, 3);
             size = 6;
             canOverload = true;
@@ -1053,6 +1055,12 @@ public class RustingBlocks implements ContentList{
 
 
         //region units
+
+        pulseCommandCenter = new PulseCommandCenter("pulse-command-center"){{
+            buildVisibility = buildVisibility.shown;
+            category = Category.units;
+            size = 2;
+        }};
 
         pulseFactory = new PulseUnitFactory("pulse-factory"){{
             requirements(Category.units, with(Items.copper, 75, Items.lead, 60, Items.coal, 35, Items.titanium, 25));
@@ -1633,7 +1641,8 @@ public class RustingBlocks implements ContentList{
         diffract = new ItemTurret("diffract"){{
             requirements(Category.turret, with(Items.copper, 85,  Items.lead, 70, Items.graphite, 55));
             ammo(
-                Items.graphite, RustingBullets.craeLightGlaive,
+                Items.graphite, RustingBullets.denseLightGlaive,
+                RustingItems.melonaleum, RustingBullets.craeLightGlaive,
                 RustingItems.halsinte, RustingBullets.saltyLightGlaive
             );
 

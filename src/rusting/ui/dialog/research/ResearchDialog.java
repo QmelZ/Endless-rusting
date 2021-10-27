@@ -1,10 +1,11 @@
 package rusting.ui.dialog.research;
 
 import arc.Core;
+import arc.func.Boolf;
 import arc.graphics.Color;
 import arc.math.Mathf;
-import arc.scene.event.ClickListener;
-import arc.scene.event.HandCursorListener;
+import arc.scene.event.*;
+import arc.scene.style.Drawable;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.Table;
@@ -44,6 +45,8 @@ public class ResearchDialog extends CustomBaseDialog{
     public Seq<String> databaseQuotes = new Seq<String>();
     public Table uiDisplay = new Table();
 
+    public ObjectMap<Boolf<ResearchableObject>, Table> buttons = ObjectMap.of();
+
     public ResearchDialog() {
         super(Core.bundle.get("erui.researchcenter"), Core.scene.getStyle(DialogStyle.class));
         shouldPause = true;
@@ -52,8 +55,6 @@ public class ResearchDialog extends CustomBaseDialog{
         all.margin(20).marginTop(0f).top().left().setWidth(300);
 
         information.margin(15).marginTop(0).top().left().setWidth(450);
-
-        setup();
     }
 
     @Override
@@ -127,35 +128,47 @@ public class ResearchDialog extends CustomBaseDialog{
 
         }).size(size).left().top().padTop(35).padLeft(15);
 
-        cont.table(rightPaneHolder -> {
-            //contains all the extra information for the block/unlocking it
-            cont.table(Texr.button, rightPane -> {
+        //contains all the extra information for the block/unlocking it
+        cont.table(Texr.button, rightPane -> {
 
-                if(selected == null){
-                    rightPane.add(information);
-                }
-                else{
-                    rightPane.pane(information).padTop(35).growX().fillX();
-                }
+            if(selected == null){
+                rightPane.add(information);
+            }
+            else{
+                rightPane.pane(information).padTop(35).growX().fillX();
+            }
 
-                rebuildInformation();
+            rebuildInformation();
 
-            });
+        }).width(1500 - size - 150).height(size).top().padTop(35).padRight(45).padLeft(150);
 
-            rightPaneHolder.row();
-
-            rightPaneHolder.pane(informationButtons).growX();
-
-        }).width(1500 - size - 350).height(size).right().top().padTop(35).padRight(45).padLeft(350);
+        //contains the additional buttons that show up
+        cont.table(Texr.button, rightPane -> {
+            rightPane.pane(informationButtons);
+        }).height(size).width(150).padTop(35);
     }
 
     public void rebuildList(){
 
         categorized.clear();
 
+        Seq<ResearchType> validTypes = Seq.with();
+
+        Varsr.content.researchTypes().each(r -> {
+            if(Varsr.research.getCenter(r, player.team()) != null) validTypes.add(r);
+        });
+
+        Boolf<Seq<ResearchType>> valid = (types) -> {
+            Seq<ResearchType> remainingTypes = types.copy();
+            validTypes.each(t -> {
+                if(types.contains(t)) remainingTypes.remove(t);
+            });
+            return remainingTypes.size == 0;
+        };
+
         researchable.each(r -> {
 
-            if(r.hidden() || (search != null && search.getText().length() > 0 && !r.localizedName().toLowerCase().contains(search.getText().toLowerCase()))) return;
+            if(r.hidden() || (search != null && search.getText().length() > 0 && !r.localizedName().toLowerCase().contains(search.getText().toLowerCase())) || !valid.get(r.researchTypes())) return;
 
             if(!categorized.containsKey(r.categoryName())) categorized.put(r.categoryName(), Seq.with());
             categorized.get(r.categoryName()).add(r);
@@ -179,7 +192,6 @@ public class ResearchDialog extends CustomBaseDialog{
             all.table(t -> {
                 types.each(type -> {
 
-
                     Image image = new Image(type.researchUIcon()).setScaling(Scaling.fit);
 
                     t.add(image).size(45).pad((64 - 45) / 2);
@@ -193,11 +205,12 @@ public class ResearchDialog extends CustomBaseDialog{
 
                     if (!mobile) {
                         image.addListener(new HandCursorListener());
-                        image.update(() -> image.color.lerp(!listener.isOver() ? (type.researched(Vars.player.team()) ? Color.white : Palr.voidBullet) : Color.lightGray, Mathf.clamp(0.4f * Time.delta)));
+                        image.update(() -> image.color.lerp(!listener.isOver() ? (type.researched(Vars.player.team()) ? Color.white : Palr.dustriken) : Color.lightGray, Mathf.clamp(0.4f * Time.delta)));
                     }
 
                     image.clicked(() -> {
-                        selected = type;
+                        if(selected != type) selected = type;
+                        else selected = null;
                         rebuildInformation();
                     });
 
@@ -219,16 +232,23 @@ public class ResearchDialog extends CustomBaseDialog{
         informationButtons.clear();
 
         //setup buttons
-        informationButtons.background(Texr.button);
 
-        //show information
-        informationButtons.button(Tex.infoBanner, () -> {
-            if(!selected.researched(player.team())) return;
-            information.clear();
-        }).size(64);
+        if(selected != null){
+            buttons.each((shown, button) -> {
+                if(shown.get(selected)) {
+                    informationButtons.add(button);
+                    informationButtons.row();
+                }
+            });
 
-        if(selected == null) {
-            information.add("[grey]<select something for more information :D>");
+            //currently unfinished
+            addButton(Core.atlas.getDrawable("endless-rusting-unlock-block"), (o) -> true, () -> {}, "Unlock Block");
+            addButton(Core.atlas.getDrawable("endless-rusting-block-information"), (o) -> true, () -> {},  "Information");
+            addButton(Core.atlas.getDrawable("endless-rusting-upgrade-block"), (o) -> true, () -> {}, "Upgrade Block");
+        }
+        else{
+            if(Varsr.debug || Mathf.chance(0.1f)) information.add(Varsr.defaultRandomQuotes.random());
+            else information.add("[grey]<select something for more information :D>");
             return;
         }
 
@@ -236,7 +256,7 @@ public class ResearchDialog extends CustomBaseDialog{
 
         if(!selected.researched(player.team())){
 
-            Tile tile = Varsr.research.getCenter(Seq.with(selected.researchTypes().get(0))).tile;
+            Tile tile = Varsr.research.getCenter(Seq.with(selected.researchTypes().get(0)), player.team()).tile;
 
             ItemStack[] rCost = selected.getResearchModule().centerResearchRequirements;
             Table itemsCost = new Table();
@@ -285,5 +305,39 @@ public class ResearchDialog extends CustomBaseDialog{
                 table.add(itemsCost);
             });
         }
+    }
+
+    public void addButton(Drawable drawable, Boolf<ResearchableObject> shown, Runnable r, String tooltip){
+
+        //add an optional button which can be hidden
+        Table addedButton = new Table();
+        addedButton.clicked(r);
+
+        Image buttonImage = new Image(drawable);
+        buttonImage.setScaling(Scaling.fit);
+
+        ClickListener listener = new ClickListener();
+        buttonImage.addListener(listener);
+
+        if (!mobile) {
+            buttonImage.addListener(new HandCursorListener());
+            buttonImage.update(() -> buttonImage.color.lerp(!listener.isOver() ? Color.gray : Color.white, Mathf.clamp(0.4f * Time.delta)));
+        }
+
+        buttonImage.addListener(
+            new Tooltip(t -> {
+                t.background(Texr.button);
+                t.add(tooltip);
+            })
+        );
+
+        buttonImage.clicked(() -> {
+            r.run();
+        });
+
+        addedButton.add(buttonImage).size(80).top();
+        addedButton.background(Texr.button);
+
+        buttons.put(shown, addedButton);
     }
 }

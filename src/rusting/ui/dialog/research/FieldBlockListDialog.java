@@ -26,8 +26,7 @@ import rusting.interfaces.ResearchableObject;
 import rusting.ui.dialog.CustomBaseDialog;
 import rusting.ui.dialog.Texr;
 
-import static mindustry.Vars.mobile;
-import static mindustry.Vars.player;
+import static mindustry.Vars.*;
 
 public class FieldBlockListDialog extends CustomBaseDialog {
 
@@ -100,7 +99,7 @@ public class FieldBlockListDialog extends CustomBaseDialog {
                 list.left();
 
                 researchable.each(type -> {
-                    if(!(type instanceof UnlockableContent) || Varsr.research.getCenter(type.researchTypes()) == null) return;
+                    if(!(type instanceof UnlockableContent) || Varsr.research.getCenter(type.researchTypes(), player.team()) == null) return;
                     UnlockableContent unlock = (UnlockableContent) type;
                     if (!unlocked(unlock) || type.getResearchModule().isHidden) return;
                     final boolean isResearched = Varsr.research.researched(player.team(), type, type.researchTypes());

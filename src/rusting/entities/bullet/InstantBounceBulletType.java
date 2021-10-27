@@ -13,7 +13,7 @@ import rusting.content.Fxr;
 
 import java.util.Arrays;
 
-public class InstantBounceBulletType extends BounceBulletType implements instantBullet{
+public class InstantBounceBulletType extends BounceBulletType{
 
     public float length = 100;
     public float trailSpacing = 15;

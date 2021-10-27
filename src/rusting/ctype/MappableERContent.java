@@ -1,6 +1,7 @@
 package rusting.ctype;
 
 import arc.Core;
+import mindustry.Vars;
 import rusting.Varsr;
 
 public abstract class MappableERContent extends ERContent{
@@ -9,7 +10,7 @@ public abstract class MappableERContent extends ERContent{
     public String localizedName;
 
     public MappableERContent(String name){
-        this.name = name;
+        this.name = Vars.content.transformName(name);
         Varsr.content.handleContent(this);
     }
 

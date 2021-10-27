@@ -16,6 +16,7 @@ import mindustry.gen.Building;
 import mindustry.type.ItemStack;
 import mindustry.world.Tile;
 import mindustry.world.meta.BuildVisibility;
+import rusting.ai.AISwitches;
 import rusting.content.Fxr;
 import rusting.content.RustingAchievements;
 import rusting.core.RustedContentLoader;
@@ -23,6 +24,7 @@ import rusting.core.Rusting;
 import rusting.core.holder.ItemScoreHolder;
 import rusting.ctype.UnlockableAchievement;
 import rusting.entities.abilities.SpeedupAbility;
+import rusting.game.ERSectorPreset;
 import rusting.game.ScriptedSectorHandler;
 import rusting.interfaces.PulseCanalInput;
 import rusting.interfaces.PulseInstantTransportation;
@@ -47,6 +49,7 @@ public class Varsr implements Loadable {
     public static FormatHolder formats;
     public static ItemScoreHolder itemScorer;
     public static Rusting rusted;
+    public static AISwitches switches = new AISwitches();
     public static RustedContentLoader content = new RustedContentLoader();
     public static RustingResearch research = new RustingResearch();
     public static ScriptedSectorHandler sectors = new ScriptedSectorHandler();
@@ -66,6 +69,10 @@ public class Varsr implements Loadable {
         if(username.equals(defaultUsername)) Varsr.ui.welcome.show();
 
         if(debug) debug();
+
+        Events.on(EventType.UnlockEvent.class, e -> {
+            if(e.content instanceof ERSectorPreset) ((ERSectorPreset) e.content).loadBundles();
+        });
 
     }
 

@@ -162,7 +162,7 @@ public class InfectedsGeneratorCore extends PulseGenerator{
                 });
             }
             Fxr.pulseSmoke.at(x, y, 0, new Float[]{range * 8, 5f});
-            Fxr.craeNukebuthehe.at(x, y, Mathf.random(0, 360));
+            Fxr.spontaniumCOMBUSTOMTHATSTHESPELLWHICHMAKESANYONEWHOSAYSITEXPLO.at(x, y, Mathf.random(0, 360));
             Sounds.laserblast.at(x, y, 0.35f);
         }
 

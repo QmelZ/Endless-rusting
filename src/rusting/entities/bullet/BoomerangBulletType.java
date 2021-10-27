@@ -4,13 +4,11 @@ import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.math.Mathf;
-import arc.struct.Seq;
 import arc.util.*;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
 import mindustry.gen.Bullet;
 import mindustry.gen.Entityc;
-import mindustry.graphics.Trail;
 import mindustry.logic.Ranged;
 import rusting.content.Palr;
 
@@ -43,7 +41,7 @@ public class BoomerangBulletType extends BounceBulletType {
     @Override
     public void draw(Bullet b) {
 
-        if(Core.settings.getBool("settings.er.drawtrails")) ((Seq<Trail>)b.data).each(t -> t.draw(trailColor, trailWidth * b.fout()));
+        if(Core.settings.getBool("settings.er.drawtrails")) trails(b).each(t -> t.draw(trailColor, trailWidth * b.fout()));
 
         float height = this.height * ((1f - shrinkY) + shrinkY * b.fout());
         float width = this.width * ((1f - shrinkX) + shrinkX * b.fout());

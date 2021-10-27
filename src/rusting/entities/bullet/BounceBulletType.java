@@ -20,9 +20,17 @@ public class BounceBulletType extends ConsBulletType {
     public int trailLength = 5;
     //How thick trail is
     public float trailWidth = 1;
-    float range = -1;
+    public float range = -1;
+
+    public boolean clearBounce = true;
+    //hwo many ticks inbetween collisions being cleared. Set around 15/20 or lower to make bullet reliable in low fps.
+    public int bounceInternal = 15;
 
     public boolean useRange = true;
+
+    public static class Bounces{
+        public int bounceAmount = 0;
+    }
 
     public BounceBulletType(float speed, float damage, String sprite) {
         super(speed, damage, sprite);
@@ -36,8 +44,15 @@ public class BounceBulletType extends ConsBulletType {
 
     public void init(Bullet b) {
         super.init(b);
-        b.data = new Seq<Trail>();
-        ((Seq<Trail>)b.data).add(new Trail(trailLength));
+        b.data = Seq.with(Seq.with(new Trail(trailLength)), new Bounces(), null);
+    }
+
+    public Seq<Trail> trails(Bullet b){
+        return (Seq<Trail>) ((Seq) b.data).get(0);
+    }
+
+    public Bounces bounces(Bullet b){
+        return (Bounces) ((Seq) b.data).get(1);
     }
 
     @Override
@@ -57,22 +72,26 @@ public class BounceBulletType extends ConsBulletType {
 
     @Override
     public void update(Bullet b){
-        if(b.timer.get(1, 15)){{
+        if(b.timer.get(1, bounceInternal)){{
             b.collided.clear();
         }}
         super.update(b);
-        if(Core.settings.getBool("settings.er.drawtrails")) ((Seq<Trail>)b.data).each(t -> t.update(b.x, b.y));
+        if(Core.settings.getBool("settings.er.drawtrails")) trails(b).each(t -> t.update(b.x, b.y));
+        if(pierceCap != -1 && bounces(b).bounceAmount >= pierceCap){
+            b.remove();
+        }
     }
 
     @Override
     public void draw(Bullet b){
-        if(Core.settings.getBool("settings.er.drawtrails")) ((Seq<Trail>)b.data).each(t -> t.draw(trailColor, trailWidth * b.fout()));
+        if(Core.settings.getBool("settings.er.drawtrails")) trails(b).each(t -> t.draw(trailColor, trailWidth * b.fout()));
         super.draw(b);
     }
 
     @Override
     public void hit(Bullet b, float x, float y) {
         super.hit(b, x, y);
+        bounces(b).bounceAmount += 1;
         Teamc teamc = Units.closestEnemy(b.team, x, y, hitSize * 2 + 4, e -> b.collides(e));
         if(!(teamc instanceof Unit)) return;
         Unit unit = (Unit)teamc;
@@ -89,6 +108,7 @@ public class BounceBulletType extends ConsBulletType {
     @Override
     public void hitTile(Bullet b, Building build, float initialHealth, boolean direct) {
         super.hitTile(b, build, initialHealth, direct);
+        bounces(b).bounceAmount += 1;
         float x = b.x, y = b.y;
         float difX = Math.abs(b.vel.x - x), difY = Math.abs(b.vel.y - y);
         if(build != null){

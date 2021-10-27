@@ -1,24 +1,23 @@
 package rusting.content;
 
 import arc.Core;
-import arc.util.Log;
-import arc.util.Reflect;
+import arc.scene.Group;
+import arc.scene.ui.Dialog;
+import arc.scene.ui.TextButton.TextButtonStyle;
+import arc.scene.ui.layout.Table;
 import mindustry.Vars;
-
-import java.lang.reflect.Method;
+import mindustry.ui.Styles;
+import rusting.ui.dialog.CustomBaseDialog;
 
 public class RustedSettingAdder {
 
-    //reflection is used as a workaround for fields being merged into the subclass in 7.0
-    public void addGraphicSetting(String key){
-        set("graphics", "checkPref", new Class[]{String.class, boolean.class}, key, Core.settings.getBool(key));
-    }
-
-    public void addGameSetting(String key){
-        set("game", "checkPref", new Class[]{String.class, boolean.class}, key, Core.settings.getBool(key));
-    }
+    public static Dialog ERSettings;
+    //public static SettingsTable graphics;
 
     public void init(){
+
+        ERSettings = new CustomBaseDialog("@settings.er.settings.name");
+        ERSettings.addCloseButton();
         /*
         boolean tmp = Core.settings.getBool("uiscalechanged", false);
         Core.settings.put("uiscalechanged", false);
@@ -32,8 +31,6 @@ public class RustedSettingAdder {
         addGraphicSetting("settings.er.pulseglare");
 
         Core.settings.put("uiscalechanged", tmp);
-
-        /*
 
         Cons dialogShow = new Cons() {
             @Override
@@ -50,15 +47,46 @@ public class RustedSettingAdder {
         Events.on(Trigger.update.getClass(), dialogShow);
 
         */
+        TextButtonStyle style = Styles.cleart;
+
+        Vars.ui.settings.shown(() -> {
+            rebuildMenu();
+            Table settingDialog = (Table)((Group)((Group)(Vars.ui.settings.getChildren().get(1))).getChildren().get(0)).getChildren().get(0);
+            settingDialog.row();
+            settingDialog.button("@settings.er", style, () -> {
+                ERSettings.show();
+            });
+        });
+
+        rebuildMenu();
+
+        //I literaly gave up and coppied meep after about an hour of testing this crap
+        //Table settingDialog = (Table) (((Table) (((ScrollPane) Vars.ui.settings.getCells().get(3).get()).getWidget())).getCells().get(0).get());
     }
 
-    private static void set(String field, String method, Class[] types, Object... values){
-        try{
-            Object table = Reflect.get(Vars.ui.settings, field);
-            Method m = table.getClass().getDeclaredMethod(method, types);
-            m.invoke(table, values);
-        }catch(Exception e){
-            Log.err(e);
-        }
+    public void rebuildMenu() {
+        ERSettings.cont.clear();
+
+        ERSettings.cont.pane(t -> {
+            t.image(Core.atlas.find("endless-rusting-ingame-icon"));
+            t.row();
+            t.add("So... you found ER's menue for the first time! Welcome to the menue.\nThat's about all I had to say... yeah");
+            t.row();
+            //t.add(graphics).padTop(100);
+        });
+
+        ERSettings.cont.row();
+        /*
+        graphics = new SettingsTable();
+
+        graphics.checkPref("settings.er.drawtrails", true);
+        graphics.checkPref("settings.er.advancedeffects", true);
+        graphics.checkPref("settings.er.weatherblinding", true);
+        graphics.checkPref("settings.er.pulsehighdraw", true);
+        graphics.checkPref("settings.er.pulsedrawshake", true);
+        graphics.checkPref("settings.er.additivepulsecolours", true);
+        graphics.checkPref("settings.er.pulseglare", true);
+
+         */
     }
 }

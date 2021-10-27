@@ -7,7 +7,6 @@ import mindustry.Vars;
 import mindustry.ctype.UnlockableContent;
 import mindustry.game.Team;
 import mindustry.type.ItemStack;
-import rusting.Varsr;
 import rusting.ctype.ResearchType;
 import rusting.world.modules.ResearchModule;
 
@@ -52,7 +51,7 @@ public interface ResearchableObject {
     }
 
     default boolean researched(Team team){
-        return !getResearchModule().needsResearching || Vars.state.rules.infiniteResources || Varsr.research.getTeamModule(team, this).researched;
+        return !getResearchModule().needsResearching || Vars.state.rules.infiniteResources || getResearchModule().getModule(team).researched;
     }
 
     default void hideFromUI(){

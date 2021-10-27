@@ -172,7 +172,12 @@ public class RustingResearch {
         return returnTeamModule;
     }
 
-    public Building getCenter(Seq<ResearchType> types){
+    public Building getCenter(ResearchType type, Team team){
+
+        return Groups.build.find(b -> b.team == team && b.block instanceof ResearchCenter && ((ResearchCenter) b.block).researchTypes().contains(type));
+    }
+
+    public Building getCenter(Seq<ResearchType> types, Team team){
         Boolf<ResearchCenter> centercons = c -> {
             Seq<ResearchType> reearchSeq = Seq.with();
             reearchSeq.set(types);

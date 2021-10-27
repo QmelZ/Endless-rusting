@@ -1,6 +1,7 @@
 package rusting.content;
 
 import arc.Core;
+import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.math.Angles;
@@ -511,8 +512,90 @@ public class Fxr{
         Drawf.light(e.x, e.y, e.finpow() * 150, Palr.pulseBullet, e.fslope() * e.fslope());
     }),
 
+    spontaniumCOMBUSTOMTHATSTHESPELLWHICHMAKESANYONEWHOSAYSITEXPLO = new Effect(850, 1200, e -> {
 
-    //modified flak explosion
+        e.scaled(150, b -> {
+            Drawf.light(e.x, e.y, b.finpow() * 185, Palr.pulseBullet, b.fout());
+        });
+
+        e.scaled(350f, b -> {
+            color(Color.white, Palr.pulseShieldEnd, b.fin());
+            stroke(b.fout() * b.fslope() * 6f);
+            Lines.circle(b.x, b.y, (b.finpow()) * 975);
+            Draw.z(Layer.effect + 1);
+            Fill.light(e.x, e.y, 60, e.finpow() * 875, Color.clear, Tmp.c1.set(Palr.pulseChargeStart).a(b.fslope()));
+            Draw.blend(Blending.additive);
+            Fill.light(e.x, e.y, 60, e.finpow() * 875, Color.clear, Tmp.c2.set(Palr.pulseBullet).a(b.fslope() /3));
+            Draw.blend();
+            Drawf.light(e.x, e.y, e.finpow() * 875, Palr.pulseBullet, b.fslope() * b.fslope());
+            Draw.z(Layer.effect);
+        });
+
+        e.scaled(650, b -> {
+            color(Color.white, Palr.pulseBullet, b.fin());
+            stroke(b.fslope() * b.fslope() * 4f);
+            Lines.circle(b.x, b.y, (b.finpow()) * 675);
+        });
+
+        e.scaled(450, b -> {
+            Draw.alpha(Math.min(e.fout() * 2, 1));
+            color(Color.white, Palr.pulseShieldEnd, b.fin());
+            stroke(b.fslope() * b.fslope() * 4f);
+            Lines.circle(b.x, b.y, b.finpow() * 225f);
+            color(Color.white, Palr.lightstriken, b.fin());
+            Lines.circle(b.x, b.y, b.finpow() * 197f);
+        });
+
+        e.scaled(125, b -> {
+            Draw.alpha(Math.min(e.fout() * 3, 1));
+            color(Color.white, Palr.pulseShieldEnd, b.fin());
+            stroke(b.fslope() * b.fslope() * 4f + 0.65f);
+            Angles.randLenVectors(e.id, 35, Mathf.absin(b.finpow() * 4, 155), e.rotation, 360, (x, y) -> {
+                Lines.circle(e.x + x, e.y + y, b.fout() * b.fout());
+            });
+        });
+
+        Drawf.light(e.x, e.y, e.finpow() * 850, Palr.pulseBullet, e.fslope() * e.fslope());
+
+        for(int i : Mathf.signs){
+            Drawf.tri(e.x, e.y, 21f * e.fout(), 550f - e.finpow() * 350f, Angles.moveToward(e.rotation - 65f * i, e.rotation, e.finpow() * 65));
+            color(Palr.pulseChargeEnd);
+            Drawf.tri(e.x, e.y, 27 * (1 - e.finpow()), 420 - e.finpow() * 340, Angles.moveToward(e.rotation + 85f * i, e.rotation, e.finpow() * 95));
+            Drawf.tri(e.x, e.y, 35 * (1 - e.finpow()), 360 - e.finpow() * 295, Angles.moveToward(e.rotation + 85f * i, e.rotation, e.finpow() * 95));
+            Drawf.tri(e.x, e.y, 35 * (1 - e.finpow()), 260 - e.finpow() * 195, Angles.moveToward(e.rotation + 85f * i, e.rotation, e.finpow() * 95));
+        }
+
+        for(int i : Mathf.signs){
+            color(Color.white);
+            Draw.alpha(0.35f * e.fin() + 0.55f * e.fslope());
+            Tmp.v1.trns(Angles.moveToward(e.rotation + 85f * i, 35, e.finpow() * 95), 150f - e.fout() * 167);
+            Drawf.tri(e.x, e.y, 17f * e.fout(), 95f - e.fout() * 45, Angles.moveToward(e.rotation - 65f * i, 35, e.finpow() * 65));
+            Tmp.v1.trns(Angles.moveToward(e.rotation + 85f * i, 35, e.finpow() * 95), 95f - e.fslope() * 45);
+            Drawf.tri(e.x, e.y, 15f * (1 - e.finpow()), 150f - e.fslope() * 75, Angles.moveToward(e.rotation + 85f * i, 35, e.finpow() * 135));
+        }
+        color(Palr.pulseChargeStart);
+
+        Draw.alpha(Math.max(e.fout() * 5, 1));
+
+        Draw.blend(Blending.additive);
+        Draw.z(Layer.effect + 1);
+        Fill.light(e.x, e.y, 45, e.fout() * e.fout() * 150, Tmp.c1.set(Color.white), Tmp.c2.set(Color.clear).a(Math.min(e.fout() * 2, 1)));
+        Draw.blend();
+        Draw.z(Layer.effect);
+
+        Fill.circle(e.x, e.y, e.fout() * e.fout() * 165);
+        Lines.stroke(e.fout() * 5);
+        Lines.circle(e.x, e.y, e.fout() * e.fout() * 175 + Mathr.helix(35, 15 * e.fout(), e.fout()));
+        Lines.stroke(e.fout() * 10);
+        Lines.circle(e.x, e.y, e.fout() * e.fout() * 175 + Mathr.helix(23, 34 * e.fout(), e.fout()));
+
+        Draw.alpha(Math.min(e.fslope() * 10, 1f));
+        Fill.circle(e.x, e.y, Math.max(e.fout() * e.fout() * 55, 15));
+        Drawf.light(e.x, e.y, e.fout() * e.fout() * 150, Palr.pulseBullet, e.fslope() * e.fslope());
+    }),
+
+
+    //modified flak explosiongradlew clean build
     instaltSummonerExplosion = new Effect(45, e -> {
         color(Pal.bulletYellowBack);
 

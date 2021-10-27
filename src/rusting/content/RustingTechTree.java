@@ -46,13 +46,13 @@ public class RustingTechTree implements ContentList {
 
         extendNode(coreShard, () -> {
             node(pulseResearchCenter, Seq.with(new SectorComplete(paileanCorridors)), () -> {
-                node(fraeResarchCenter, Seq.with(new Produce(RustingItems.melonaleum), new SectorComplete(pulsatingGroves)), () -> {
+                node(fraeResarchCenter, Seq.with(new Produce(RustingItems.melonaleum), new SectorComplete(overgrownMines)), () -> {
                     node(cameoCrystallisingBasin, () -> {
-                        node(cameoPaintMixer, Seq.with(new Produce(RustingLiquids.cameaint), new SectorComplete(saltyShoals)), () -> {
+                        node(cameoPaintMixer, Seq.with(new Produce(RustingLiquids.cameaint)), () -> {
                             nodeProduce(RustingLiquids.cameaint, () -> {
 
                             });
-                            node(camaintAmalgamator, Seq.with(new SectorComplete(overgrownMines)), () -> {
+                            node(camaintAmalgamator, Seq.with(), () -> {
 
                             });
                         });
@@ -83,7 +83,7 @@ public class RustingTechTree implements ContentList {
                     });
                 });
 
-                node(pulseCondensary, Seq.with(new SectorComplete(crystallineCrags), new Research(paileanCorridors), new Produce(melonaleum)), () -> {});
+                node(pulseCondensary, Seq.with(new DestroyBlocksObjective(ObjectMap.of(pulseCondensary, 1), crystallineCrags), new Research(paileanCorridors), new Produce(melonaleum)), () -> {});
 
                 node(archangel, Seq.with(new SectorComplete(abystrikenCrevasse)), () -> {
 
@@ -299,7 +299,9 @@ public class RustingTechTree implements ContentList {
                             }
                         }), () -> {
                             node(saltyShoals, Seq.with(new SectorComplete(sulphuricSea), new Research(RustingItems.halsinte)), () -> {
+                                node(overgrownMines, Seq.with(new SectorComplete(saltyShoals), new Research(RustingItems.cameoShardling)), () -> {
 
+                                });
                             });
                         });
                     });

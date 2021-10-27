@@ -45,10 +45,12 @@ public class RustingBullets implements ContentList{
         paveBolt,
         //essentualy small nukes
         craeBalistorm, craeNukestorm,
+    //generator core nuke
+        
         //boomerangs
         craeLightRoundaboutRight, craeLightRoundaboutLeft, saltyLightRoundaboutRight, saltyLightRoundaboutLeft, denseLightRoundaboutLeft, denseLightRoundaboutRight,
         //glaivs
-        craeLightGlaive, craeLightGlaiveRight, craeLightGlaiveLeft, saltyLightGlaive,
+        craeLightGlaive, denseLightGlaive, pulsenLightGlaive, craeLightGlaiveRight, craeLightGlaiveLeft, saltyLightGlaive,
         //instant bouncing bullets
         horizonInstalt, nummingInstalt, timelessInstalt, gunnersInstalt,
         //laser bullets
@@ -1040,7 +1042,7 @@ public class RustingBullets implements ContentList{
 
         }};
 
-        denseLightRoundaboutRight =  new BoomerangBulletType(1, 8, "endless-rusting-boomerang"){{
+        denseLightRoundaboutRight =  new BoomerangBulletType(1, 15, "endless-rusting-boomerang"){{
 
             other = denseLightRoundaboutLeft;
             width = 16;
@@ -1128,7 +1130,7 @@ public class RustingBullets implements ContentList{
             fragBullets = 2;
         }};
 
-        denseLightRoundaboutLeft = new BoomerangBulletType(1, 11, "endless-rusting-boomerang"){{
+        denseLightRoundaboutLeft = new BoomerangBulletType(1, 15, "endless-rusting-boomerang"){{
 
             other = denseLightRoundaboutRight;
 
@@ -1245,13 +1247,41 @@ public class RustingBullets implements ContentList{
             drag = -0.001f;
         }};
 
+        denseLightGlaive = new BoomerangBulletType(1, 45, "endless-rusting-glave"){{
+            homingPower = 0.005f;
+
+            consDespawned = consHit;
+
+            bounceInternal = 5;
+            shrinkX = 0.8f;
+            shrinkY = 0.8f;
+            width = 32;
+            height = 32;
+            lifetime = 300;
+            pierceCap = 6;
+            rotateMag = 5;
+            rotScaleMin = 0f;
+            rotScaleMax = 0f;
+            bounceUnits = false;
+            stayInRange = true;
+            spin = -10;
+            trailEffect = Fx.pulverize;
+            trailChance = 0.25f;
+            hitEffect = Fx.pulverizeMedium;
+            despawnEffect = Fx.plasticburn;
+            frontColor = Palr.pulseChargeStart;
+            backColor = Palr.pulseChargeEnd;
+            status = shieldShatter;
+            drag = -0.001f;
+        }};
+
         craeLightGlaiveRight = new BoomerangBulletType(2, 15, "endless-rusting-glave"){{
             other = craeLightGlaiveLeft;
 
             width = 9;
             height = 9;
             lifetime = 165;
-            homingPower = 0.025f;
+            homingPower = 0.25f;
             pierceCap = -1;
             shrinkX = 0;
             shrinkY = 0;
@@ -1275,7 +1305,7 @@ public class RustingBullets implements ContentList{
             width = 9;
             height = 9;
             lifetime = 165;
-            homingPower = 0.025f;
+            homingPower = 0.25f;
             pierceCap = -1;
             shrinkX = 0;
             shrinkY = 0;
