@@ -1,8 +1,8 @@
-Just\n
-go\n
-play\n
-something\n
+Just
+go
+play
+something
 else
 
-there is nothing here for you that vanilla and other mods won't provide\n
+there is nothing here for you that vanilla and other mods won't provide
 nothing
